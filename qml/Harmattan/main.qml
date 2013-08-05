@@ -135,6 +135,17 @@ PageStackWindow {
             return path;
         }
 
+        function publishToScriptogram(text) {
+            call('ownnotes.publishToScriptogram', [text]);
+        }
+
+        function publishAsPostToKhtCMS(text) {
+            call('ownnotes.publishAsPostToKhtCMS', [text]);
+        }
+
+        function publishAsPageToKhtCMS(text) {
+            call('ownnotes.publishAsPageToKhtCMS', [text]);
+        }
         onException: {
             console.log('Type:' + type);
             console.log('Message:' + message);

@@ -159,11 +159,11 @@ Page {
                 }
             }
            /*onActiveFocusChanged: {
-		   console.log('ActiveFocus');
+           console.log('ActiveFocus');
                    if ((textEditor.activeFocus) && (Settings.hideVkb) )
-                       
-			console.log('activeFocus and settings.hideVkb');
-			textEditor.closeSoftwareInputPanel();
+
+            console.log('activeFocus and settings.hideVkb');
+            textEditor.closeSoftwareInputPanel();
                }*/
 
            /*Connections {
@@ -226,18 +226,18 @@ Page {
 /*            MenuItem { text: qsTr("MarkDown Preview");
                                     onClicked: pageStack.push(Qt.createComponent(Qt.resolvedUrl("Harmattan_PreviewPage.qml")), {html:Note.previewMarkdown(textEditor.text)}); }
             MenuItem { text: qsTr("ReStructuredText Preview"); onClicked: pageStack.push(Qt.createComponent(Qt.resolvedUrl("Harmattan_PreviewPage.qml")), {html:Note.previewReStructuredText(textEditor.text)}); }*/
-            MenuItem { text: qsTr("Publish to Scriptogr.am"); 
+            MenuItem { text: qsTr("Publish to Scriptogr.am");
                 visible: pyNotes.get('Scriptogram','userid') != '' ? true : false;
-                       onClicked: {/*Note.publishToScriptogram(textEditor.text); */}}
-            MenuItem { text: qsTr("Publish as Post to KhtCms"); 
+                       onClicked: {pyNote.publishToScriptogram(textEditor.text);}}
+            MenuItem { text: qsTr("Publish as Post to KhtCms");
                        visible: pyNotes.get('KhtCms','apikey') != '' ? true : false;
-                       onClicked: {/*Note.publishAsPostToKhtCMS(textEditor.text); */}}
-            MenuItem { text: qsTr("Publish as Page to KhtCms"); 
+                       onClicked: {pyNotes.publishAsPostToKhtCMS(textEditor.text);}}
+            MenuItem { text: qsTr("Publish as Page to KhtCms");
                 visible: pyNotes.get('KhtCms','apikey') != '' ? true : false;
-                       onClicked: {/*Note.publishAsPageToKhtCMS(textEditor.text); */}}
-            MenuItem { text: qsTr("Share");
-                       onClicked: {/*saveFile(); Note.exportWithShareUI(); */}}
-          
+                       onClicked: {pyNote.publishAsPageToKhtCMS(textEditor.text);}}
+            /*MenuItem { text: qsTr("Share");
+                       onClicked: {saveFile(); Note.exportWithShareUI();}}*/
+
         }
     }
 
@@ -259,4 +259,4 @@ Page {
             onClicked: (editMenu.status === DialogStatus.Closed) ? editMenu.open() : editMenu.close()
         }
     }
-}   
+}

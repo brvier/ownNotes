@@ -23,7 +23,7 @@ class NetworkError(Exception):
 class Scriptogram():
     app_key = 'v2sgBSIBgWfb942b5960126f830ed8c44f8839d21a'
 
-    def publish(self, title, path, user_id, text):
+    def publish(self, title, user_id, text):
         url = 'http://scriptogr.am/api/article/post/'
         datas = {'app_key': self.app_key,
                  'user_id': user_id,

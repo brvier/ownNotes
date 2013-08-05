@@ -11,3 +11,13 @@
 *.lai
 *.la
 *.a
+
+# Python
+*.pyc
+*.pyo
+
+# QtCreator
+*.pro.user
+
+# Gedit
+*~

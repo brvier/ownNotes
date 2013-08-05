@@ -286,7 +286,7 @@ def createNote():
     inc = '1'
     path = os.path.join(NOTESPATH, 'Untitled %s.txt' % inc)
     while os.path.exists(path):
-        inc = str(int(inc)+1)
+        inc = str(int(inc) + 1)
         path = os.path.join(NOTESPATH, 'Untitled %s.txt' % inc)
     with file(path, 'w'):
         os.utime(path, (time.time(), time.time()))
@@ -306,6 +306,7 @@ def getCategories():
 
 def duplicate(path):
     import shutil
+
     dirname = os.path.dirname(path)
     filename = os.path.splitext(os.path.basename(path))[0] + ' 2.txt'
     dst = os.path.join(dirname, filename)
@@ -328,3 +329,46 @@ def setCategory(path, category):
         os.mkdir(os.path.join(NOTESPATH, category))
     os.rename(path, new_path)
 
+
+def publishAsPageToKhtCMS(text):
+    return publishToKhtCMS(text, 'page')
+
+
+def publishAsPostToKhtCMS(text):
+    return publishToKhtCMS(text, 'blog')
+
+
+def publishToKhtCMS(text, type):
+    global settings
+    from khtcms import KhtCMS
+    data = _uncolorize(text)
+    try:
+        _title, _content = data.split('\n', 1)
+    except ValueError:
+        _title = data.split('\n', 1)[0]
+        _content = ''
+
+    KhtCMS().publish(type=type,
+                     title=_title,
+                     apikey=settings.get('KhtCms', 'apikey'),
+                     url=settings.get('KhtCms', 'url'),
+                     text=_content,
+                     verify_ssl=settings.get('KhtCms', 'sslcheck'))
+    return True
+
+
+def publishToScriptogram(text):
+    global settings
+    from scriptogram import Scriptogram
+
+    data = _uncolorize(text)
+    try:
+        _title, _content = data.split('\n', 1)
+    except ValueError:
+        _title = data.split('\n', 1)[0]
+        _content = ''
+
+    Scriptogram().publish(title=_title,
+                          user_id=settings.get('Scriptogram', 'userid'),
+                          text=_content)
+    return True
