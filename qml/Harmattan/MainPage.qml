@@ -63,6 +63,9 @@ Page {
             }
         }
 
+        Component.onCompleted: {
+            pyNotes.listNotes('');
+        }
 
     }
 

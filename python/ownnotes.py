@@ -1,4 +1,4 @@
-#!/usr/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """ ownNotes
@@ -209,6 +209,7 @@ def loadNote(path):
             return _colorize((title + '\n' + text).replace('\r\n', '\n'))
         except:
             return 'gurk'
+    raise StandardError('Codecs package missing')
 
 
 def listNotes(searchFilter):
@@ -316,6 +317,7 @@ def duplicate(path):
 
 def rm(path):
     os.remove(path)
+    return True
 
 
 def setCategory(path, category):
@@ -328,6 +330,7 @@ def setCategory(path, category):
                                        category)):
         os.mkdir(os.path.join(NOTESPATH, category))
     os.rename(path, new_path)
+    return True
 
 
 def publishAsPageToKhtCMS(text):

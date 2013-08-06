@@ -80,12 +80,8 @@ PageStackWindow {
         }
 
         Component.onCompleted: {
-            //addImportPath('python');
             addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
-            //importModule('sys');
-            //console.log('?:'+eval('import sys'));
-            //console.log('?:'+eval('__file__'));
         }
 
     }
@@ -101,6 +97,7 @@ PageStackWindow {
 
         function listNotes(text) {
             threadedCall('ownnotes.listNotes', [text,]);
+            console.debug('listNotes called')
         }
 
         function getCategories() {
@@ -161,7 +158,6 @@ PageStackWindow {
             //addImportPath('python');
             addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
-            threadedCall('ownnotes.listNotes', ['',])
         }
     }
 
