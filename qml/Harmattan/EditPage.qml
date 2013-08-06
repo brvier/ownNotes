@@ -51,11 +51,13 @@ Page {
 
         onMessage: {
             var curPos = textEditor.cursorPosition;
-            var selStart = textEditor.selectionStart();
-            var selEnd = textEditor.selectionEnd();
+            var selStart = textEditor.selectionStart;
+            var selEnd = textEditor.selectionEnd;
             textEditor.text = message;
             textEditor.cursorPosition = curPos;
-            select(selStart,selEnd)
+            textEditor.select(selStart,selEnd);
+            console.log('ReHighlight');
+            autoTimer.stop();
         }
 
         onException: {
@@ -187,7 +189,7 @@ Page {
             Component.onDestruction: {
                 console.log('On destruction called');
                 if (modified == true) {
-                    noteSave.saveNote(path, textEditor.text)
+                    noteSaver.saveNote(path, textEditor.text)
                 }
             }
 
