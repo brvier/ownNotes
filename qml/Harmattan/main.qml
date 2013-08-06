@@ -92,6 +92,7 @@ PageStackWindow {
 
     Python {
         id: pyNotes
+        signal requireRefresh
 
         function loadNote(path) {
             var message = call('ownnotes.loadNote', [path,]);
@@ -109,17 +110,17 @@ PageStackWindow {
 
         function setCategory(path, category) {
             call('ownnotes.setCategory', [path, category]);
-            listNotes(searchField.text);
+            requireRefresh();
         }
 
         function remove(path) {
             call('ownnotes.rm', [path, ]);
-            listNotes(searchField.text);
+            requireRefresh();
         }
 
         function duplicate(path) {
             call('ownnotes.duplicate', [path, ]);
-            listNotes(searchField.text);
+            requireRefresh();
         }
 
         function get(section, option) {

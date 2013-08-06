@@ -51,8 +51,11 @@ Page {
 
         onMessage: {
             var curPos = textEditor.cursorPosition;
+            var selStart = textEditor.selectionStart();
+            var selEnd = textEditor.selectionEnd();
             textEditor.text = message;
             textEditor.cursorPosition = curPos;
+            select(selStart,selEnd)
         }
 
         onException: {
@@ -108,7 +111,7 @@ Page {
     Flickable {
         id: flick
         opacity: 0.0
-        flickableDirection: Flickable.HorizontalAndVerticalFlick
+        flickableDirection: Flickable.VerticalFlick
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.leftMargin: -2
@@ -119,16 +122,16 @@ Page {
         anchors.topMargin: -2
         clip: true
 
-        contentWidth: textEditor.width
+        contentWidth: flick.width
         contentHeight: textEditor.height
         pressDelay: 200
 
         function ensureVisible(r)
         {
-            if (contentX >= r.x)
+            /*if (contentX >= r.x)
                 contentX = r.x;
             else if (contentX+width <= r.x+r.width)
-                contentX = r.x+r.width-width;
+                contentX = r.x+r.width-width;*/
             if (contentY >= r.y)
                 contentY = r.y;
             else if (contentY+height <= r.y+r.height)
@@ -152,6 +155,7 @@ Page {
             font { bold: false;
                 family: pyNotes.get('Display', 'fontfamily');
                 pixelSize:  pyNotes.get('Display', 'fontsize');}
+
             onTextChanged: {
                 if(focus){
                     modified = true;
@@ -194,7 +198,7 @@ Page {
                 busyindicator.opacity = 0.0;
                 busyindicator.visible = false;
                 modified = false;
-                modified = false;
+                autoTimer.stop();
             }
 
             Timer {

@@ -71,6 +71,9 @@ Page {
         onMessage: {
             notesModel.fill(message)
         }
+        onRequireRefresh: {
+            notesModel.applyFilter(searchField.text)
+        }
 
     }
 
