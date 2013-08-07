@@ -31,12 +31,11 @@ Page {
         }
 
         onException: {
-            console.log(type + ':' +message)
-            onError(type + ' : ' + message);
+            console.log(type + ':' +data)
+            onError(type + ' : ' + data);
         }
 
         Component.onCompleted: {
-            //addImportPath('python');
             addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
         }
@@ -53,7 +52,7 @@ Page {
             var curPos = textEditor.cursorPosition;
             var selStart = textEditor.selectionStart;
             var selEnd = textEditor.selectionEnd;
-            textEditor.text = message;
+            textEditor.text = data;
             textEditor.cursorPosition = curPos;
             textEditor.select(selStart,selEnd);
             console.log('ReHighlight');
@@ -61,41 +60,15 @@ Page {
         }
 
         onException: {
-            console.log(type + ':' +message)
-            onError(type + ' : ' + message);
+            console.log(type + ':' +data)
+            onError(type + ' : ' + data);
         }
 
         Component.onCompleted: {
-            //addImportPath('python');
             addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
         }
     }
-
-/*    Python {
-        id: noteLoader
-
-        function loadNote() {
-            var message = call('ownnotes.loadNote', [path,]);
-            textEditor.text = message;
-            flick.opacity = 1.0;
-            busyindicator.opacity = 0.0;
-            busyindicator.visible = false;
-            modified = false;
-        }
-
-        onException: {
-            console.log(type + ':' +message)
-            onError(type + ' : ' + message);
-        }
-
-        Component.onCompleted: {
-            addImportPath('python');
-            addImportPath('/opt/ownNotes/python');
-            importModule('ownnotes');
-            loadNote();
-        }
-    }*/
 
     PageHeader {
         id: header
@@ -163,28 +136,6 @@ Page {
                     autoTimer.restart();
                 }
             }
-           onActiveFocusChanged: {
-               console.log('ActiveFocus');
-           }
-                 /*  if ((textEditor.activeFocus) && (Settings.hideVkb) )
-
-            console.log('activeFocus and settings.hideVkb');
-            textEditor.closeSoftwareInputPanel();
-               }*/
-
-           /*Connections {
-            target: inputContext*/
-
-            /*onSoftwareInputPanelVisibleChanged: {
-                if ((activeFocus) && (Settings.hideVkb) )
-                    textEditor.closeSoftwareInputPanel();
-            }
-
-            onSoftwareInputPanelRectChanged: {
-                if ((activeFocus) && (Settings.hideVkb) )
-                    textEditor.closeSoftwareInputPanel();
-            }
-        }*/
 
             Component.onDestruction: {
                 console.log('On destruction texteditor called');
@@ -210,9 +161,6 @@ Page {
                 onTriggered: {
                     if (modified) {
                         noteHighlighter.highligth();
-                        //var curPos = textEditor.cursorPosition;
-                        //textEditor.text = Note.reHighlight(textEditor.text);
-                        //textEditor.cursorPosition = curPos;
                     }
                 }
             }

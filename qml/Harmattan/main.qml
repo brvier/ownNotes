@@ -70,7 +70,7 @@ PageStackWindow {
         }
 
         onMessage: {
-            console.log('Sync:'+message)
+            console.log('Sync:'+data)
         }
 
         onException: {
@@ -80,7 +80,7 @@ PageStackWindow {
         }
 
         Component.onCompleted: {
-            addImportPath('/opt/ownNotes/python');
+            addImportPath('/opt/ownNotes/python');            
             importModule('ownnotes');
         }
 

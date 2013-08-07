@@ -57,8 +57,8 @@ class QPython : public QObject
 
     signals:
         void finished();
-        void message(const QVariant message);
-        void exception(const QString type, const QString message);
+        void message(const QVariant data);
+        void exception(const QString type, const QString data);
 
     public slots:
         void threadedCallFinished();

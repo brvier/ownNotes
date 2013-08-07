@@ -73,7 +73,7 @@ Page {
     Connections {
         target: pyNotes
         onMessage: {
-            notesModel.fill(message)
+            notesModel.fill(data)
         }
         onRequireRefresh: {
             notesModel.applyFilter(searchField.text)

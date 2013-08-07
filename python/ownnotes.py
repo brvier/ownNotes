@@ -118,7 +118,7 @@ def _colorize(text):
     text = text.split('\n', 1)
     text[0] = '<big><font color="%s">%s</font></big>' % (COLOR_TITLE,
                                                          text[0])
-    text = '\n'.join(text)
+    text = '\n'.join(text).strip('\n')
     text = text.replace('\n', '<br />')
 
     return u'''
@@ -127,7 +127,7 @@ def _colorize(text):
         white-space: pre-wrap;
         margin-top: 0px;
         margin-bottom: 0px;}
-</style><body><p>%s</p></body></html>''' % text
+</style></head><body><p>%s</p></body></html>''' % text
 
 
 def _unescape(text):
