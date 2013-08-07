@@ -32,7 +32,7 @@ class Settings(object):
         self._settings = {
             'Display': {
                 'fontsize': 18,
-                'fontfamily': 'Nokia Pure Text',
+                'fontfamily': 'Nokia Pure',
                 'header': True,
             },
             'WebDav': {

@@ -33,6 +33,10 @@ STRIPHEAD = re.compile("<head>.*?</head>", re.DOTALL)
 
 NOTESPATH = os.path.expanduser('~/.ownnotes/')
 
+COLOR_TITLE = '#441144'
+COLOR_LINK = '#00FF00'
+COLOR_SUBTITLE = '#663366'
+
 settings = Settings()
 sync = Sync()
 
@@ -45,6 +49,14 @@ def _getValidFilename(filepath):
     return os.path.join(dirname, ''.join(car for car in filename
                         if car not in INVALID_FILENAME_CHARS))
 
+def setColor(title_color, subtitle_color, link_color):
+    global COLOR_TITLE
+    global COLOR_LINK
+    global COLOR_SUBTITLE
+    COLOR_TITLE = title_color
+    COLOR_LINK = link_color
+    COLOR_SUBTITLE = subtitle_color
+    return True
 
 def _strongify(group):
     return '<b>%s</b>' % group.group(0)
@@ -55,15 +67,18 @@ def _emify(group):
 
 
 def _linkify(group):
-    return '<font color="#00FF00">%s</font>' % group.group(0)
+    return '<font color="%s">%s</font>' % (COLOR_LINK,
+                                                group.group(0))
 
 
 def _titleify(group):
-    return '<big><font color="#441144">%s</font></big>' % group.group(0)
+    return '<big><font color="%s">%s</font></big>' % (COLOR_TITLE,
+                                                      group.group(0),)
 
 
 def _undertitleify(group):
-    return '<big><font color="#663366">%s</font></big>' % group.group(0)
+    return '<big><font color="%s">%s</font></big>' % (COLOR_SUBTITLE,
+                                                      group.group(0))
 
 
 def _colorize(text):
@@ -88,24 +103,28 @@ def _colorize(text):
             r'^#(.+)#$',
             re.UNICODE | re.MULTILINE), _titleify),
         (re.compile(
-            r'^(.+)\n.*',
-            re.UNICODE), _titleify),
-        (re.compile(
             r'^##(.+)##$',
             re.UNICODE | re.MULTILINE), _undertitleify),
     )
-    for regex, cb in regexs:
-        text = re.sub(regex, cb, text)
+
     # text = text.replace('\n', '</p><p>').replace('<p></p>', '<br />')
 
-    text = text.replace('\r\n', '\n')
-    text = text.replace('\n', '<br />')
+    text = text.replace('\r\n', '\n')    
     text = text.replace('\r', '')
+
+    for regex, cb in regexs:
+        text = re.sub(regex, cb, text)
+
+    text = text.split('\n', 1)
+    text[0] = '<big><font color="%s">%s</font></big>' % (COLOR_TITLE,
+                                                         text[0])
+    text = '\n'.join(text)
+    text = text.replace('\n', '<br />')
+
     return u'''
 <html><head><style type="text/css">
     p, li, pre, body {
         white-space: pre-wrap;
-        font-family: "Nokia Pure Text";
         margin-top: 0px;
         margin-bottom: 0px;}
 </style><body><p>%s</p></body></html>''' % text
@@ -209,7 +228,7 @@ def loadNote(path):
             return _colorize((title + '\n' + text).replace('\r\n', '\n'))
         except:
             return 'gurk'
-    raise StandardError('Codecs package missing')
+    raise StandardError('Codecs package miss')
 
 
 def listNotes(searchFilter):
@@ -375,3 +394,4 @@ def publishToScriptogram(text):
                           user_id=settings.get('Scriptogram', 'userid'),
                           text=_content)
     return True
+

@@ -123,7 +123,6 @@ Page {
         anchors.bottomMargin: -2
         anchors.topMargin: -2
         clip: true
-
         contentWidth: flick.width
         contentHeight: textEditor.height
         pressDelay: 200
@@ -164,9 +163,10 @@ Page {
                     autoTimer.restart();
                 }
             }
-           /*onActiveFocusChanged: {
-           console.log('ActiveFocus');
-                   if ((textEditor.activeFocus) && (Settings.hideVkb) )
+           onActiveFocusChanged: {
+               console.log('ActiveFocus');
+           }
+                 /*  if ((textEditor.activeFocus) && (Settings.hideVkb) )
 
             console.log('activeFocus and settings.hideVkb');
             textEditor.closeSoftwareInputPanel();
@@ -187,7 +187,7 @@ Page {
         }*/
 
             Component.onDestruction: {
-                console.log('On destruction called');
+                console.log('On destruction texteditor called');
                 if (modified == true) {
                     noteSaver.saveNote(path, textEditor.text)
                 }
@@ -265,4 +265,4 @@ Page {
             onClicked: (editMenu.status === DialogStatus.Closed) ? editMenu.open() : editMenu.close()
         }
     }
-}
+}   

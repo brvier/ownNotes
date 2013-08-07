@@ -6,6 +6,7 @@ import net.khertan.python 1.0
 
 Page {
     tools: mainTools
+    objectName: 'fileBrowserPage'
 
     PageHeader {
         id: pageHeader
@@ -243,10 +244,12 @@ Page {
             when: platformWindow.viewMode === WindowState.Fullsize && platformWindow.visible
             StateChangeScript {
                 script: {
-                    notesModel.applyFilter(searchField.text)
+                    if (pageStack.currentPage.objectName === 'fileBrowserPage')
+                        notesModel.applyFilter(searchField.text);
+                    
                     }
         }
         }
     ]
 
-}
+}    
