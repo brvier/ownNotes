@@ -56,7 +56,9 @@ Page {
             RemorseItem { id: remorse }
             function remorseDelete() {
                 remorse.execute(listItem, "Deleting", function() {
-                    pyNotes.remove(path);
+                    console.log('ownnotes.rm:'+path)
+                    if (path !== undefined)
+                        pyNotes.remove(path);
                 });
 
             }

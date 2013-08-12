@@ -1,35 +1,33 @@
-Title: ownNotes
-Category: Active Projects
+ownNotes
+========
 
-**Sources :** [Git Repository][1]  
-**Bug Tracker :** [Bug Tracker][3]  
-**Download:** [Khertan.net][11] [OpenRepos.net][13]
+A markdown notes taking application with ownCloud/WebDav synchronization.
 
-ownNotes is a markdown notes taking application.
-Provide sync of notes with ownCloud.
-Synchronization is made for [Owncloud][9] webdav, but should work with any other webdav server.
+**Sources** : [Git Repository](http://github.com/khertan/ownNotes)
+**Bug Tracker** : [Bug Tracker](http://github.com/khertan/ownNotes/issues)
+**Download** : Not yet available
+
 
 Features
----------
+--------
 
-  * Sync with ownCloud or other webdav server
-  * File are stored as text file, so you can directly edit them in ownCloud or via a mounted webdav point and a text editor.
-  * Publication to KhtCms or Scriptogr.am
-
-Plateform
----------
-
-Currently ownNotes is available only for Harmattan, but should be available soon for desktop and SailfishOS.
+* Sync with ownCloud or other webdav server
+* Highlight some part of markdown syntax while editing : Title, bold, italics, link
+* File are stored as text file, so you can directly edit them in ownCloud or via a mounted webdav point and a text editor.
+* Upload a note to KhtCms or Scriptogr.am
+* Categories
+* Search
+* Available for multiple plateform : Sailfish OS, Harmattan, or Linux Desktop (still in development)
 
 Licence
----------
+-------
+Licensed under GPLv3
 
-Licenced under GPLv3.
-
-
-[1]:http://github.com/khertan/ownNotes/
-[3]:http://github.com/khertan/ownNotes/issues
-[7]:http://khertan.net/ownNotes
-[9]:https://owncloud.org
-[11]:http://khertan.net/static/downloads
-
+Screenshots
+-----------
+![ownNotes on Sailfish](http://khertan.net/medias/ownNotesForSailfish_1.png)
+![ownNotes on Sailfish](http://khertan.net/medias/ownNotesForSailfish_2.png)
+![ownNotes on Sailfish](http://khertan.net/medias/ownNotesForSailfish_3.png)
+![ownNotes on Sailfish](http://khertan.net/medias/ownNotesForHarmattan_1.png)
+![ownNotes on Sailfish](http://khertan.net/medias/ownNotesForHarmattan_2.png)
+![ownNotes on Sailfish](http://khertan.net/medias/ownNotesForHarmattan_3.png)

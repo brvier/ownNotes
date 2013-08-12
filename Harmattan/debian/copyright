@@ -1,24 +1,22 @@
-This package was debianized by Benoît HERVIER <khertan@unknown> on
+This package was debianized by Benoît HERVIER <khertan@khertan.net> on
 Wed, 31 Jul 2013 14:06:29 +0200.
 
-It was downloaded from <url://example.com>
+It was downloaded from <http://khertan.net>
 
 Upstream Author(s):
 
-    <put author's name and email here>
-    <likewise for another author>
+    Benoît HERVIER <khertan@khertan.net>
 
 Copyright:
 
-    <Copyright (C) YYYY Name OfAuthor>
-    <likewise for another author>
+    Copyright (C) 2013 Benoît HERVIER <khertan@khertan.net>
 
 License:
 
     This package is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    the Free Software Foundation; either version 3 of the License, or
+    any later version.
 
     This package is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,9 +30,5 @@ License:
 On Debian systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL'.
 
-The Debian packaging is (C) 2013, Benoît HERVIER <khertan@unknown> and
-is licensed under the GPL, see above.
-
-
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
+The Debian packaging is (C) 2013, Benoît HERVIER <khertan@khertan.net> and
+is licensed under the GPLv3, see above.
