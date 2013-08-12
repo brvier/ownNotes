@@ -21,3 +21,7 @@
 
 # Gedit
 *~
+
+#Compiled Package
+*.deb
+*.rpm
