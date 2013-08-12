@@ -1,0 +1,23 @@
+Format: 1.8
+Date: Mon, 05 Aug 2013 16:29:33 +0200
+Source: ownnotes
+Binary: ownnotes
+Architecture: armel
+Version: 1.0.0
+Distribution: unstable
+Urgency: low
+Maintainer: Benoît HERVIER <khertan@unknown>
+Changed-By: Benoît HERVIER <khertan@unknown>
+Description: 
+ ownnotes   - a note taking application with ownCloud/WebDav sync.
+Changes: 
+ ownnotes (1.0.0) unstable; urgency=low
+ .
+   * Initial Release.
+Checksums-Sha1: 
+ 2d855574abf9e68c665e77b32965a13b0d4e2406 672912 ownnotes_1.0.0_armel.deb
+Checksums-Sha256: 
+ ecbbee464ba784eba22c79f0c195676bc70bca392f19ef3120c7c22a6701aa6f 672912 ownnotes_1.0.0_armel.deb
+Files: 
+ 6f5b27fb1d463d987dd333d54bded92e 672912 user/other optional ownnotes_1.0.0_armel.deb
+Maemo-Display-Name: ownNotes

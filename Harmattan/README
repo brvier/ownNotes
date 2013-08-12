@@ -1,0 +1,35 @@
+Title: ownNotes
+Category: Active Projects
+
+**Sources :** [Git Repository][1]  
+**Bug Tracker :** [Bug Tracker][3]  
+**Download:** [Khertan.net][11] [OpenRepos.net][13]
+
+ownNotes is a markdown notes taking application.
+Provide sync of notes with ownCloud.
+Synchronization is made for [Owncloud][9] webdav, but should work with any other webdav server.
+
+Features
+---------
+
+  * Sync with ownCloud or other webdav server
+  * File are stored as text file, so you can directly edit them in ownCloud or via a mounted webdav point and a text editor.
+  * Publication to KhtCms or Scriptogr.am
+
+Plateform
+---------
+
+Currently ownNotes is available only for Harmattan, but should be available soon for desktop and SailfishOS.
+
+Licence
+---------
+
+Licenced under GPLv3.
+
+
+[1]:http://github.com/khertan/ownNotes/
+[3]:http://github.com/khertan/ownNotes/issues
+[7]:http://khertan.net/ownNotes
+[9]:https://owncloud.org
+[11]:http://khertan.net/static/downloads
+
