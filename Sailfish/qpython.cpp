@@ -52,7 +52,7 @@ QPython::addImportPath(QString path)
     QByteArray utf8bytes = path.toUtf8();
 
     PyGILState_STATE state = PyGILState_Ensure();
-    PyObject *sys_path = PySys_GetObject("path");
+    PyObject *sys_path = PySys_GetObject((char *)"path");
     PyObject *cwd = PyString_FromString(utf8bytes.constData());
     PyList_Insert(sys_path, 0, cwd);
     Py_DECREF(cwd);
@@ -82,14 +82,14 @@ QPython::importModule(QString name)
             (PyString_Check(pstring)))
           excstring = PyString_AsString(pstring);
         else
-          excstring = "<unknown exception type> ";
+          excstring = (char *)"<unknown exception type> ";
         Py_XDECREF(pstring);
         pstring=PyObject_Str(pvalue);
         if (ptype != NULL && pstring !=NULL &&
             (PyString_Check(pstring)))
           valuestring = PyString_AsString(pstring);
         else
-          valuestring = "";
+          valuestring = (char *)"";
         Py_XDECREF(pstring);
         emit exception(QString::fromUtf8(excstring),
                        QString::fromUtf8(valuestring));
@@ -132,14 +132,14 @@ QPython::eval(QString expr)
             (PyString_Check(pstring)))
           excstring = PyString_AsString(pstring);
         else
-          excstring = "<unknown exception type> ";
+          excstring = (char *)"<unknown exception type> ";
         Py_XDECREF(pstring);
         pstring=PyObject_Str(pvalue);
         if (ptype != NULL && pstring !=NULL &&
             (PyString_Check(pstring)))
           valuestring = PyString_AsString(pstring);
         else
-          valuestring = "";
+          valuestring = (char *)"";
         Py_XDECREF(pstring);
         emit exception(QString::fromUtf8(excstring),
                        QString::fromUtf8(valuestring));
@@ -225,14 +225,14 @@ QPython::call(QString func, QVariant args)
                 (PyString_Check(pstring)))
               excstring = PyString_AsString(pstring);
             else
-              excstring = "<unknown exception type> ";
+              excstring = (char *)"<unknown exception type> ";
             Py_XDECREF(pstring);
             pstring=PyObject_Str(pvalue);
             if (ptype != NULL && pstring !=NULL &&
                 (PyString_Check(pstring)))
               valuestring = PyString_AsString(pstring);
             else
-              valuestring = "";
+              valuestring = (char *)"";
             Py_XDECREF(pstring);
             emit exception(QString::fromUtf8(excstring),
                            QString::fromUtf8(valuestring));

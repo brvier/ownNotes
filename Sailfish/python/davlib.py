@@ -38,10 +38,10 @@ class HTTPSConnectionV3(httplib.HTTPSConnection):
 
     def __init__(self, *args, **kwargs):
         httplib.HTTPSConnection.__init__(self, *args, **kwargs)
+        self.timeout = 10.0
 
     def connect(self):
         sock = socket.create_connection((self.host, self.port), self.timeout)
-        print 'TIMEOUT', self.timeout
         if self.timeout in (None, 0, 0.0):
             self.timeout = 10
 

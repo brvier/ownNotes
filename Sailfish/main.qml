@@ -2,55 +2,15 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "pages"
 import net.khertan.python 1.0
+import Sailfish.Silica.theme 1.0
 
 ApplicationWindow
 {
     initialPage: MainPage { }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
-    DockedPanel {
+    InfoBanner {
         id: errorPanel
-
-        width: parent.width
-        height: Theme.itemSizeExtraLarge + Theme.paddingLarge
-
-        dock: Dock.Top
-
-        Rectangle {
-            anchors.centerIn: parent
-            width: errorLabel.height
-            height: errorLabel.height
-            color: 'black';
-            opacity: 0.85;
-
-            Label {
-                id: errorLabel
-                text : ''
-                width: errorPanel.width
-                color: 'red'
-                }
-        }
-
-
-        function displayError(errorMsg) {
-            errorLabel.text = errorMsg
-            errorPanel.show()
-            autoClose.start()
-        }
-
-        Timer {
-            id: autoClose
-            interval: 5000
-            running: false
-            onTriggered: {
-                errorPanel.hide()
-                stop()
-            }
-
-
-
-
-        }
     }
 
     Item {
@@ -108,8 +68,8 @@ ApplicationWindow
         }
 
         onException: {
-            console.log(type + ' : ' + message)
-            onError(type + ' : ' + message);
+            console.log(type + ' : ' + data)
+            onError(type + ' : ' + data);
             running = false;
         }
 
@@ -191,7 +151,7 @@ ApplicationWindow
 
         Component.onCompleted: {
             console.debug('pyNotes start oncompleted');
-            addImportPath('/usr/share/ownNotesForSailfish/python');
+            addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
             console.debug('pyNotes completed');
         }

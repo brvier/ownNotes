@@ -34,7 +34,7 @@ Page {
         }
 
         Component.onCompleted: {
-            addImportPath('/usr/share/ownNotesForSailfish/python');
+            addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
         }
     }
@@ -52,7 +52,7 @@ Page {
         }
 
         Component.onCompleted: {
-            addImportPath('/usr/share/ownNotesForSailfish/python');
+            addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
         }
     }

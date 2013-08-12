@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=ownNotesForSailfish
-Icon=icon-launcher-gallery
-Exec=invoker --type=e -s /usr/bin/ownNotesForSailfish
-Comment=Sailfish UI application
-
-

@@ -93,6 +93,7 @@ class Sync(object):
                                                   self._remoteDataFolder))
 
     def launch(self):
+
         ''' Sync the notes in a thread'''
         if not self._get_running():
                 self._set_running(True)
