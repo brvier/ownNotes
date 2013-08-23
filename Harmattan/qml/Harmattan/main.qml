@@ -16,7 +16,7 @@ PageStackWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.0.0'
+        property string version:'1.0.1'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                            '<br>Web Site : http://khertan.net/ownnotes' +
                            '<br><br>By Benoît HERVIER (Khertan)' +
@@ -25,6 +25,9 @@ PageStackWindow {
                            '<br>1.0.0 : <br>' +
                            '  * Initial Fork from KhtNotes<br>' +
                            '  * Use PyOtherSide instead of PySide' +
+                           '<br>1.0.1 : <br>' +
+                           '  * Add auto sync at launch<br>' +
+                           '  * Push modification of a note to server once saved<br>' +
                            '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +
@@ -66,7 +69,7 @@ PageStackWindow {
 
         onFinished: {
             running = false;
-            notesModelLoader.listNotes(searchField.text);
+            pyNotes.listNotes(searchField.text);
         }
 
         onMessage: {

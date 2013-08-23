@@ -1,3 +1,9 @@
+ownnotes (1.0.1) unstable; urgency=low
+  * Add auto sync on launch
+  * Push note to sync server once saved
+
+ -- Benoît HERVIER <khertan@khertan.net>  Fri, 23 Aug 2013 08:51:04 +0200
+
 ownnotes (1.0.0) unstable; urgency=low
 
   * Initial Release.

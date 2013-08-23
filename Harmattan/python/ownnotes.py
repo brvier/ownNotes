@@ -49,6 +49,7 @@ def _getValidFilename(filepath):
     return os.path.join(dirname, ''.join(car for car in filename
                         if car not in INVALID_FILENAME_CHARS))
 
+
 def setColors(title_color, subtitle_color, link_color):
     global COLOR_TITLE
     global COLOR_LINK
@@ -57,6 +58,7 @@ def setColors(title_color, subtitle_color, link_color):
     COLOR_LINK = link_color
     COLOR_SUBTITLE = subtitle_color
     return True
+
 
 def _strongify(group):
     return '<b>%s</b>' % group.group(0)
@@ -68,7 +70,7 @@ def _emify(group):
 
 def _linkify(group):
     return '<font color="%s">%s</font>' % (COLOR_LINK,
-                                                group.group(0))
+                                           group.group(0))
 
 
 def _titleify(group):
@@ -177,7 +179,8 @@ def _uncolorize(text):
 
 
 def saveNote(filepath, data):
-
+    global sync
+    
     if data == '':
         if os.path.exists(filepath):
             os.remove(filepath)
@@ -185,7 +188,7 @@ def saveNote(filepath, data):
     data = _uncolorize(data)
     try:
         _title, _content = data.split('\n', 1)
-    except ValueError, err:
+    except ValueError:
         _title = data.split('\n', 1)[0]
         _content = ''
     base_path = NOTESPATH
@@ -207,6 +210,8 @@ def saveNote(filepath, data):
     with codecs.open(filepath, 'wb', 'utf_8') as fh:
         fh.write(_content)
 
+    sync.pushNote(filepath)
+    
     return filepath
 
 
@@ -298,7 +303,6 @@ def launchSync():
     sync._wsync()
     return True
 
-
 def createNote():
     inc = '1'
     path = os.path.join(NOTESPATH, 'Untitled %s.txt' % inc)
@@ -318,7 +322,7 @@ def getCategories():
                 category = u''
             if category != '.merge.sync':
                 categories.append(category)
-    return [{'name':category} for category in categories]
+    return [{'name': category} for category in categories]
 
 
 def duplicate(path):
@@ -391,4 +395,3 @@ def publishToScriptogram(text):
                           user_id=settings.get('Scriptogram', 'userid'),
                           text=_content)
     return True
-

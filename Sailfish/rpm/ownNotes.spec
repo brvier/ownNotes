@@ -17,7 +17,7 @@ Name:       ownNotes
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    ownNotes
-Version:    1.0.0
+Version:    1.0.1
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
@@ -31,8 +31,7 @@ BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 
 %description
-Short description of my SailfishOS Application
-
+a note taking application with ownCloud/WebDav Sync
 
 %prep
 %setup -q -n %{name}-%{version}

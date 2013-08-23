@@ -1,13 +1,13 @@
 Name: ownNotes
 Summary: ownNotes
-Version: 1.0.0
+Version: 1.0.1
 Release: 1
 Group: Qt/Qt
 License: LICENSE
 Sources:
 - '%{name}-%{version}.tar.bz2'
-Description: |
-  Short description of my SailfishOS Application
+Description: |-
+  a note taking application with ownCloud/WebDav Sync
 Configure: none
 Builder: qtc5
 PkgConfigBR:

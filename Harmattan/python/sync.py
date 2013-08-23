@@ -85,6 +85,7 @@ class Sync(object):
         if not os.path.exists(self._localDataFolder):
             os.mkdir(self._localDataFolder)
         self._remoteDataFolder = 'Notes'
+        self.launch()
 
     def localBasename(self, path):
         return os.path.relpath(path, self._localDataFolder)
@@ -99,8 +100,10 @@ class Sync(object):
                 self._set_running(True)
                 self.thread = threading.Thread(target=self._wsync)
                 self.thread.start()
-#                self.thread.start()
-                self.thread.join()
+
+    def pushNote(self, path):
+        self.thread = threading.Thread(target=self._wpushNote, args=[path, ])
+        self.thread.start()
 
     def _wsync(self):
         try:
@@ -184,6 +187,45 @@ class Sync(object):
                 raise err2
             authFailures += 1
         return (isConnected, webdavConnection, time_delta)
+
+    def _wpushNote(self, path):
+        ''' Given full path of a textual note file, push that file to the
+            remote server '''
+        try:
+            path = os.path.relpath(path, NOTESPATH)
+            self.logger.debug('Push %s', path)
+            webdavLogin, webdavPasswd, useAutoMerge = self.readSettings()
+
+            # Create Connection
+            isConnected, webdavConnection, time_delta = \
+                self.createConnection(webdavLogin, webdavPasswd)
+
+            if isConnected:
+                # Reset webdav path
+                webdavConnection.path = self.webdavBasePath
+
+                # Check that KhtNotes folder exists at root or create it and
+                # and lock Collections
+                self._check_khtnotes_folder_and_lock(webdavConnection)
+
+                remote_mtime = self._get_mtime(webdavConnection, path)
+                local_mtime = os.path.getmtime(os.path.join(
+                    NOTESPATH, path))
+
+                if local_mtime >= local2utc(remote_mtime - time_delta):
+                    self._upload(webdavConnection, path,
+                                 None, time_delta)
+                else:
+                    self._conflictLocal(webdavConnection, path,
+                                        time_delta, useAutoMerge)
+                self._unlock(webdavConnection)
+            else:
+                self._set_running(False)
+                raise IncorrectSyncParameters('Incorrect sync settings')
+        except Exception, err:
+            self.logger.error('PushNote %s', err)
+            if webdavConnection:
+                self._unlock(webdavConnection)
 
     def _sync_connect(self,):
         '''Sync the notes with a webdav server'''
@@ -329,7 +371,7 @@ class Sync(object):
                 # Build and write index
                 self._write_index(webdavConnection, time_delta)
 
-                # Un_lock the collection
+                # Unlock the collection
                 self._unlock(webdavConnection)
                 self.logger.debug('Sync end')
             except Exception, err:
@@ -339,6 +381,11 @@ class Sync(object):
                 else:
                     import traceback
                     print traceback.format_exc()
+                    try:
+                        if webdavConnection:
+                            self._unlock(webdavConnection)
+                    except:
+                        pass
                     raise err
 
     def _conflictServer(self, webdavConnection, filename,
@@ -499,7 +546,6 @@ class Sync(object):
                 webdavConnection.path = webdavPathJoin(self._get_notes_path(),
                                                        rdirname, '')
 
-            print webdavConnection.path
             resource = webdavConnection.addResource(
                 rfilename, lockToken=self._lock)
             lpath = os.path.join(self._localDataFolder, local_filename)
@@ -521,10 +567,8 @@ class Sync(object):
                           (remote_filename, local_filename))
         rdirname, rfilename = (os.path.dirname(remote_filename),
                                os.path.basename(remote_filename))
-        print rdirname, rfilename
         webdavConnection.path = webdavPathJoin(self._get_notes_path(),
                                                rdirname, rfilename)
-        print webdavConnection.path
         if not os.path.exists(os.path.join(self._localDataFolder,
                                            os.path.dirname(local_filename))):
             os.makedirs(os.path.join(self._localDataFolder,
