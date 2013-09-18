@@ -1,8 +1,7 @@
 # The name of your app
 TARGET = ownNotes
 
-#INCLUDEPATH += -I/usr/include/python2.7
-#QMAKE_CXXFLAGS += -I/usr/include/python2.7
+INCLUDEPATH += $$system(python-config --includes)
 QMAKE_CXXFLAGS += $$system(python-config --includes)
 #LIBS += -Lpython2.7 #$$system(python-config --libs)
 

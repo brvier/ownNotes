@@ -45,19 +45,43 @@ Page {
         id: noteHighlighter
 
         function highligth() {
+
+            var curPos = textEditor.cursorPosition;
+            var rectPos = textEditor.positionToRectangle(curPos);
+
+            var selStart = textEditor.selectionStart;
+            var selEnd = textEditor.selectionEnd;
+
+            textEditor.text = call('ownnotes.reHighlight', [textEditor.text,])
+
+            curPos = textEditor.positionAt(rectPos.x, rectPos.y)
+            textEditor.cursorPosition = curPos
+
+            textEditor.select(selStart,selEnd);
+            autoTimer.stop();
+
+        }
+
+        /*function threadedHighligth() {
+            console.log(textEditor.text)
             threadedCall('ownnotes.reHighlight', [textEditor.text,])
         }
 
         onMessage: {
             var curPos = textEditor.cursorPosition;
+            var rectPos = textEditor.positionToRectangle(curPos);
+
             var selStart = textEditor.selectionStart;
             var selEnd = textEditor.selectionEnd;
+
             textEditor.text = data;
-            textEditor.cursorPosition = curPos;
+
+            curPos = textEditor.positionAt(rectPos.x, rectPos.y)
+            textEditor.cursorPosition = curPos
+
             textEditor.select(selStart,selEnd);
-            console.log('ReHighlight');
             autoTimer.stop();
-        }
+        }*/
 
         onException: {
             console.log(type + ':' +data)

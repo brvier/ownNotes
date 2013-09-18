@@ -603,9 +603,10 @@ class Sync(object):
 
     def _unlock(self, webdavConnection):
         # TODO
-        webdavConnection.path = self._get_notes_path()
-        webdavConnection.unlock(self._lock)
-        self._lock = None
+        if webdavConnection is not None:
+            webdavConnection.path = self._get_notes_path()
+            webdavConnection.unlock(self._lock)
+            self._lock = None
 
     def _get_notes_path(self):
         khtnotesPath = urlparse.urlparse(self.webdavUrl).path

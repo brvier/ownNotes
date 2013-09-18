@@ -1,3 +1,8 @@
+ownnotes (1.0.2) unstable; urgency=low
+  * Fix position cursor error on rehighlight
+
+ -- Benoît HERVIER <khertan@khertan.net>  Tue, 17 Sep 2013 07:45:44 +0200
+
 ownnotes (1.0.1) unstable; urgency=low
   * Add auto sync on launch
   * Push note to sync server once saved

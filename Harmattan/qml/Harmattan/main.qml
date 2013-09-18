@@ -16,7 +16,7 @@ PageStackWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.0.1'
+        property string version:'1.0.2'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                            '<br>Web Site : http://khertan.net/ownnotes' +
                            '<br><br>By Benoît HERVIER (Khertan)' +
@@ -27,7 +27,9 @@ PageStackWindow {
                            '  * Use PyOtherSide instead of PySide' +
                            '<br>1.0.1 : <br>' +
                            '  * Add auto sync at launch<br>' +
-                           '  * Push modification of a note to server once saved<br>' +
+                           '  * Push modification of a note to server once saved' +
+                           '<br>1.0.2 : <br>' +
+                           '  * Fix rehighlighting that can lose cursor position' +
                            '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +
@@ -48,7 +50,6 @@ PageStackWindow {
                            '<br>For a complete documentation on the markdown format,' +
                              ' see <a href="http://daringfireball.net/projects/markdown/syntax">Daringfireball Markdown Syntax</a>. Hilighting on ownNotes support only few tags' +
                            'of markdown syntax: title, bold, italics, links'
-
     }
 
 
@@ -73,7 +74,7 @@ PageStackWindow {
         }
 
         onMessage: {
-            console.log('Sync:'+data)
+            //console.log('Sync:'+data)
         }
 
         onException: {
@@ -100,7 +101,6 @@ PageStackWindow {
 
         function listNotes(text) {
             threadedCall('ownnotes.listNotes', [text,]);
-            console.debug('listNotes called')
         }
 
         function getCategories() {
@@ -148,14 +148,9 @@ PageStackWindow {
             call('ownnotes.publishAsPageToKhtCMS', [text]);
         }
         onException: {
-            console.log('Type:' + type);
-            console.log('Message:' + message);
+            console.log(type + ' : ' + data);
             onError(type + ' : ' + message);
         }
-
-        /*onMessage: {
-            notesModel.fill(message)
-        }*/
 
         Component.onCompleted: {
             //addImportPath('python');

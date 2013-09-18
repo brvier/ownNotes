@@ -30,6 +30,7 @@ from sync import Sync
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
 STRIPTAGS = re.compile(r'<[^>]+>')
 STRIPHEAD = re.compile("<head>.*?</head>", re.DOTALL)
+EMPTYP = re.compile('<p style=\"-qt-paragraph-type:empty;.*</p>', re.DOTALL)
 
 NOTESPATH = os.path.expanduser('~/.ownnotes/')
 
@@ -118,7 +119,7 @@ def _colorize(text):
     text = text.split('\n', 1)
     text[0] = '<big><font color="%s">%s</font></big>' % (COLOR_TITLE,
                                                          text[0])
-    text = '\n'.join(text).strip('\n')
+    text = '\n'.join(text).lstrip('\n')
     text = text.replace('\n', '<br />')
 
     return u'''
@@ -153,34 +154,18 @@ def _unescape(text):
     return re.sub("&#?\w+;", fixup, text)
 
 
-def _uncolorize(text):
+def _uncolorize(text, strip=True):
     text = _unescape(STRIPTAGS.sub('',
-                     STRIPHEAD.sub('', text.replace('', '')
-                                   .replace('\n<pre style="'
-                                            + '-qt-paragraph-type:empty;'
-                                            + ' margin-top:0px;'
-                                            + ' margin-bottom:0px;'
-                                            + ' margin-left:0px;'
-                                            + ' margin-right:0px;'
-                                            + ' -qt-block-indent:0;'
-                                            + ' text-indent:0px;">'
-                                            + '<br /></pre>', '\n')
-                                   .replace('\n<p style="'
-                                            + '-qt-paragraph-type:empty;'
-                                            + ' margin-top:0px;'
-                                            + ' margin-bottom:0px;'
-                                            + ' margin-left:0px;'
-                                            + ' margin-right:0px;'
-                                            + ' -qt-block-indent:0;'
-                                            + ' text-indent:0px;'
-                                            + '"><br /></p>', '\n')
-                                   .replace('<br />', '\n'))))
+                     STRIPHEAD.sub('',
+                                   EMPTYP.sub('\n',
+                                              text.replace('<br />',
+                                                           '\n')))))
     return text.lstrip('\n')
 
 
 def saveNote(filepath, data):
     global sync
-    
+
     if data == '':
         if os.path.exists(filepath):
             os.remove(filepath)
@@ -211,7 +196,7 @@ def saveNote(filepath, data):
         fh.write(_content)
 
     sync.pushNote(filepath)
-    
+
     return filepath
 
 
@@ -274,7 +259,7 @@ def listNotes(searchFilter):
 
 
 def reHighlight(text):
-    return _colorize(_uncolorize(text))
+    return _colorize(_uncolorize(text, strip=False))
 
 
 def setSetting(section, option, value):
@@ -302,6 +287,7 @@ def launchSync():
     global sync
     sync._wsync()
     return True
+
 
 def createNote():
     inc = '1'

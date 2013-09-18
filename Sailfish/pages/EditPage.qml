@@ -43,8 +43,15 @@ Page {
         id: noteHighlighter
 
         function highligth() {
-            threadedCall('ownnotes.reHighlight', [textEditor.text,])
+            textEditor.fill(call('ownnotes.reHighlight', [textEditor.text,]))
+            autoTimer.stop();
         }
+
+        /*function threadedHighligth() {
+            console.log(textEditor.data)
+            console.log(textEditor.text)
+            threadedCall('ownnotes.reHighlight', [textEditor.text,])
+        }*/
 
         onException: {
             console.log(type + ':' +data)
@@ -57,12 +64,12 @@ Page {
         }
     }
 
-    Connections {
+    /*Connections {
         target: noteHighlighter
         onMessage: {
             textEditor.fill(data)
         }
-    }
+    }*/
 
     SilicaFlickable {
         id: flick
@@ -107,11 +114,13 @@ Page {
 
                 function fill(data){
                     var curPos = textEditor.cursorPosition;
+                    var rectPos = textEditor.positionToRectangle(curPos)
                     var selStart = textEditor.selectionStart;
                     var selEnd = textEditor.selectionEnd;
                     var txt = data;
                     textEditor.text = txt;
-                    textEditor.cursorPosition = curPos;
+                    curPos = textEditor.positionAt(rectPos.x, rectPos.y)
+                    textEditor.cursorPosition = curPos
                     textEditor.select(selStart,selEnd);
                     autoTimer.stop();
                 }

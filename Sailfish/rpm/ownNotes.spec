@@ -17,10 +17,10 @@ Name:       ownNotes
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    ownNotes
-Version:    1.0.1
+Version:    1.0.2
 Release:    1
 Group:      Qt/Qt
-License:    LICENSE
+License:    GPLv3
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  ownNotes.yaml
 Requires:   sailfishsilica-qt5
