@@ -27,7 +27,7 @@ HEADERS += \
 qml.files = *.qml pages cover main.qml
 
 # QML files and folders
-#python.files = *.py python
+python.files = *.py python
 
 # The .desktop file
 desktop.files = *.desktop
@@ -35,19 +35,26 @@ desktop.files = *.desktop
 # Please do not modify the following line.
 include(sailfishapplication/sailfishapplication.pri)
 
+TARGETPATH = /opt/$$TARGET
+target.path = $$TARGETPATH
+
+DEPLOYMENT_PATH = /opt/$$TARGET
+qml.path = $$DEPLOYMENT_PATH
+desktop.path = /usr/share/applications
+
 OTHER_FILES = \
-    pages/MainPage.qml \
-    pages/EditPage.qml \
-    pages/AboutPage.qml \
-    pages/SettingsPage.qml \
+    cover/*.qml \
+    pages/*.qml \
     python/* \
     icons/ownnotes.png \
     icons/ownnotes.svg \
     rpm/ownNotes.spec \
-    rpm/ownNotes.yaml
+    rpm/ownNotes.yaml \
+    ownNotes.desktop
 
 INSTALLS += python_files icon_files
 python_files.files = python/*
-python_files.path = /usr/share/ownNotes/python
+python_files.path = /opt/$$TARGET/python
 icon_files.files = icons/*
-icon_files.path = /usr/share/ownNotes/icons
+icon_files.path = /opt/$$TARGET/icons
+

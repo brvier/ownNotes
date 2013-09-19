@@ -1,8 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=ownNotesForSailfish
-Icon=icon-launcher-gallery
-Exec=invoker --type=e -s /usr/bin/ownNotesForSailfish
-Comment=Sailfish UI application
-
-
+Name=ownNotes
+Icon=/opt/ownNotes/icons/ownnotes.png
+Exec=invoker --type=e -s /opt/ownNotes/ownNotes
+Comment=A markdown note taking application with ownCloud Sync

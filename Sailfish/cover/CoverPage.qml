@@ -9,7 +9,7 @@ CoverBackground {
     }
     Image {
         id: icon
-        source: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png')
+        source: Qt.resolvedUrl('/opt/ownNotes/icons/ownnotes.png')
         anchors.horizontalCenter: label.horizontalCenter
         anchors.bottom: label.top
     }

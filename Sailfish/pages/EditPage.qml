@@ -34,7 +34,7 @@ Page {
         }
 
         Component.onCompleted: {
-            addImportPath('/usr/share/ownNotes/python');
+            addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
         }
     }
@@ -59,7 +59,7 @@ Page {
         }
 
         Component.onCompleted: {
-            addImportPath('/usr/share/ownNotes/python');
+            addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
         }
     }

@@ -19,13 +19,9 @@ Requires:
 - sailfishsilica-qt5
 - mapplauncherd-booster-silica-qt5
 Files:
-- 
-- /usr/share/ownNotes/python
+- /opt/ownNotes/python
 - /usr/share/applications
-- /usr/share/ownNotes
-- /usr/bin
-- /usr/share/ownNotes/icons
-- /usr/share/ownNotes
-- /usr/share/ownNotes/python
-- /usr/share/ownNotes/icons
+- /opt/ownNotes
+- /opt/ownNotes/icons
+- /opt/ownNotes
 PkgBR: []

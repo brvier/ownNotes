@@ -155,7 +155,7 @@ ApplicationWindow
 
         Component.onCompleted: {
             console.debug('pyNotes start oncompleted');
-            addImportPath('/usr/share/ownNotes/python');
+            addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
             console.debug('pyNotes completed');
         }

@@ -61,13 +61,10 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-/usr/share/ownNotes/python
+/opt/ownNotes/python
 /usr/share/applications
-/usr/share/ownNotes
-/usr/bin
-/usr/share/ownNotes/icons
-/usr/share/ownNotes
-/usr/share/ownNotes/python
-/usr/share/ownNotes/icons
+/opt/ownNotes
+/opt/ownNotes/icons
+/opt/ownNotes
 # >> files
 # << files
