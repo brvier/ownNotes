@@ -317,7 +317,7 @@ ApplicationWindow {
     SplitView {
         id: mainLayout
         anchors.fill: parent
-
+        ScrollView {
         ListView {
             id: notesView
             anchors.top: parent.top
@@ -372,6 +372,7 @@ ApplicationWindow {
                     }
                 }
             }
+        }
         }
 
         TextArea {
