@@ -33,10 +33,10 @@ Page {
 
             var new_filepath = call('ownnotes.saveNote', [filepath, data]);
             if (filepath != new_filepath) {
-                textEditor.modified = false;
+                modified = false;
                 textEditor.load(new_filepath); }
             else {
-                textEditor.modified = false;
+                modified = false;
                 autoTimer.stop()
             }
             pyNotes.requireRefresh();

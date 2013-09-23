@@ -243,7 +243,7 @@ class Sync(object):
             raise IncorrectSyncParameters('Incorrect sync settings')
 
     def _sync_files(self, webdavConnection, time_delta, useAutoMerge):
-        webdavConnection = None
+        
         try:
 
             # Reset webdav path
