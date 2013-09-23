@@ -13,7 +13,7 @@ ApplicationWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.0.1'
+        property string version:'1.0.3'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -25,6 +25,11 @@ ApplicationWindow {
                              '<br>1.0.1 : <br>' +
                              '  * Add auto sync at launch<br>' +
                              '  * Push modification of a note to server once saved<br>' +
+                             '<br>1.0.2 : <br>' +
+                             '  * Fix rehighlight<br>' +
+                             '<br>1.0.3 : <br>' +
+                             '  * First Desktop UX release<br>' +
+                             '  * Fix an other rehighlight bug<br>' +
                              '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +
                              '<br>caco3 on talk.maemo.org' +
@@ -157,6 +162,59 @@ ApplicationWindow {
         }
     }
 
+    Python {
+        id: noteHighlighter
+
+        function highligth() {
+
+            var curPos = editor.cursorPosition;
+            var rectPos = editor.positionToRectangle(curPos);
+
+            var selStart = editor.selectionStart;
+            var selEnd = editor.selectionEnd;
+
+            editor.text = call('ownnotes.reHighlight', [editor.text,]);
+            editor.modified = false;
+
+            curPos = editor.positionAt(rectPos.x, rectPos.y);
+            editor.cursorPosition = curPos;
+
+            editor.select(selStart,selEnd);
+            autoTimer.stop();
+
+        }
+
+        /*function threadedHighligth() {
+            console.log(textEditor.text)
+            threadedCall('ownnotes.reHighlight', [textEditor.text,])
+        }
+
+        onMessage: {
+            var curPos = textEditor.cursorPosition;
+            var rectPos = textEditor.positionToRectangle(curPos);
+
+            var selStart = textEditor.selectionStart;
+            var selEnd = textEditor.selectionEnd;
+
+            textEditor.text = data;
+
+            curPos = textEditor.positionAt(rectPos.x, rectPos.y)
+            textEditor.cursorPosition = curPos
+
+            textEditor.select(selStart,selEnd);
+            autoTimer.stop();
+        }*/
+
+        onException: {
+            console.log(type + ':' +data)
+            onError(type + ' : ' + data);
+        }
+
+        Component.onCompleted: {
+            addImportPath('/opt/ownNotes/python');
+            importModule('ownnotes');
+        }
+    }
 
     Action {
         id: syncAction
@@ -172,10 +230,12 @@ ApplicationWindow {
         text: "&New"
         iconName: "document-new"
         shortcut: "ctrl+n"
+
         onTriggered: {
             var path = pyNotes.createNote();
             console.log('NEWPATH:'+path);
             editor.load(path);
+            pyNotes.requireRefresh();
         }
     }
 
@@ -291,8 +351,8 @@ ApplicationWindow {
                     anchors.fill: parent
                     onClicked: {
                         console.log('loading notes:'+path)
-                    editor.load(path);
-                }
+                        editor.load(path);
+                    }
                 }
 
             }
@@ -320,30 +380,43 @@ ApplicationWindow {
             property bool modified:false
 
             function load(newpath) {
-                if ((path !== '') && modified) {
-                    console.log('oups:'+path)
-                    editor.save(path);
-                }
-
+                if (newpath !== undefined) {
+                    if ((path !== '') && modified) {
+                        console.log('oups:'+path)
+                        editor.save(path);
+                    }
+                    console.log('New path:'+newpath)
                 editor.path = newpath;
                 editor.visible = true;
                 editor.text = pyNotes.loadNote(newpath);
                 editor.modified = false
+                }
             }
 
             Python {
                 id: noteSaver
 
                 function saveNote(filepath, data) {
-                    threadedCall('ownnotes.saveNote', [filepath, data]);
+                    var new_filepath = call('ownnotes.saveNote', [filepath, data]);
+                    if (filepath != new_filepath) {
+                        editor.modified = false;
+                        editor.load(new_filepath); }
+                    else {
+                        editor.modified = false;
+                        autoTimer.stop()
+                    }
+                    pyNotes.requireRefresh();
                 }
 
                 onFinished: {
+                    console.log('saveNote on finished')
                     pyNotes.requireRefresh();
                 }
 
                 onMessage: {
                     console.log('saveNote result:' + data);
+                    if (data != editor.path)
+                        editor.path = data;
                 }
 
                 onException: {
@@ -361,13 +434,26 @@ ApplicationWindow {
                 noteSaver.saveNote(path, editor.text);
             }
 
+            Timer {
+                id: autoTimer
+                interval: 2000
+                repeat: false
+                onTriggered: {
+                    if (editor.modified) {
+                        noteHighlighter.highligth();
+                        noteSaver.saveNote(editor.path, editor.text)
+                    }
+                }
+            }
+
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             text: ''
-            visible: false           
+            visible: false
             textFormat: Text.RichText;
             onTextChanged: {
                 modified = true;
+                autoTimer.start();
             }
         }
 

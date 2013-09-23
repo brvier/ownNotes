@@ -85,7 +85,7 @@ class Sync(object):
         if not os.path.exists(self._localDataFolder):
             os.mkdir(self._localDataFolder)
         self._remoteDataFolder = 'Notes'
-        #self.launch()
+        self.launch()
 
     def localBasename(self, path):
         return os.path.relpath(path, self._localDataFolder)
@@ -191,6 +191,7 @@ class Sync(object):
     def _wpushNote(self, path):
         ''' Given full path of a textual note file, push that file to the
             remote server '''
+        webdavConnection = None
         try:
             path = os.path.relpath(path, NOTESPATH)
             self.logger.debug('Push %s', path)
@@ -242,151 +243,152 @@ class Sync(object):
             raise IncorrectSyncParameters('Incorrect sync settings')
 
     def _sync_files(self, webdavConnection, time_delta, useAutoMerge):
-            try:
+        webdavConnection = None
+        try:
 
-                # Reset webdav path
-                webdavConnection.path = self.webdavBasePath
+            # Reset webdav path
+            webdavConnection.path = self.webdavBasePath
 
-                # Check that KhtNotes folder exists at root or create it and
-                # and lock Collections
-                self._check_khtnotes_folder_and_lock(webdavConnection)
+            # Check that KhtNotes folder exists at root or create it and
+            # and lock Collections
+            self._check_khtnotes_folder_and_lock(webdavConnection)
 
-                # Get remote filenames and timestamps
-                remote_filenames = \
-                    self._get_remote_filenames(webdavConnection)
+            # Get remote filenames and timestamps
+            remote_filenames = \
+                self._get_remote_filenames(webdavConnection)
 
-                # Get local filenames and timestamps
-                local_filenames = self._get_local_filenames()
+            # Get local filenames and timestamps
+            local_filenames = self._get_local_filenames()
 
-                # Compare with last sync index
-                lastsync_remote_filenames, \
-                    lastsync_local_filenames = self._get_lastsync_filenames()
-                # Sync intelligency (or not)
-                # It use a local index with timestamp of the server files
-                # 1/ As most webdav server didn t support setting
-                #   modification datetime on ressources
-                # 2/ Main target is owncloud where webdavserver didn't
-                #   implent delta-v versionning
-                # 3/ Notes should be editable in the owncloud interface
-                #   but i would like to support other webdav server
-                #   so an owncloud apps isn t acceptable
+            # Compare with last sync index
+            lastsync_remote_filenames, \
+                lastsync_local_filenames = self._get_lastsync_filenames()
+            # Sync intelligency (or not)
+            # It use a local index with timestamp of the server files
+            # 1/ As most webdav server didn t support setting
+            #   modification datetime on ressources
+            # 2/ Main target is owncloud where webdavserver didn't
+            #   implent delta-v versionning
+            # 3/ Notes should be editable in the owncloud interface
+            #   but i would like to support other webdav server
+            #   so an owncloud apps isn t acceptable
 
-                # Delete remote file deleted
-                for filename in set(lastsync_remote_filenames) \
-                        - set(remote_filenames):
-                    if filename in local_filenames.keys():
-                        if int(local2utc(lastsync_remote_filenames[filename] -
-                                         time_delta))  \
-                                - int(local_filenames[filename]) >= -1:
-                            self._local_delete(filename)
-                            del local_filenames[filename]
-                        else:
-                            # Else we have a conflict local file is newer than
-                            # deleted one
-                            self.logger.debug('Delete conflictServer: '
-                                              '%s : %s >= %s'
-                                              % (filename, int(local2utc(
-                                                 lastsync_remote_filenames
-                                                 [filename])
-                                                  - time_delta),
-                                                 int(local_filenames
-                                                     [filename])))
-                            self._upload(webdavConnection, filename,
-                                         None, time_delta)
-
-                # Delete local file deleted
-                for filename in set(lastsync_local_filenames) \
-                        - set(local_filenames):
-                    if filename in remote_filenames:
-                        mtime = self._get_mtime(webdavConnection,
-                                                filename)
-                        if lastsync_remote_filenames[filename] == mtime:
-                            self._remote_delete(webdavConnection, filename)
-                            del remote_filenames[filename]
-                        else:
-                            # We have a conflict remote file was modifyed
-                            # since last sync
-                            self.logger.debug('Delete conflictLocal: '
-                                              '%s : %s >= %s'
-                                              % (filename,
-                                                 lastsync_remote_filenames[
-                                                     filename],
-                                                 mtime))
-                            self._download(webdavConnection, filename,
-                                           None, time_delta)
-
-                # What to do with new remote file
-                for filename in set(remote_filenames) \
-                        - set(local_filenames):
-                    self._download(webdavConnection, filename,
-                                   None, time_delta)
-
-                # What to do with new local file
-                for filename in set(local_filenames) \
-                        - set(remote_filenames):
-                    self._upload(webdavConnection, filename,
-                                 None, time_delta)
-
-                # Check what's updated remotly
-                rupdated = [filename for filename
-                            in (set(remote_filenames).
-                                intersection(lastsync_remote_filenames))
-                            if remote_filenames[filename]
-                            != lastsync_remote_filenames[filename]]
-                lupdated = [filename for filename
-                            in (set(local_filenames).
-                                intersection(lastsync_local_filenames))
-                            if local_filenames[filename]
-                            != lastsync_local_filenames[filename]]
-                for filename in set(rupdated) - set(lupdated):
-                    self._download(webdavConnection, filename,
-                                   None, time_delta)
-                for filename in set(lupdated) - set(rupdated):
-                    self._upload(webdavConnection, filename,
-                                 None, time_delta)
-                for filename in set(lupdated).intersection(rupdated):
-                    # todo
-                    if abs(local2utc(remote_filenames[filename]
-                           - time_delta) - local_filenames[filename]) == 0:
-
-                        self.logger.debug('Up to date: %s' % filename)
-
-                    elif local2utc(remote_filenames[filename]
-                                   - time_delta) \
-                            > local_filenames[filename]:
-                        self.logger.debug(
-                            'Updated conflictLocal: %s' % filename)
-                        self._conflictLocal(webdavConnection, filename,
-                                            time_delta, useAutoMerge)
-                    elif local2utc(remote_filenames[filename]
-                                   - time_delta) \
-                            < local_filenames[filename]:
-                        self.logger.debug('Updated conflictServer: %s'
-                                          % filename)
-                        self._conflictServer(webdavConnection, filename,
-                                             time_delta, useAutoMerge)
+            # Delete remote file deleted
+            for filename in set(lastsync_remote_filenames) \
+                    - set(remote_filenames):
+                if filename in local_filenames.keys():
+                    if int(local2utc(lastsync_remote_filenames[filename] -
+                                     time_delta))  \
+                            - int(local_filenames[filename]) >= -1:
+                        self._local_delete(filename)
+                        del local_filenames[filename]
                     else:
-                        self.logger.debug('Ignored %s' % filename)
+                        # Else we have a conflict local file is newer than
+                        # deleted one
+                        self.logger.debug('Delete conflictServer: '
+                                          '%s : %s >= %s'
+                                          % (filename, int(local2utc(
+                                             lastsync_remote_filenames
+                                             [filename])
+                                              - time_delta),
+                                             int(local_filenames
+                                                 [filename])))
+                        self._upload(webdavConnection, filename,
+                                     None, time_delta)
 
-                # Build and write index
-                self._write_index(webdavConnection, time_delta)
+            # Delete local file deleted
+            for filename in set(lastsync_local_filenames) \
+                    - set(local_filenames):
+                if filename in remote_filenames:
+                    mtime = self._get_mtime(webdavConnection,
+                                            filename)
+                    if lastsync_remote_filenames[filename] == mtime:
+                        self._remote_delete(webdavConnection, filename)
+                        del remote_filenames[filename]
+                    else:
+                        # We have a conflict remote file was modifyed
+                        # since last sync
+                        self.logger.debug('Delete conflictLocal: '
+                                          '%s : %s >= %s'
+                                          % (filename,
+                                             lastsync_remote_filenames[
+                                                 filename],
+                                             mtime))
+                        self._download(webdavConnection, filename,
+                                       None, time_delta)
 
-                # Unlock the collection
-                self._unlock(webdavConnection)
-                self.logger.debug('Sync end')
-            except Exception, err:
-                self.logger.debug('Global sync error : %s' % unicode(err))
-                if (type(err) == WebdavError) and (unicode(err) == u'Locked'):
-                    raise err
+            # What to do with new remote file
+            for filename in set(remote_filenames) \
+                    - set(local_filenames):
+                self._download(webdavConnection, filename,
+                               None, time_delta)
+
+            # What to do with new local file
+            for filename in set(local_filenames) \
+                    - set(remote_filenames):
+                self._upload(webdavConnection, filename,
+                             None, time_delta)
+
+            # Check what's updated remotly
+            rupdated = [filename for filename
+                        in (set(remote_filenames).
+                            intersection(lastsync_remote_filenames))
+                        if remote_filenames[filename]
+                        != lastsync_remote_filenames[filename]]
+            lupdated = [filename for filename
+                        in (set(local_filenames).
+                            intersection(lastsync_local_filenames))
+                        if local_filenames[filename]
+                        != lastsync_local_filenames[filename]]
+            for filename in set(rupdated) - set(lupdated):
+                self._download(webdavConnection, filename,
+                               None, time_delta)
+            for filename in set(lupdated) - set(rupdated):
+                self._upload(webdavConnection, filename,
+                             None, time_delta)
+            for filename in set(lupdated).intersection(rupdated):
+                # todo
+                if abs(local2utc(remote_filenames[filename]
+                       - time_delta) - local_filenames[filename]) == 0:
+
+                    self.logger.debug('Up to date: %s' % filename)
+
+                elif local2utc(remote_filenames[filename]
+                               - time_delta) \
+                        > local_filenames[filename]:
+                    self.logger.debug(
+                        'Updated conflictLocal: %s' % filename)
+                    self._conflictLocal(webdavConnection, filename,
+                                        time_delta, useAutoMerge)
+                elif local2utc(remote_filenames[filename]
+                               - time_delta) \
+                        < local_filenames[filename]:
+                    self.logger.debug('Updated conflictServer: %s'
+                                      % filename)
+                    self._conflictServer(webdavConnection, filename,
+                                         time_delta, useAutoMerge)
                 else:
-                    import traceback
-                    print traceback.format_exc()
-                    try:
-                        if webdavConnection:
-                            self._unlock(webdavConnection)
-                    except:
-                        pass
-                    raise err
+                    self.logger.debug('Ignored %s' % filename)
+
+            # Build and write index
+            self._write_index(webdavConnection, time_delta)
+
+            # Unlock the collection
+            self._unlock(webdavConnection)
+            self.logger.debug('Sync end')
+        except Exception, err:
+            self.logger.debug('Global sync error : %s' % unicode(err))
+            if (type(err) == WebdavError) and (unicode(err) == u'Locked'):
+                raise err
+            else:
+                import traceback
+                print traceback.format_exc()
+                try:
+                    if webdavConnection:
+                        self._unlock(webdavConnection)
+                except:
+                    pass
+                raise err
 
     def _conflictServer(self, webdavConnection, filename,
                         time_delta, useAutoMerge):
@@ -603,9 +605,10 @@ class Sync(object):
 
     def _unlock(self, webdavConnection):
         # TODO
-        webdavConnection.path = self._get_notes_path()
-        webdavConnection.unlock(self._lock)
-        self._lock = None
+        if webdavConnection is not None:
+            webdavConnection.path = self._get_notes_path()
+            webdavConnection.unlock(self._lock)
+            self._lock = None
 
     def _get_notes_path(self):
         khtnotesPath = urlparse.urlparse(self.webdavUrl).path

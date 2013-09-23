@@ -16,8 +16,20 @@ Page {
     Python {
         id: noteSaver
 
-        function saveNote(filepath, data) {
+        /*function saveNote(filepath, data) {
             threadedCall('ownnotes.saveNote', [filepath, data]);
+        }*/
+        function saveNote(filepath, data) {
+
+            var new_filepath = call('ownnotes.saveNote', [filepath, data]);
+            if (filepath != new_filepath) {
+                textEditor.modified = false;
+                textEditor.load(new_filepath); }
+            else {
+                textEditor.modified = false;
+                autoTimer.stop()
+            }
+            pyNotes.requireRefresh();
         }
 
         onFinished: {

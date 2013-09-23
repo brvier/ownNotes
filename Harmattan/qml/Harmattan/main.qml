@@ -16,7 +16,7 @@ PageStackWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.0.2'
+        property string version:'1.0.3'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                            '<br>Web Site : http://khertan.net/ownnotes' +
                            '<br><br>By Benoît HERVIER (Khertan)' +
@@ -30,7 +30,9 @@ PageStackWindow {
                            '  * Push modification of a note to server once saved' +
                            '<br>1.0.2 : <br>' +
                            '  * Fix rehighlighting that can lose cursor position' +
-                           '<br><br><b>Thanks to : </b>' +
+                           '<br>1.0.3 : <br>' +
+                           '  * First Desktop UX release<br>' +
+                           '  * Fix an other rehighlight bug<br>' +                           '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +
                            '<br>Thomas Perl for PyOtherSide' +

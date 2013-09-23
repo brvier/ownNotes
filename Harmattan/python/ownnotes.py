@@ -30,7 +30,7 @@ from sync import Sync
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
 STRIPTAGS = re.compile(r'<[^>]+>')
 STRIPHEAD = re.compile("<head>.*?</head>", re.DOTALL)
-EMPTYP = re.compile('<p style=\"-qt-paragraph-type:empty;.*</p>', re.DOTALL)
+EMPTYP = re.compile('<p style=\"-qt-paragraph-type:empty;.*(?=<p>)', re.DOTALL)
 
 NOTESPATH = os.path.expanduser('~/.ownnotes/')
 
@@ -182,20 +182,33 @@ def saveNote(filepath, data):
         os.path.basename(os.path.relpath(filepath, base_path)))[0]
 
     if old_title and (_title != old_title):
+        index = 1
         new_path = os.path.join(base_path,
                                 category,
                                 _getValidFilename(_title.strip()) + '.txt')
 
-        if os.path.exists(new_path):
-            raise StandardError('A note with same title already exist')
+        while os.path.exists(new_path):
+            new_path = os.path.join(base_path,
+                                    category,
+                                    _getValidFilename(_title.strip())
+                                    + str(index)
+                                    + '.txt')
+            index += 1
 
-        os.rename(filepath, new_path)
+        try:
+            os.rename(filepath, new_path)
+        except OSError:
+            print 'Old didn\'t exists'
+
         filepath = new_path
 
     with codecs.open(filepath, 'wb', 'utf_8') as fh:
         fh.write(_content)
 
-    sync.pushNote(filepath)
+    try:
+        sync.pushNote(filepath)
+    except:
+        pass
 
     return filepath
 
@@ -259,6 +272,9 @@ def listNotes(searchFilter):
 
 
 def reHighlight(text):
+    print text
+    print '---------------------'
+    print _uncolorize(text, strip=False)
     return _colorize(_uncolorize(text, strip=False))
 
 
