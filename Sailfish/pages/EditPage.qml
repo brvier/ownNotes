@@ -150,8 +150,10 @@ Page {
 
                 onTextChanged: {
                     console.log('onTextChanged emited')
-                    textEditor.modified = true;
-                    autoTimer.restart();
+                    if (focus) {
+                        textEditor.modified = true;
+                        autoTimer.restart();
+                    }
                 }
 
                 /*Component.onDestruction: {

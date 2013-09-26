@@ -19,6 +19,7 @@ Requires:
 - sailfishsilica-qt5
 - mapplauncherd-booster-silica-qt5
 Files:
+- 
 - /opt/ownNotes/python
 - /usr/share/applications
 - /opt/ownNotes

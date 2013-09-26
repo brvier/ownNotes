@@ -453,8 +453,10 @@ ApplicationWindow {
             visible: false
             textFormat: Text.RichText;
             onTextChanged: {
-                modified = true;
-                autoTimer.start();
+                if (focus) {
+                    modified = true;
+                    autoTimer.restart()
+                }
             }
         }
 
