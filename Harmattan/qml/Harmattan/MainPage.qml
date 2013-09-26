@@ -7,6 +7,7 @@ import net.khertan.python 1.0
 Page {
     tools: mainTools
     objectName: 'fileBrowserPage'
+    property string searchFieldText: searchField.text
 
     PageHeader {
         id: pageHeader

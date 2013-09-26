@@ -59,6 +59,7 @@ PageStackWindow {
         id: mainPage
     }
 
+
     Python {
         id: sync
         property bool running: false
@@ -72,7 +73,7 @@ PageStackWindow {
 
         onFinished: {
             running = false;
-            pyNotes.listNotes(searchField.text);
+            pyNotes.listNotes(mainPage.searchFieldText);
         }
 
         onMessage: {
@@ -86,11 +87,12 @@ PageStackWindow {
         }
 
         Component.onCompleted: {
-            addImportPath('/opt/ownNotes/python');            
+            addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
         }
 
     }
+
 
     Python {
         id: pyNotes
