@@ -10,6 +10,13 @@ ApplicationWindow {
     title: qsTr("ownNotes")
     width: 640
     height: 480
+    id: root
+
+    SystemPalette {id: syspal}
+
+    SettingsPage {
+        id: settingsPage
+    }
 
     Item {
         id: aboutInfos
@@ -243,7 +250,9 @@ ApplicationWindow {
         id: settingsAction
         text: "&Settings"
         iconName: "gnome-settings"
-        onTriggered: console.log('settings not yet implemented')
+        onTriggered: {
+            settingsPage.visible = true;
+        }
     }
 
     toolBar: ToolBar {

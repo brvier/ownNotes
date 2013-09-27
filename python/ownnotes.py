@@ -35,7 +35,7 @@ EMPTYP = re.compile('<p style=\"-qt-paragraph-type:empty;.*(?=<p>)', re.DOTALL)
 NOTESPATH = os.path.expanduser('~/.ownnotes/')
 
 COLOR_TITLE = '#441144'
-COLOR_LINK = '#00FF00'
+COLOR_LINK = '#115511'
 COLOR_SUBTITLE = '#663366'
 
 settings = Settings()

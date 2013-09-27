@@ -199,3 +199,6 @@ export (QMAKE_EXTRA_TARGETS)
 }
 
 qtcAddDeployment()
+
+OTHER_FILES += \
+    qml/Desktop/SettingsPage.qml
