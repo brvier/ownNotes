@@ -280,7 +280,7 @@ def reHighlight(text):
 
 def setSetting(section, option, value):
     global settings
-    if section == 'WebDav':
+    if (section == 'WebDav') and (settings.get(section, option) != value):
         # Remove local sync index to prevent losing notes :
         if os.path.exists(os.path.join(NOTESPATH, '.index.sync')):
             os.remove(os.path.join(NOTESPATH, '.index.sync'))

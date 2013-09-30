@@ -32,20 +32,31 @@ Window {
                         id: fontFamilyComboBox
                         implicitWidth: 200
                         model: Qt.fontFamilies()
-                        property bool special : false
+                        property bool ready : false
                         onCurrentTextChanged: {
-                            if (special == false || currentIndex != 0) {
+                            if ((ready == true) && (currentIndex != 0)) {
                                 pyNotes.set('Display', 'fontfamily', currentText);
                             }
                         }
                         Component.onCompleted: {
                             console.debug(pyNotes.get('Display', 'fontfamily'))
+                            var fontfam = pyNotes.get('Display', 'fontfamily')
+                            var idx = model.indexOf(fontfam)
+
+                            if (idx != -1) {
+                                fontFamilyComboBox.currentIndex = idx
+                            }
+
+                            console.log('Qt.fontFamilies:' + Qt.fontFamilies())
+                            console.log('currentIndex : ' + idx)
+                            fontFamilyComboBox.ready = true
                         }
                     }
                     SpinBox {
                         id: fontSizeSpinBox
                         implicitWidth: 50
                         onValueChanged: {
+                            console.log('FontSize Set')
                             pyNotes.set('Display', 'fontsize', value);
                         }
                         Component.onCompleted: {
@@ -71,6 +82,7 @@ Window {
 
                             placeholderText: "Url"
                             onTextChanged: {
+                                console.log('Set webdav url')
                                 pyNotes.set('WebDav', 'url', text)
                             }
                             Component.onCompleted: {
