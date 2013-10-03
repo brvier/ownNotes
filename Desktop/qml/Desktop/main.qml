@@ -11,6 +11,9 @@ ApplicationWindow {
     width: 640
     height: 480
     id: root
+    x: (Screen.width / 2) - 320
+    y: (Screen.height / 2) - 240
+
 
     SystemPalette {id: syspal}
 
@@ -425,7 +428,7 @@ ApplicationWindow {
                     delegate: Rectangle {
                         color: "#ccc"
                         width: parent.width
-                        height: childrenRect.height
+                        height: 25
                         Label {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
@@ -453,8 +456,23 @@ ApplicationWindow {
                     onTextChanged: {
                         console.log(editor.path)
                         console.log(text)
-                        editor.path = pyNotes.setCategory(editor.path, text)
-                        editor.category = text
+                        categoryTimer.path = editor.path
+                        categoryTimer.category = text
+                        categoryTimer.restart()
+
+                    }
+
+                    Timer {
+                        id: categoryTimer
+                        property string path: ''
+                        property string category: ''
+                        repeat: false
+                        interval: 700
+                        onTriggered: {
+                            editor.path = pyNotes.setCategory(editor.path, category);
+                            editor.category = category;
+                            categoryTimer.stop()
+                        }
                     }
 
                     ComboBox {
@@ -529,6 +547,7 @@ ApplicationWindow {
                         editor.visible = true;
                         editor.text = pyNotes.loadNote(newpath);
                         editor.modified = false
+                        editor.forceActiveFocus()
                     }
                 }
 

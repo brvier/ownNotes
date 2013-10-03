@@ -346,6 +346,10 @@ def rm(path):
 
 
 def setCategory(path, category):
+
+    if getCategoryFromPath(path) == category:
+        return path
+
     new_path = os.path.join(NOTESPATH, category, os.path.basename(path))
     if os.path.exists(new_path):
         raise StandardError('There is already a note with the same name'
