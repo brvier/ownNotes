@@ -325,8 +325,11 @@ def getCategories():
             category = os.path.relpath(root, NOTESPATH)
             if category == u'.':
                 category = u''
-            if (category != '.merge.sync') and (category not in categories):
+            elif filenames == []:
+                continue  # Remove empty category
+            elif (category != '.merge.sync') and (category not in categories):
                 categories.append(category)
+    categories.sort()
     return [{'name': category} for category in categories]
 
 

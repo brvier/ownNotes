@@ -502,9 +502,8 @@ ApplicationWindow {
                         }
 
                         onCurrentTextChanged: {
-                            if (ready == true) {
-                                categoryField.text = categoryComboxBox.currentText
-                            }
+                            categoryField.text = categoryComboxBox.currentText
+                            console.log(categoryComboxBox.currentText)
                         }
                     }
 
@@ -546,8 +545,9 @@ ApplicationWindow {
                         editor.path = newpath;
                         editor.visible = true;
                         editor.text = pyNotes.loadNote(newpath);
-                        editor.modified = false
-                        editor.forceActiveFocus()
+                        editor.modified = false;
+                        editor.forceActiveFocus();
+                        categoryComboxBox.currentIndex = -1;
                     }
                 }
 
