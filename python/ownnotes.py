@@ -304,6 +304,9 @@ def launchSync():
     sync._wsync()
     return True
 
+def getCategoryFromPath(path):
+    return os.path.dirname(
+        os.path.relpath(path, NOTESPATH))
 
 def createNote():
     inc = '1'
@@ -317,12 +320,12 @@ def createNote():
 
 
 def getCategories():
-    categories = []
+    categories = ['']
     for root, folders, filenames in os.walk(NOTESPATH):
             category = os.path.relpath(root, NOTESPATH)
             if category == u'.':
                 category = u''
-            if category != '.merge.sync':
+            if (category != '.merge.sync') and (category not in categories):
                 categories.append(category)
     return [{'name': category} for category in categories]
 
@@ -352,7 +355,7 @@ def setCategory(path, category):
                                        category)):
         os.mkdir(os.path.join(NOTESPATH, category))
     os.rename(path, new_path)
-    return True
+    return new_path
 
 
 def publishAsPageToKhtCMS(text):
@@ -397,3 +400,6 @@ def publishToScriptogram(text):
                           user_id=settings.get('Scriptogram', 'userid'),
                           text=_content)
     return True
+
+if __name__ == '__init__':
+    print getCategoryFromPath(os.path.join(NOTESPATH, 'test', 'blabla.txt'))

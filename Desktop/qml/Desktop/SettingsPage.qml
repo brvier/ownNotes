@@ -39,7 +39,6 @@ Window {
                             }
                         }
                         Component.onCompleted: {
-                            console.debug(pyNotes.get('Display', 'fontfamily'))
                             var fontfam = pyNotes.get('Display', 'fontfamily')
                             var idx = model.indexOf(fontfam)
 
@@ -47,8 +46,6 @@ Window {
                                 fontFamilyComboBox.currentIndex = idx
                             }
 
-                            console.log('Qt.fontFamilies:' + Qt.fontFamilies())
-                            console.log('currentIndex : ' + idx)
                             fontFamilyComboBox.ready = true
                         }
                     }

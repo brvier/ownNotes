@@ -81,7 +81,7 @@ ApplicationWindow {
         }
 
         onMessage: {
-            console.log('Sync:'+data)
+
         }
 
         onException: {
@@ -107,6 +107,11 @@ ApplicationWindow {
             return message;
         }
 
+        function getCategoryFromPath(path) {
+            var cat = call('ownnotes.getCategoryFromPath', [path,]);
+            return cat;
+        }
+
         function listNotes(text) {
             threadedCall('ownnotes.listNotes', [text,]);
             console.debug('listNotes called')
@@ -118,8 +123,9 @@ ApplicationWindow {
         }
 
         function setCategory(path, category) {
-            call('ownnotes.setCategory', [path, category]);
+            var path = call('ownnotes.setCategory', [path, category]);
             requireRefresh();
+            return path;
         }
 
         function remove(path) {
@@ -255,6 +261,34 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: deleteAction
+        text: "&Delete Note"
+        iconName: "gtk-delete"
+        enabled: editor.path != ''
+        onTriggered: {
+
+            //settingsPage.visible = true;
+        }
+    }
+    Action {
+        id: duplicateAction
+        text: "Duplica&te Note"
+        iconName: "gtk-save-as"
+        enabled: editor.path != ''
+        onTriggered: {
+            pyNotes.duplicate(editor.path)
+        }
+    }
+    Action {
+        id: categoryAction
+        text: "C&hange Category"
+        iconName: "gnome-category"
+        enabled: editor.path != ''
+        onTriggered: {
+            console.log('Not yet implemented')
+        }
+    }
     toolBar: ToolBar {
         id: toolbar
         RowLayout {
@@ -272,9 +306,26 @@ ApplicationWindow {
                 action: settingsAction
             }
 
+            ToolBarSeparator { }
+
+            /*ToolButton {
+                action: duplicateAction
+            }
+
+            ToolButton {
+                action: deleteAction
+            }
+
+            ToolButton {
+                action: categoryAction
+            }*/
+
             Item { Layout.fillWidth: true }
+
+
             TextField {
                 id: searchField
+                implicitWidth: 150
                 placeholderText: 'Search'
                 Accessible.name: "Search Notes"
                 onTextChanged: notesModel.applyFilter(text)
@@ -326,149 +377,226 @@ ApplicationWindow {
     SplitView {
         id: mainLayout
         anchors.fill: parent
+
         ScrollView {
-        ListView {
-            id: notesView
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            width: parent.width / 3
-            model: notesModel
+            ListView {
+                id: notesView
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: parent.width / 3
+                model: notesModel
 
-            delegate:
-                Rectangle {
-                color: "white"
-                width: parent.width
-                height: 40
-                //height: childrenRect.height + 5
-
-                Column {
+                delegate:
+                    Rectangle {
+                    color: "white"
                     width: parent.width
+                    height: 40
+                    //height: childrenRect.height + 5
 
-                    Label {
-                        text: title
-                        font.pixelSize: 16
-                        font.bold: true
+                    Column {
+                        width: parent.width
 
+                        Label {
+                            text: title
+                            font.pixelSize: 16
+                            font.bold: true
+
+                        }
+                        Label {
+                            text: timestamp
+                            font.pixelSize: 12
+                            color: "#333"
+                        }
                     }
-                    Label {
-                        text: timestamp
-                        font.pixelSize: 12
-                        color: "#333"
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            console.log('loading notes:'+path)
+                            editor.load(path);
+                            categoryComboxBox.model.fill(pyNotes.getCategories());
+                            categoryField.text = editor.category
+                        }
                     }
+
                 }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log('loading notes:'+path)
-                        editor.load(path);
-                    }
-                }
-
-            }
-            section {
-                property: "category"
-                criteria: ViewSection.FullString
-                delegate: Rectangle {
-                    color: "#ccc"
-                    width: parent.width
-                    height: childrenRect.height
-                    Label {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: section
-                        font.pixelSize:16
-                        font.bold: true
+                section {
+                    property: "category"
+                    criteria: ViewSection.FullString
+                    delegate: Rectangle {
+                        color: "#ccc"
+                        width: parent.width
+                        height: childrenRect.height
+                        Label {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: section
+                            font.pixelSize:16
+                            font.bold: true
+                        }
                     }
                 }
             }
         }
+
+        ColumnLayout {
+            spacing: 0
+
+            RowLayout {
+                height: 60
+
+                TextField {
+                    id:categoryField
+                    text: ''
+                    implicitWidth: 150
+                    enabled: editor.path != ''
+
+                    onTextChanged: {
+                        console.log(editor.path)
+                        console.log(text)
+                        editor.path = pyNotes.setCategory(editor.path, text)
+                        editor.category = text
+                    }
+
+                    ComboBox {
+                        id: categoryComboxBox
+                        textRole: 'name'
+                        anchors.right: parent.right
+                        width: 25
+                        enabled: editor.path != ''
+
+                        property bool ready : false
+                        style: ComboBoxStyle {
+                            label: Label {
+                                visible: false
+                            }
+                        }
+
+                        model: ListModel {
+                            id: catModel
+
+                            function fill(data) {
+                                catModel.clear()
+                                for (var i=0; i<data.length; i++) {
+                                    catModel.append(data[i]);
+                                }
+                            }
+
+                        }
+
+                        onCurrentTextChanged: {
+                            if (ready == true) {
+                                categoryField.text = categoryComboxBox.currentText
+                            }
+                        }
+                    }
+
+                }
+
+
+
+                ToolButton {
+                    action: duplicateAction
+                }
+
+                Item { Layout.fillWidth: true }
+
+                ToolButton {
+                    action: deleteAction
+                }
+
+            }
+
+            TextArea {
+                id: editor
+                property string path:''
+                property string category:''
+                property bool modified:false
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                onPathChanged: {
+                    if (path !== '')
+                        category = pyNotes.getCategoryFromPath(path)
+                }
+
+                function load(newpath) {
+                    if (newpath !== undefined) {
+                        if ((path !== '') && modified) {
+                            editor.save(path);
+                        }
+
+                        editor.path = newpath;
+                        editor.visible = true;
+                        editor.text = pyNotes.loadNote(newpath);
+                        editor.modified = false
+                    }
+                }
+
+                Python {
+                    id: noteSaver
+
+                    function saveNote(filepath, data) {
+                        var new_filepath = call('ownnotes.saveNote', [filepath, data]);
+                        if (filepath != new_filepath) {
+                            editor.modified = false;
+                            editor.load(new_filepath); }
+                        else {
+                            editor.modified = false;
+                            autoTimer.stop()
+                        }
+                        pyNotes.requireRefresh();
+                    }
+
+                    onFinished: {
+                        console.log('saveNote on finished')
+                        pyNotes.requireRefresh();
+                    }
+
+                    onMessage: {
+                        if (data != editor.path)
+                            editor.path = data;
+                    }
+
+                    onException: {
+                        console.log(type + ':' + data)
+                        onError(type + ' : ' + data);
+                    }
+
+                    Component.onCompleted: {
+                        addImportPath('python');
+                        importModule('ownnotes');
+                    }
+                }
+
+                function save(path) {
+                    noteSaver.saveNote(path, editor.text);
+                }
+
+                Timer {
+                    id: autoTimer
+                    interval: 2000
+                    repeat: false
+                    onTriggered: {
+                        if (editor.modified) {
+                            noteHighlighter.highligth();
+                            noteSaver.saveNote(editor.path, editor.text)
+                        }
+                    }
+                }
+
+                text: ''
+                visible: false
+                textFormat: Text.RichText;
+                onTextChanged: {
+                    if (focus) {
+                        modified = true;
+                        autoTimer.restart()
+                    }
+                }
+            }
+
+
         }
-
-        TextArea {
-            id: editor
-            property string path:''
-            property bool modified:false
-
-            function load(newpath) {
-                if (newpath !== undefined) {
-                    if ((path !== '') && modified) {
-                        console.log('oups:'+path)
-                        editor.save(path);
-                    }
-                    console.log('New path:'+newpath)
-                editor.path = newpath;
-                editor.visible = true;
-                editor.text = pyNotes.loadNote(newpath);
-                editor.modified = false
-                }
-            }
-
-            Python {
-                id: noteSaver
-
-                function saveNote(filepath, data) {
-                    var new_filepath = call('ownnotes.saveNote', [filepath, data]);
-                    if (filepath != new_filepath) {
-                        editor.modified = false;
-                        editor.load(new_filepath); }
-                    else {
-                        editor.modified = false;
-                        autoTimer.stop()
-                    }
-                    pyNotes.requireRefresh();
-                }
-
-                onFinished: {
-                    console.log('saveNote on finished')
-                    pyNotes.requireRefresh();
-                }
-
-                onMessage: {
-                    console.log('saveNote result:' + data);
-                    if (data != editor.path)
-                        editor.path = data;
-                }
-
-                onException: {
-                    console.log(type + ':' + data)
-                    onError(type + ' : ' + data);
-                }
-
-                Component.onCompleted: {
-                    addImportPath('python');
-                    importModule('ownnotes');
-                }
-            }
-
-            function save(path) {
-                noteSaver.saveNote(path, editor.text);
-            }
-
-            Timer {
-                id: autoTimer
-                interval: 2000
-                repeat: false
-                onTriggered: {
-                    if (editor.modified) {
-                        noteHighlighter.highligth();
-                        noteSaver.saveNote(editor.path, editor.text)
-                    }
-                }
-            }
-
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            text: ''
-            visible: false
-            textFormat: Text.RichText;
-            onTextChanged: {
-                if (focus) {
-                    modified = true;
-                    autoTimer.restart()
-                }
-            }
-        }
-
     }
 
     Component.onCompleted: {
