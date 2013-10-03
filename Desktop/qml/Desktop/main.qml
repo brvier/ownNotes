@@ -14,6 +14,107 @@ ApplicationWindow {
     x: (Screen.width / 2) - 320
     y: (Screen.height / 2) - 240
 
+    Window {
+        x: (root.width / 2) - 320
+        y: (root.height / 2) - 240
+        width: 320
+        height: 300
+        id: aboutWindow
+        ScrollView {
+            id: scrollView
+            anchors.fill: parent
+            contentItem:
+            Column {
+                width: scrollView.width - 20
+                spacing: 10
+
+                Image {
+                    id: ownNoteicon
+                    source: "../../icons/ownnotes.svg"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    sourceSize.height: 64
+                    sourceSize.width: 64
+                    width:64
+                    height: 64
+                }
+                Label {
+                    text: '<b>Version '+aboutInfos.version+'</b>'
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                }
+                Label {
+                    text: aboutInfos.text
+                    wrapMode: Text.WordWrap
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                }
+            }
+        }
+    }
+
+    Window {
+        x: (root.width / 2) - 320
+        y: (root.height / 2) - 240
+        width: 320
+        height: 200
+        id: deleteWindow
+        //modality: Qt.ApplicationModal
+        property string noteTitle: '';
+        property string notePath: '';
+
+        function showIt(path, title) {
+            deleteWindow.show()
+            console.log('ShowIt:'+path)
+            deleteWindow.notePath = path
+            deleteWindow.noteTitle = title
+        }
+
+        function hideIt() {
+            deleteWindow.hide()
+            deleteWindow.notePath = ''
+            deleteWindow.noteTitle = ''
+            root.show()
+        }
+
+        Label {
+            text: "Are you sure you want to delete the note \""
+                  + deleteWindow.noteTitle + "\" ?"
+            horizontalAlignment: Text.AlignHCenter
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            wrapMode: Text.WordWrap
+        }
+
+        RowLayout {
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            anchors.bottomMargin: 10
+
+            Button {
+                text: 'No'
+                onClicked: {
+                    deleteWindow.hideIt();
+                }
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+            Button {
+                text: 'Yes'
+                onClicked: {
+                    editor.path = '';
+                    editor.text = '';
+                    pyNotes.remove(deleteWindow.notePath);
+                    deleteWindow.hideIt();
+                }
+            }
+        }
+    }
 
     SystemPalette {id: syspal}
 
@@ -115,6 +216,11 @@ ApplicationWindow {
             return cat;
         }
 
+        function getTitleFromPath(path) {
+            var title = call('ownnotes.getTitleFromPath', [path,]);
+            return title;
+        }
+
         function listNotes(text) {
             threadedCall('ownnotes.listNotes', [text,]);
             console.debug('listNotes called')
@@ -132,6 +238,7 @@ ApplicationWindow {
         }
 
         function remove(path) {
+            console.log('Remove path:' + path)
             call('ownnotes.rm', [path, ]);
             requireRefresh();
         }
@@ -265,13 +372,21 @@ ApplicationWindow {
     }
 
     Action {
+        id: aboutAction
+        text: "&About"
+        iconName: "gnome-help"
+        onTriggered: {
+            aboutWindow.show()
+        }
+    }
+
+    Action {
         id: deleteAction
         text: "&Delete Note"
         iconName: "gtk-delete"
         enabled: editor.path != ''
         onTriggered: {
-
-            //settingsPage.visible = true;
+            deleteWindow.showIt(editor.path, editor.title);
         }
     }
     Action {
@@ -307,6 +422,9 @@ ApplicationWindow {
             }
             ToolButton {
                 action: settingsAction
+            }
+            ToolButton {
+                action: aboutAction
             }
 
             ToolBarSeparator { }
@@ -527,13 +645,17 @@ ApplicationWindow {
                 id: editor
                 property string path:''
                 property string category:''
+                property string title:''
                 property bool modified:false
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                enabled: path != ''
 
                 onPathChanged: {
-                    if (path !== '')
-                        category = pyNotes.getCategoryFromPath(path)
+                    if (path !== '') {
+                        category = pyNotes.getCategoryFromPath(path);
+                        title = pyNotes.getTitleFromPath(path);
+                    }
                 }
 
                 function load(newpath) {

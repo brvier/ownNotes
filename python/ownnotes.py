@@ -308,6 +308,9 @@ def getCategoryFromPath(path):
     return os.path.dirname(
         os.path.relpath(path, NOTESPATH))
 
+def getTitleFromPath(path):
+    return os.path.basename(path)
+
 def createNote():
     inc = '1'
     path = os.path.join(NOTESPATH, 'Untitled %s.txt' % inc)
