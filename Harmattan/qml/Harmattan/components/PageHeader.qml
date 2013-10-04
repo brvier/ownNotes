@@ -19,7 +19,7 @@ Rectangle {
         anchors.right: busyindicatorsmall.left
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: 10
+        anchors.leftMargin: 20
         anchors.rightMargin: 10
         font { bold: false; family: "Nokia Pure Text"; pixelSize: 36; }
         color:"white"
