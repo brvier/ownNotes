@@ -15,7 +15,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.0.3'
+        property string version:'1.1.0'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -29,7 +29,7 @@ ApplicationWindow
                              '  * Push modification of a note to server once saved<br>' +
                              '<br>1.0.2 : <br>' +
                              '  * Fix rehighlighting that can lose cursor position<br>' +
-                             '<br>1.0.3 : <br>' +
+                             '<br>1.1.0 : <br>' +
                              '  * First Desktop UX release<br>' +
                              '  * Fix an other rehighlight bug<br>' +                             '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +

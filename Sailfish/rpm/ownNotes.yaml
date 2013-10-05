@@ -1,6 +1,6 @@
 Name: ownNotes
 Summary: ownNotes
-Version: 1.0.2
+Version: 1.1.0
 Release: 1
 Group: Qt/Qt
 License: GPLv3
@@ -19,7 +19,6 @@ Requires:
 - sailfishsilica-qt5
 - mapplauncherd-booster-silica-qt5
 Files:
-- 
 - /opt/ownNotes/python
 - /usr/share/applications
 - /opt/ownNotes
