@@ -138,7 +138,7 @@ ApplicationWindow {
                              '  * Push modification of a note to server once saved<br>' +
                              '<br>1.0.2 : <br>' +
                              '  * Fix rehighlight<br>' +
-                             '<br>1.0.3 : <br>' +
+                             '<br>1.1.0 : <br>' +
                              '  * First Desktop UX release<br>' +
                              '  * Fix an other rehighlight bug<br>' +
                              '<br><br><b>Thanks to : </b>' +
