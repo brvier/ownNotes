@@ -2,6 +2,7 @@
 
 
 #include <QtQml>
+//#include <QResource>
 
 int
 QPython::instances = 0;
@@ -70,6 +71,32 @@ QPython::importModule(QString name)
     const char *moduleName = utf8bytes.constData();
 
     PyGILState_STATE state = PyGILState_Ensure();
+
+    //Does module is in qrc ?
+
+    //QFile data(":/python/"+moduleName+".py"); ???
+
+    /*
+        std::string filename = std::string("embedded:") + module_name;
+        PyObject *pCompiledCodeObject = Py_CompileString( source, filename.c_str(), Py_file_input );
+
+        if( !pCompiledCodeObject )
+        LOG_PRINT_ERROR( "Py_CompileString() returned NULL." );
+
+        // Copy the module name because PyImport_ExecCodeModule does not accept const char *
+        const int max_module_name_length = 256;
+        char module_name_copy[max_module_name_length];
+        memset( module_name_copy, 0, sizeof(module_name_copy) );
+        strcpy( module_name_copy, module_name );
+
+        PyObject *pModule = PyImport_ExecCodeModule( module_name_copy, pCompiledCodeObject );
+
+        if( !pModule )
+        LOG_PRINT_ERROR( "PyImport_ExecCodeModule() returned NULL." );
+
+        */
+
+
     PyObject *module = PyImport_ImportModule(moduleName);
     if (module == NULL) {
         PyObject *ptype, *pvalue, *ptraceback, *pstring;
