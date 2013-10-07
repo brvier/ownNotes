@@ -24,7 +24,7 @@ ApplicationWindow {
             id: scrollView
             anchors.fill: parent
             contentItem:
-            Column {
+                Column {
                 width: scrollView.width - 20
                 spacing: 10
 
@@ -398,7 +398,7 @@ ApplicationWindow {
             pyNotes.duplicate(editor.path)
         }
     }
-/*    Action {
+    /*    Action {
         id: categoryAction
         text: "C&hange Category"
         iconName: "gnome-category"
@@ -409,25 +409,32 @@ ApplicationWindow {
     }*/
     toolBar: ToolBar {
         id: toolbar
+
         RowLayout {
             id: toolbarLayout
             spacing: 0
-            width: parent.width
+            anchors.right: parent.right
+            anchors.left: parent.left
+
             ToolButton {
                 action: newAction
             }
 
             ToolButton {
                 action: syncAction
+                checked: sync.running ? true : false
             }
+
+            Item { Layout.fillWidth: true }
+
             ToolButton {
                 action: settingsAction
             }
             ToolButton {
                 action: aboutAction
+                //anchors.right: parent.right
             }
 
-            ToolBarSeparator { }
 
             /*ToolButton {
                 action: duplicateAction
@@ -441,16 +448,6 @@ ApplicationWindow {
                 action: categoryAction
             }*/
 
-            Item { Layout.fillWidth: true }
-
-
-            TextField {
-                id: searchField
-                implicitWidth: 150
-                placeholderText: 'Search'
-                Accessible.name: "Search Notes"
-                onTextChanged: notesModel.applyFilter(text)
-            }
         }
     }
 
@@ -484,75 +481,79 @@ ApplicationWindow {
 
     }
 
-    /*ListModel {
-        id: dummyModel
-        Component.onCompleted: {
-            clear();
-            for (var i = 1 ; i < 100 ; i++) {
-                append({"title": "A title " + i, "category":"Test", "timestamp" :"10 Mai 1982 10h56"});
-            }
-
-        }
-    }*/
-
     SplitView {
         id: mainLayout
         anchors.fill: parent
 
-        ScrollView {
-            ListView {
-                id: notesView
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                width: parent.width / 3
-                model: notesModel
 
-                delegate:
-                    Rectangle {
-                    color: "white"
-                    width: parent.width
-                    height: 40
-                    //height: childrenRect.height + 5
+        ColumnLayout {
+            id: listViewLayout
+            spacing: 1
 
-                    Column {
+            TextField {
+                id: searchField
+                placeholderText: 'Search'
+                Accessible.name: "Search Notes"
+                onTextChanged: notesModel.applyFilter(text)
+                Layout.fillWidth: true
+            }
+
+            ScrollView {
+                id: scrollViewOfNotesList
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                ListView {
+                    id: notesView
+                    model: notesModel
+                    width: scrollViewOfNotesList.width
+
+                    delegate:
+                        Rectangle {
+                        color: "white"
                         width: parent.width
+                        height: 40
 
-                        Label {
-                            text: title
-                            font.pixelSize: 16
-                            font.bold: true
+                        Column {
+                            width: parent.width
 
+                            Label {
+                                text: title
+                                font.pixelSize: 16
+                                font.bold: true
+
+                            }
+                            Label {
+                                text: timestamp
+                                font.pixelSize: 12
+                                color: "#333"
+                            }
                         }
-                        Label {
-                            text: timestamp
-                            font.pixelSize: 12
-                            color: "#333"
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                console.log('loading notes:'+path)
+                                editor.load(path);
+                                categoryComboxBox.model.fill(pyNotes.getCategories());
+                                categoryField.text = editor.category
+                            }
                         }
+
                     }
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            console.log('loading notes:'+path)
-                            editor.load(path);
-                            categoryComboxBox.model.fill(pyNotes.getCategories());
-                            categoryField.text = editor.category
-                        }
-                    }
-
-                }
-                section {
-                    property: "category"
-                    criteria: ViewSection.FullString
-                    delegate: Rectangle {
-                        color: "#ccc"
-                        width: parent.width
-                        height: 25
-                        Label {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: section
-                            font.pixelSize:16
-                            font.bold: true
+                    section {
+                        property: "category"
+                        criteria: ViewSection.FullString
+                        delegate: Rectangle {
+                            color: "#ccc"
+                            width: parent.width
+                            height: 25
+                            Label {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: section
+                                font.pixelSize:16
+                                font.bold: true
+                            }
                         }
                     }
                 }
@@ -560,86 +561,7 @@ ApplicationWindow {
         }
 
         ColumnLayout {
-            spacing: 0
-
-            RowLayout {
-                height: 60
-
-                TextField {
-                    id:categoryField
-                    text: ''
-                    implicitWidth: 150
-                    enabled: editor.path != ''
-
-                    onTextChanged: {
-                        console.log(editor.path)
-                        console.log(text)
-                        categoryTimer.path = editor.path
-                        categoryTimer.category = text
-                        categoryTimer.restart()
-
-                    }
-
-                    Timer {
-                        id: categoryTimer
-                        property string path: ''
-                        property string category: ''
-                        repeat: false
-                        interval: 700
-                        onTriggered: {
-                            editor.path = pyNotes.setCategory(editor.path, category);
-                            editor.category = category;
-                            categoryTimer.stop()
-                        }
-                    }
-
-                    ComboBox {
-                        id: categoryComboxBox
-                        textRole: 'name'
-                        anchors.right: parent.right
-                        width: 25
-                        enabled: editor.path != ''
-
-                        property bool ready : false
-                        style: ComboBoxStyle {
-                            label: Label {
-                                visible: false
-                            }
-                        }
-
-                        model: ListModel {
-                            id: catModel
-
-                            function fill(data) {
-                                catModel.clear()
-                                for (var i=0; i<data.length; i++) {
-                                    catModel.append(data[i]);
-                                }
-                            }
-
-                        }
-
-                        onCurrentTextChanged: {
-                            categoryField.text = categoryComboxBox.currentText
-                            console.log(categoryComboxBox.currentText)
-                        }
-                    }
-
-                }
-
-
-
-                ToolButton {
-                    action: duplicateAction
-                }
-
-                Item { Layout.fillWidth: true }
-
-                ToolButton {
-                    action: deleteAction
-                }
-
-            }
+            spacing: 1
 
             TextArea {
                 id: editor
@@ -665,7 +587,7 @@ ApplicationWindow {
                         }
 
                         editor.path = newpath;
-                        editor.visible = true;
+                        editor.enabled = true;
                         editor.text = pyNotes.loadNote(newpath);
                         editor.modified = false;
                         editor.forceActiveFocus();
@@ -730,7 +652,6 @@ ApplicationWindow {
                 }
 
                 text: ''
-                visible: false
                 textFormat: Text.RichText;
                 onTextChanged: {
                     if (focus) {
@@ -740,6 +661,80 @@ ApplicationWindow {
                 }
             }
 
+            RowLayout {
+
+                TextField {
+                    id:categoryField
+                    text: ''
+                    implicitWidth: 150
+                    enabled: editor.path != ''
+
+                    onTextChanged: {
+                        categoryTimer.path = editor.path
+                        categoryTimer.category = text
+                        categoryTimer.restart()
+                    }
+
+                    Timer {
+                        id: categoryTimer
+                        property string path: ''
+                        property string category: ''
+                        repeat: false
+                        interval: 700
+                        onTriggered: {
+                            editor.path = pyNotes.setCategory(editor.path, category);
+                            editor.category = category;
+                            categoryTimer.stop()
+                        }
+                    }
+
+                        ComboBox {
+                        id: categoryComboxBox
+                        textRole: 'name'
+                        anchors.right: parent.right
+                        width: 25
+                        enabled: editor.path != ''
+
+                        property bool ready : false
+                        style: ComboBoxStyle {
+                            label: Label {
+                                visible: false
+                            }
+                        }
+
+                        model: ListModel {
+                            id: catModel
+
+                            function fill(data) {
+                                catModel.clear()
+                                for (var i=0; i<data.length; i++) {
+                                    catModel.append(data[i]);
+                                }
+                            }
+
+                        }
+
+                        onCurrentTextChanged: {
+                            categoryField.text = categoryComboxBox.currentText
+                            console.log(categoryComboxBox.currentText)
+                        }
+                    }
+
+                }
+
+
+
+                ToolButton {
+                    action: duplicateAction
+                }
+
+                Item { Layout.fillWidth: true }
+
+                ToolButton {
+                    action: deleteAction
+                }
+
+            }
 
         }
     }
