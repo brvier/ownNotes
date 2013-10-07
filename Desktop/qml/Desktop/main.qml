@@ -344,7 +344,7 @@ ApplicationWindow {
         text: "&Sync"
         shortcut: "Ctrl+S"
         iconName: "view-refresh"
-        onTriggered: console.log('sync not yet implemented')
+        onTriggered: sync.launch()
         tooltip: "Sync notes"
     }
 
@@ -398,7 +398,7 @@ ApplicationWindow {
             pyNotes.duplicate(editor.path)
         }
     }
-    Action {
+/*    Action {
         id: categoryAction
         text: "C&hange Category"
         iconName: "gnome-category"
@@ -406,7 +406,7 @@ ApplicationWindow {
         onTriggered: {
             console.log('Not yet implemented')
         }
-    }
+    }*/
     toolBar: ToolBar {
         id: toolbar
         RowLayout {
@@ -689,6 +689,7 @@ ApplicationWindow {
                             autoTimer.stop()
                         }
                         pyNotes.requireRefresh();
+
                     }
 
                     onFinished: {
