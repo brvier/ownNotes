@@ -124,7 +124,7 @@ ApplicationWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.0.3'
+        property string version:'1.1.0'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
