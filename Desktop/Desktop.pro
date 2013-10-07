@@ -1,14 +1,24 @@
+CONFIG += static
+CONFIG += staticlib
+
+static {
+
 # Add more folders to ship with the application, here
-folder_01.source = qml/Desktop
-folder_01.target = qml
+#folder_01.source = qml/Desktop
+#folder_01.target = qml
 folder_02.source = python/
 folder_02.target = .
 folder_03.source = icons/
 folder_03.target = .
 
-DEPLOYMENTFOLDERS = folder_01
+#DEPLOYMENTFOLDERS = folder_01
 DEPLOYMENTFOLDERS += folder_02
-DEPLOYMENTFOLDERS += folder_03
+#DEPLOYMENTFOLDERS += folder_03
+
+desktopfile.path = .
+desktopfile.files = ownNotes.desktop
+icon.path = icons/
+icon.files = ownnotes.png
 
 QT += qml quick widgets
 
@@ -35,6 +45,8 @@ HEADERS += \
 # Please do not modify the following two lines. Required for deployment.
 #include(qtquick2applicationviewer/qtquick2applicationviewer.pri)
 INCLUDEPATH += $$PWD
+
+LIBS +=
 
 defineTest(qtcAddDeployment) {
 for(deploymentfolder, DEPLOYMENTFOLDERS) {
@@ -202,3 +214,8 @@ qtcAddDeployment()
 
 OTHER_FILES += \
     qml/Desktop/SettingsPage.qml
+
+RESOURCES += \
+    Packages.qrc
+
+}

@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Desktop/main.qml</file>
+        <file>qml/Desktop/SettingsPage.qml</file>
+        <file>qml/Desktop/ToolBarSeparator.qml</file>
+        <file>python/davlib.py</file>
+        <file>python/khtcms.py</file>
+        <file>python/logger.py</file>
+        <file>python/md5util.py</file>
+        <file>python/ownnotes.py</file>
+        <file>python/qp_xml.py</file>
+        <file>python/scriptogram.py</file>
+        <file>python/settings.py</file>
+        <file>python/sync.py</file>
+        <file>icons/ownnotes.svg</file>
+        <file>icons/ownnotes.png</file>
+    </qresource>
+</RCC>

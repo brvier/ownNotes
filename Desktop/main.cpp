@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     //#ifdef QT_NO_DEBUG
     //    QQmlApplicationEngine engine(QUrl("qrc:/qml/Desktop/main.qml"));
     //#else
-    QQmlApplicationEngine engine(QUrl("qml/Desktop/main.qml"));
+    QQmlApplicationEngine engine(QUrl("qrc:/qml/Desktop/main.qml"));
     //#endif
 
     QObject *topLevel = engine.rootObjects().value(0);
