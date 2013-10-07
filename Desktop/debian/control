@@ -1,0 +1,13 @@
+Source: ownnotes
+Section: user/other
+Priority: optional
+Maintainer: Benoît HERVIER <khertan@unknown>
+Build-Depends: debhelper (>= 5), libqt5-dev, python-dev (=>2.7)
+Standards-Version: 3.7.3
+Homepage: http://khertan.net/ownnotes
+
+Package: ownnotes
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: a note taking application with ownCloud/WebDav sync.
+ A note taking application with sync for ownCloud or any WebDav. ownNotes support Markdown, and is able to send notes as blog post to KhtCms or Scriptogr.am.
