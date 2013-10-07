@@ -670,6 +670,9 @@ ApplicationWindow {
                         editor.modified = false;
                         editor.forceActiveFocus();
                         categoryComboxBox.currentIndex = -1;
+                        editor.font.family = pyNotes.get('Display', 'fontfamily')
+                        editor.font.pixelSize = pyNotes.get('Display', 'fontsize')
+
                     }
                 }
 
