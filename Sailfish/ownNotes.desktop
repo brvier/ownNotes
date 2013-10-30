@@ -2,5 +2,5 @@
 Type=Application
 Name=ownNotes
 Icon=/opt/ownNotes/icons/ownnotes.png
-Exec=invoker --type=e -s /opt/ownNotes/ownNotes
+Exec=invoker --type=d -s /opt/ownNotes/ownNotes
 Comment=A markdown note taking application with ownCloud Sync

@@ -17,7 +17,7 @@ Name:       ownNotes
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    ownNotes
-Version:    1.1.0
+Version:    1.1.1
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3
@@ -45,7 +45,7 @@ a note taking application with ownCloud/WebDav Sync
 
 %qtc_qmake5 
 
-%qtc_make %{?jobs:-j%jobs}
+%qtc_make %{?_smp_mflags}
 
 # >> build post
 # << build post

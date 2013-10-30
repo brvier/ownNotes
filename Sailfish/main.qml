@@ -15,7 +15,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.1.0'
+        property string version:'1.1.1'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -31,7 +31,10 @@ ApplicationWindow
                              '  * Fix rehighlighting that can lose cursor position<br>' +
                              '<br>1.1.0 : <br>' +
                              '  * First Desktop UX release<br>' +
-                             '  * Fix an other rehighlight bug<br>' +                             '<br><br><b>Thanks to : </b>' +
+                             '  * Fix an other rehighlight bug<br>' +
+                             '<br>1.1.1 : <br>' +
+                             '  * Should fix the crash at startup on Jolla Device (Send me a device to be sure and i could test :p )' +
+                            '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +
                              '<br>caco3 on talk.maemo.org' +
                              '<br>Thomas Perl for PyOtherSide' +

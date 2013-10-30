@@ -4,10 +4,10 @@ SOURCES += $$PWD/sailfishapplication.cpp
 HEADERS += $$PWD/sailfishapplication.h
 INCLUDEPATH += $$PWD
 
-TARGETPATH = /usr/bin
+TARGETPATH = /opt/$$TARGET
 target.path = $$TARGETPATH
 
-DEPLOYMENT_PATH = /usr/share/$$TARGET
+DEPLOYMENT_PATH = /opt/$$TARGET
 qml.path = $$DEPLOYMENT_PATH
 desktop.path = /usr/share/applications
 

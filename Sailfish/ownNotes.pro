@@ -53,7 +53,7 @@ OTHER_FILES = \
     ownNotes.desktop
 
 INSTALLS += python_files icon_files
-python_files.files = python/*
+python_files.files = ../python/*
 python_files.path = /opt/$$TARGET/python
 icon_files.files = icons/*
 icon_files.path = /opt/$$TARGET/icons

@@ -34,7 +34,7 @@ QQuickView *Sailfish::createView(const QString &file)
     
     QString path;
     if (isDesktop) {
-        path = qApp->applicationDirPath() + QDir::separator();
+        path = QString(DEPLOYMENT_PATH); // Modified for /opt/$$TARGET
 #ifdef DESKTOP
         view->setViewport(new QGLWidget);
 #endif
