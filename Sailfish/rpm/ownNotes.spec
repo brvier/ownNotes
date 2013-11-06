@@ -17,7 +17,7 @@ Name:       ownNotes
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    ownNotes
-Version:    1.1.1
+Version:    1.1.2
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3
@@ -29,6 +29,7 @@ BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(python)
 
 %description
 a note taking application with ownCloud/WebDav Sync

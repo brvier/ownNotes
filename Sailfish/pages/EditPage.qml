@@ -122,7 +122,7 @@ Page {
                 width: parent.width
                 color: Theme.primaryColor
                 font.family: pyNotes.get('Display', 'fontfamily')
-                font.pointSize: pyNotes.get('Display', 'fontsize')
+                font.pixelSize: pyNotes.get('Display', 'fontsize')
 
                 function fill(data){
                     var curPos = textEditor.cursorPosition;

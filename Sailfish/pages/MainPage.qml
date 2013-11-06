@@ -181,7 +181,7 @@ Page {
                     pageStack.push(Qt.createComponent(Qt.resolvedUrl("AboutPage.qml")),
                                    {
                                        title : 'ownNotes ' + aboutInfos.version,
-                                       icon: Qt.resolvedUrl('/opt/ownNotesForSailfish/icons/ownnotes.png'),
+                                       icon: Qt.resolvedUrl('/opt/ownNotes/icons/ownnotes.png'),
                                        slogan : 'Notes in your own cloud !',
                                        text : aboutInfos.text
                                    })

@@ -15,7 +15,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.1.1'
+        property string version:'1.1.2'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -34,7 +34,9 @@ ApplicationWindow
                              '  * Fix an other rehighlight bug<br>' +
                              '<br>1.1.1 : <br>' +
                              '  * Should fix the crash at startup on Jolla Device (Send me a device to be sure and i could test :p )' +
-                            '<br><br><b>Thanks to : </b>' +
+                             '<br>1.1.2 : <br>' +
+                             '  * Fix incorrect font size of the editor on SailfishOS.' +
+                             '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +
                              '<br>caco3 on talk.maemo.org' +
                              '<br>Thomas Perl for PyOtherSide' +
