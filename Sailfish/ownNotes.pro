@@ -58,3 +58,8 @@ python_files.path = /opt/$$TARGET/python
 icon_files.files = icons/*
 icon_files.path = /opt/$$TARGET/icons
 
+lupdate_only{
+SOURCES = main.qml \
+          pages/*.qml \
+          cover/*.qml
+}

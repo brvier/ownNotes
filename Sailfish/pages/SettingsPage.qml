@@ -20,18 +20,18 @@ Page {
             }
 
             PageHeader {
-                title: "ownNotes Settings"
+                title: qsTr("ownNotes Settings")
             }
 
             SectionHeader {
-                text: 'Appearance'
+                text: qsTr('Appearance')
             }
 
 
 
             FontComboBox {
                 id: fontChooser
-                label: 'Font:'
+                label: qsTr('Font:')
 
                 model: ListModel {
                     id: fontList
@@ -72,7 +72,7 @@ Page {
 
             Slider {
                 id: fontSize
-                label: 'Size'
+                label: qsTr('Size')
                 minimumValue: 7
                 maximumValue: 48
                 stepSize: 1
@@ -90,14 +90,14 @@ Page {
             }
 
             SectionHeader {
-                text: 'ownCloud/WebDav Sync'
+                text: qsTr('ownCloud/WebDav Sync')
             }
 
             TextField {
                 width: parent.width
-                label: "Url"
+                label: qsTr("Url")
                 text: pyNotes.get('WebDav', 'url')
-                placeholderText: "Url"
+                placeholderText: qsTr("Url")
                 onTextChanged: {
                     pyNotes.set('WebDav', 'url', text)
                 }
@@ -105,9 +105,9 @@ Page {
 
             TextField {
                 width: parent.width
-                label: "Login"
+                label: qsTr("Login")
                 text: pyNotes.get('WebDav', 'login')
-                placeholderText: "Login"
+                placeholderText: qsTr("Login")
                 onTextChanged: {
                     pyNotes.set('WebDav', 'login', text)
                 }
@@ -115,9 +115,9 @@ Page {
 
             TextField {
                 width: parent.width
-                label: "Password"
+                label: qsTr("Password")
                 text: pyNotes.get('WebDav', 'password')
-                placeholderText: "Password"
+                placeholderText: qsTr("Password")
                 echoMode: TextInput.Password
                 onTextChanged: {
                     pyNotes.set('WebDav', 'password', text)
@@ -126,17 +126,17 @@ Page {
 
             TextField {
                 width: parent.width
-                label: "Remote Folder Name"
+                label: qsTr("Remote Folder Name")
                 text: pyNotes.get('WebDav', 'remoteFolder')
-                placeholderText: "Remote Folder Name"
+                placeholderText: qsTr("Remote Folder Name")
                 onTextChanged: {
                     pyNotes.set('WebDav', 'remoteFolder', text)
                 }
             }
 
             TextSwitch {
-                text: "Use auto merge"
-                description: "When note are edited in several places, ownNotes will try to merge the changes if possible"
+                text: qsTr("Use auto merge")
+                description: qsTr("When note are edited in several places, ownNotes will try to merge the changes if possible")
                 checked: pyNotes.get('WebDav','merge')
                 onCheckedChanged:  {
                     pyNotes.set('WebDav','merge',checked)
@@ -150,9 +150,9 @@ Page {
 
             TextField {
                 width: parent.width
-                label: "User ID"
+                label: qsTr("User ID")
                 text: pyNotes.get('Scriptogram','userid')
-                placeholderText: "User ID"
+                placeholderText: qsTr("User ID")
                 onTextChanged: {
                     pyNotes.set('Scriptogram', 'userid', text)
                 }
@@ -164,9 +164,9 @@ Page {
 
             TextField {
                 width: parent.width
-                label: "Url"
+                label: qsTr("Url")
                 text: pyNotes.get('KhtCms','url')
-                placeholderText: "Url"
+                placeholderText: qsTr("Url")
                 onTextChanged: {
                     pyNotes.set('KhtCms', 'url', text)
                 }
@@ -174,9 +174,9 @@ Page {
 
             TextField {
                 width: parent.width
-                label: "Api Key"
+                label: qsTR("Api Key")
                 text: pyNotes.get('KhtCms','apikey')
-                placeholderText: "Api Key"
+                placeholderText: qsTr("Api Key")
                 onTextChanged: {
                     pyNotes.set('KhtCms', 'apikey', text)
                 }
