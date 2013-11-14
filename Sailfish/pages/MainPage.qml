@@ -55,7 +55,7 @@ Page {
 
             RemorseItem { id: remorse }
             function remorseDelete() {
-                remorse.execute(listItem, "Deleting", function() {
+                remorse.execute(listItem, qsTr("Deleting"), function() {
                     console.log('ownnotes.rm:'+path)
                     if (path !== undefined)
                         pyNotes.remove(path);
@@ -101,19 +101,19 @@ Page {
                 id: contextMenuComponent
                 ContextMenu {
                     MenuItem {
-                        text: "Category"
+                        text: qsTr("Category")
                         onClicked: {
                             pageStack.push(categoryPage,{path:model.path})
                         }
                     }
                     MenuItem {
-                        text: "Duplicate"
+                        text: qsTr("Duplicate")
                         onClicked: {
                             pyNotes.duplicate(model.path)
                         }
                     }
                     MenuItem {
-                        text: "Delete"
+                        text: qsTr("Delete")
                         onClicked: {
                             var path = model.path;
                             remorseDelete();
@@ -147,14 +147,14 @@ Page {
             ProgressBar {
                 width: parent.width
                 indeterminate: true
-                label: "Sync"
-                valueText: "Sync"
+                label: qsTr("Sync")
+                valueText: qsTr("Sync")
                 visible: sync.running ? true : false
             }
 
             SearchField {
                 id: searchField
-                placeholderText: "Search"
+                placeholderText: qsTr("Search")
                 width: parent.width
                 onTextChanged: {
                     searchText = searchField.text;
@@ -176,23 +176,23 @@ Page {
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
             MenuItem {
-                text: "About"
+                text: qsTr("About")
                 onClicked:
                     pageStack.push(Qt.createComponent(Qt.resolvedUrl("AboutPage.qml")),
                                    {
                                        title : 'ownNotes ' + aboutInfos.version,
                                        icon: Qt.resolvedUrl('/opt/ownNotes/icons/ownnotes.png'),
-                                       slogan : 'Notes in your own cloud !',
+                                       slogan : qsTr('Notes in your own cloud !'),
                                        text : aboutInfos.text
                                    })
 
             }
             MenuItem {
-                text: "Settings"
+                text: qsTr("Settings")
                 onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
             MenuItem {
-                text: "Sync"
+                text: qsTr("Sync")
                 onClicked: {
                     if (sync.running === false)
                         sync.launch()
@@ -200,7 +200,7 @@ Page {
 
             }
             MenuItem {
-                text: "New note"
+                text: qsTr("New note")
                 onClicked: {
                     var path = pyNotes.createNote();
                     pageStack.push(
@@ -213,7 +213,7 @@ Page {
         PushUpMenu {
 
             MenuItem {
-                text: "New note"
+                text: qsTr("New note")
                 onClicked: {
                     var path = pyNotes.createNote();
                     console.log('NEWPATH:'+path)
@@ -226,7 +226,7 @@ Page {
 
         ViewPlaceholder {
             enabled: notesModel.count == 0
-            text: "No notes."
+            text: qsTr("No notes.")
         }
 
     }
@@ -301,7 +301,7 @@ Page {
                         id: selector
 
                         width: parent.width
-                        label: 'Category:'
+                        label: qsTr('Category:')
                         currentIndex: -1
 
                         menu: ContextMenu {

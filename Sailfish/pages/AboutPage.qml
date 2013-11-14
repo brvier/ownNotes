@@ -29,7 +29,7 @@ Page {
             spacing: 10
 
             PageHeader {
-                title: 'About ownNotes'
+                title: qsTr('About ownNotes')
             }
 
             Image {

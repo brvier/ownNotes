@@ -50,7 +50,8 @@ OTHER_FILES = \
     icons/ownnotes.svg \
     rpm/ownNotes.spec \
     rpm/ownNotes.yaml \
-    ownNotes.desktop
+    ownNotes.desktop \
+    l10n/*.ts
 
 INSTALLS += python_files icon_files
 python_files.files = ../python/*
@@ -58,3 +59,14 @@ python_files.path = /opt/$$TARGET/python
 icon_files.files = icons/*
 icon_files.path = /opt/$$TARGET/icons
 
+lupdate_only{
+SOURCES = main.qml \
+          pages/*.qml \
+          cover/*.qml
+}
+
+RESOURCES += \
+    resources.qrc
+
+TRANSLATIONS = l10n/en_US.ts \
+            l10n/ru_RU.ts
