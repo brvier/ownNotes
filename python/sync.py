@@ -97,9 +97,12 @@ class Sync(object):
     def launch(self):
         ''' Sync the notes in a thread'''
         if not self._get_running():
-                self._set_running(True)
-                self.thread = threading.Thread(target=self._wsync)
-                self.thread.start()
+            self._set_running(True)
+            self.thread = threading.Thread(target=self._wsync)
+            self.thread.start()
+            return True
+        else:
+            return True
 
     def pushNote(self, path):
         self.thread = threading.Thread(target=self._wpushNote, args=[path, ])
@@ -134,7 +137,7 @@ class Sync(object):
         isConnected = False
         webdavConnection = CollectionStorer(self.webdavUrl,
                                             validateResourceNames=False)
-        webdavConnection.connection.logger.setLevel(logging.WARNING)
+        webdavConnection.connection.logger.setLevel(logging.DEBUG)
         time_delta = None
 
         # Test KhtNotes folder and authenticate
@@ -243,7 +246,6 @@ class Sync(object):
             raise IncorrectSyncParameters('Incorrect sync settings')
 
     def _sync_files(self, webdavConnection, time_delta, useAutoMerge):
-        
         try:
 
             # Reset webdav path

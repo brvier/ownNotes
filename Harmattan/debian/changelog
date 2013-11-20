@@ -1,3 +1,9 @@
+ownnotes (1.1.0) unstable; urgency=low
+  * Fix an other rehighlight bug
+  * First desktop UI Release
+
+ -- Benoît HERVIER <khertan@khertan.net>  Fri, 04 Oct 2013 11:07:11 +0200
+
 ownnotes (1.0.2) unstable; urgency=low
   * Fix position cursor error on rehighlight
 

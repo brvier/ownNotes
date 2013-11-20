@@ -1,4 +1,5 @@
-# pylint: disable-msg=W0311,E1101,E1103,W0201,C0103,W0622,W0402,W0706,R0911,W0613,W0612,R0912,W0141,C0111,C0121
+# pylint:
+# disable-msg=W0311,E1101,E1103,W0201,C0103,W0622,W0402,W0706,R0911,W0613,W0612,R0912,W0141,C0111,C0121
 
 # qp_xml: Quick Parsing for XML
 #
@@ -27,128 +28,129 @@ error = __name__ + '.error'
 # The parsing class. Instantiate and pass a string/file to .parse()
 #
 class Parser:
-  def __init__(self):
-    self.reset()
 
-  def reset(self):
-    self.root = None
-    self.cur_elem = None
+    def __init__(self):
+        self.reset()
 
-  def find_prefix(self, prefix):
-    elem = self.cur_elem
-    while elem:
-      if elem.ns_scope.has_key(prefix):
-        return elem.ns_scope[prefix]
-      elem = elem.parent
+    def reset(self):
+        self.root = None
+        self.cur_elem = None
 
-    if prefix == '':
-      return ''        # empty URL for "no namespace"
+    def find_prefix(self, prefix):
+        elem = self.cur_elem
+        while elem:
+            if elem.ns_scope.has_key(prefix):
+                return elem.ns_scope[prefix]
+            elem = elem.parent
 
-    return None
+        if prefix == '':
+            return ''        # empty URL for "no namespace"
 
-  def process_prefix(self, name, use_default):
-    idx = string.find(name, ':')
-    if idx == -1:
-      if use_default:
-        return self.find_prefix(''), name
-      return '', name    # no namespace
+        return None
 
-    if string.lower(name[:3]) == 'xml':
-      return '', name    # name is reserved by XML. don't break out a NS.
+    def process_prefix(self, name, use_default):
+        idx = string.find(name, ':')
+        if idx == -1:
+            if use_default:
+                return self.find_prefix(''), name
+            return '', name    # no namespace
 
-    ns = self.find_prefix(name[:idx])
-    if ns is None:
-      raise error, 'namespace prefix ("%s") not found' % name[:idx]
+        if string.lower(name[:3]) == 'xml':
+            return '', name    # name is reserved by XML. don't break out a NS.
 
-    return ns, name[idx+1:]
+        ns = self.find_prefix(name[:idx])
+        if ns is None:
+            raise error, 'namespace prefix ("%s") not found' % name[:idx]
 
-  def start(self, name, attrs):
-    elem = _element(name=name, lang=None, parent=None,
-                    children=[], ns_scope={}, attrs={},
-                    first_cdata='', following_cdata='')
+        return ns, name[idx + 1:]
 
-    if self.cur_elem:
-      elem.parent = self.cur_elem
-      elem.parent.children.append(elem)
-      self.cur_elem = elem
-    else:
-      self.cur_elem = self.root = elem
+    def start(self, name, attrs):
+        elem = _element(name=name, lang=None, parent=None,
+                        children=[], ns_scope={}, attrs={},
+                        first_cdata='', following_cdata='')
 
-    work_attrs = [ ]
+        if self.cur_elem:
+            elem.parent = self.cur_elem
+            elem.parent.children.append(elem)
+            self.cur_elem = elem
+        else:
+            self.cur_elem = self.root = elem
 
-    # scan for namespace declarations (and xml:lang while we're at it)
-    for name, value in attrs.items():
-      if name == 'xmlns':
-        elem.ns_scope[''] = value
-      elif name[:6] == 'xmlns:':
-        elem.ns_scope[name[6:]] = value
-      elif name == 'xml:lang':
-        elem.lang = value
-      else:
-        work_attrs.append((name, value))
+        work_attrs = []
 
-    # inherit xml:lang from parent
-    if elem.lang is None and elem.parent:
-      elem.lang = elem.parent.lang
+        # scan for namespace declarations (and xml:lang while we're at it)
+        for name, value in attrs.items():
+            if name == 'xmlns':
+                elem.ns_scope[''] = value
+            elif name[:6] == 'xmlns:':
+                elem.ns_scope[name[6:]] = value
+            elif name == 'xml:lang':
+                elem.lang = value
+            else:
+                work_attrs.append((name, value))
 
-    # process prefix of the element name
-    elem.ns, elem.name = self.process_prefix(elem.name, 1)
+        # inherit xml:lang from parent
+        if elem.lang is None and elem.parent:
+            elem.lang = elem.parent.lang
 
-    # process attributes' namespace prefixes
-    for name, value in work_attrs:
-      elem.attrs[self.process_prefix(name, 0)] = value
+        # process prefix of the element name
+        elem.ns, elem.name = self.process_prefix(elem.name, 1)
 
-  def end(self, name):
-    parent = self.cur_elem.parent
+        # process attributes' namespace prefixes
+        for name, value in work_attrs:
+            elem.attrs[self.process_prefix(name, 0)] = value
 
-    del self.cur_elem.ns_scope
-    del self.cur_elem.parent
+    def end(self, name):
+        parent = self.cur_elem.parent
 
-    self.cur_elem = parent
+        del self.cur_elem.ns_scope
+        del self.cur_elem.parent
 
-  def cdata(self, data):
-    elem = self.cur_elem
-    if elem.children:
-      last = elem.children[-1]
-      last.following_cdata = last.following_cdata + data
-    else:
-      elem.first_cdata = elem.first_cdata + data
+        self.cur_elem = parent
 
-  def parse(self, input):
-    self.reset()
+    def cdata(self, data):
+        elem = self.cur_elem
+        if elem.children:
+            last = elem.children[-1]
+            last.following_cdata = last.following_cdata + data
+        else:
+            elem.first_cdata = elem.first_cdata + data
 
-    p = expat.ParserCreate()
-    p.StartElementHandler = self.start
-    p.EndElementHandler = self.end
-    p.CharacterDataHandler = self.cdata
+    def parse(self, input):
+        self.reset()
 
-    try:
-      if type(input) == type(''):
-        p.Parse(input, 1)
-      else:
-        while 1:
-          s = input.read(_BLOCKSIZE)
-          if not s:
-            p.Parse('', 1)
-            break
+        p = expat.ParserCreate()
+        p.StartElementHandler = self.start
+        p.EndElementHandler = self.end
+        p.CharacterDataHandler = self.cdata
 
-          p.Parse(s, 0)
+        try:
+            if type(input) == type(''):
+                p.Parse(input, 1)
+            else:
+                while 1:
+                    s = input.read(_BLOCKSIZE)
+                    if not s:
+                        p.Parse('', 1)
+                        break
 
-    finally:
-      if self.root:
-        _clean_tree(self.root)
+                    p.Parse(s, 0)
 
-    return self.root
+        finally:
+            if self.root:
+                _clean_tree(self.root)
+
+        return self.root
 
 
 #
 # handy function for dumping a tree that is returned by Parser
 #
 def dump(f, root):
-  f.write('<?xml version="1.0"?>\n')
-  namespaces = _collect_ns(root)
-  _dump_recurse(f, root, namespaces, dump_ns=1)
-  f.write('\n')
+    f.write('<?xml version="1.0"?>\n')
+    namespaces = _collect_ns(root)
+    _dump_recurse(f, root, namespaces, dump_ns=1)
+    f.write('\n')
 
 
 #
@@ -157,84 +159,88 @@ def dump(f, root):
 # CDATA in child elements.
 #
 def textof(elem):
-  return elem.textof()
+    return elem.textof()
 
 
-#########################################################################
+#
 #
 # private stuff for qp_xml
 #
 
 _BLOCKSIZE = 16384    # chunk size for parsing input
 
+
 class _element:
-  def __init__(self, **kw):
-    self.__dict__.update(kw)
 
-  def textof(self):
-    '''Return the CDATA of this element.
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
 
-    Note: this is not recursive -- it only returns the CDATA immediately
-    within the element, excluding the CDATA in child elements.
-    '''
-    s = self.first_cdata
-    for child in self.children:
-      s = s + child.following_cdata
-    return s
+    def textof(self):
+        '''Return the CDATA of this element.
 
-  def find(self, name, ns=''):
-    for elem in self.children:
-      if elem.name == name and elem.ns == ns:
-        return elem
-    return None
+        Note: this is not recursive -- it only returns the CDATA immediately
+        within the element, excluding the CDATA in child elements.
+        '''
+        s = self.first_cdata
+        for child in self.children:
+            s = s + child.following_cdata
+        return s
+
+    def find(self, name, ns=''):
+        for elem in self.children:
+            if elem.name == name and elem.ns == ns:
+                return elem
+        return None
 
 
 def _clean_tree(elem):
-  elem.parent = None
-  del elem.parent
-  map(_clean_tree, elem.children)
+    elem.parent = None
+    del elem.parent
+    map(_clean_tree, elem.children)
 
 
 def _collect_recurse(elem, dict):
-  dict[elem.ns] = None
-  for ns, name in elem.attrs.keys():
-    dict[ns] = None
-  for child in elem.children:
-    _collect_recurse(child, dict)
+    dict[elem.ns] = None
+    for ns, name in elem.attrs.keys():
+        dict[ns] = None
+    for child in elem.children:
+        _collect_recurse(child, dict)
+
 
 def _collect_ns(elem):
-  "Collect all namespaces into a NAMESPACE -> PREFIX mapping."
-  d = { '' : None }
-  _collect_recurse(elem, d)
-  del d['']    # make sure we don't pick up no-namespace entries
-  keys = d.keys()
-  for i in range(len(keys)):
-    d[keys[i]] = i
-  return d
+    "Collect all namespaces into a NAMESPACE -> PREFIX mapping."
+    d = {'': None}
+    _collect_recurse(elem, d)
+    del d['']    # make sure we don't pick up no-namespace entries
+    keys = d.keys()
+    for i in range(len(keys)):
+        d[keys[i]] = i
+    return d
+
 
 def _dump_recurse(f, elem, namespaces, lang=None, dump_ns=0):
-  if elem.ns:
-    f.write('<ns%d:%s' % (namespaces[elem.ns], elem.name))
-  else:
-    f.write('<' + elem.name)
-  for (ns, name), value in elem.attrs.items():
-    if ns:
-      f.write(' ns%d:%s="%s"' % (namespaces[ns], name, value))
-    else:
-      f.write(' %s="%s"' % (name, value))
-  if dump_ns:
-    for ns, id in namespaces.items():
-      f.write(' xmlns:ns%d="%s"' % (id, ns))
-  if elem.lang != lang:
-    f.write(' xml:lang="%s"' % elem.lang)
-  if elem.children or elem.first_cdata:
-    f.write('>' + elem.first_cdata)
-    for child in elem.children:
-      _dump_recurse(f, child, namespaces, elem.lang)
-      f.write(child.following_cdata)
     if elem.ns:
-      f.write('</ns%d:%s>' % (namespaces[elem.ns], elem.name))
+        f.write('<ns%d:%s' % (namespaces[elem.ns], elem.name))
     else:
-      f.write('</%s>' % elem.name)
-  else:
-    f.write('/>')
+        f.write('<' + elem.name)
+    for (ns, name), value in elem.attrs.items():
+        if ns:
+            f.write(' ns%d:%s="%s"' % (namespaces[ns], name, value))
+        else:
+            f.write(' %s="%s"' % (name, value))
+    if dump_ns:
+        for ns, id in namespaces.items():
+            f.write(' xmlns:ns%d="%s"' % (id, ns))
+    if elem.lang != lang:
+        f.write(' xml:lang="%s"' % elem.lang)
+    if elem.children or elem.first_cdata:
+        f.write('>' + elem.first_cdata)
+        for child in elem.children:
+            _dump_recurse(f, child, namespaces, elem.lang)
+            f.write(child.following_cdata)
+        if elem.ns:
+            f.write('</ns%d:%s>' % (namespaces[elem.ns], elem.name))
+        else:
+            f.write('</%s>' % elem.name)
+    else:
+        f.write('/>')

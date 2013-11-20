@@ -293,6 +293,9 @@ class ResourceStorer(object):
         if  response.status == Constants.CODE_MULTISTATUS and response.msr.errorCount > 0:
             raise WebdavError(
                 "Request failed: " + response.msr.reason, response.msr.code)
+        if reponse.locktoken is None:
+            raise WebdavError(
+                "Request failed: No lock token in answer")
         return LockToken(self.url, response.locktoken)
 
     def unlock(self, lockToken):

@@ -15,7 +15,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.1.2'
+        property string version:'1.2.0'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -36,6 +36,8 @@ ApplicationWindow
                              '  * Should fix the crash at startup on Jolla Device (Send me a device to be sure and i could test :p )' +
                              '<br>1.1.2 : <br>' +
                              '  * Fix incorrect font size of the editor on SailfishOS.' +
+                             '<br>1.2.0 : <br>' +
+                             '  * Fix rehighlighting bug generating utf8 decode error<br>' +
                              '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +
                              '<br>caco3 on talk.maemo.org' +

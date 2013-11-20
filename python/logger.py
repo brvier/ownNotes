@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#Module from the libwebdav module
+# Module from the libwebdav module
 
 """"
 Module provides access to a configured logger instance.

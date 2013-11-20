@@ -68,7 +68,7 @@ PageStackWindow {
         function launch() {
             if (!running) {
                 running = true;
-                threadedCall('ownnotes.launchSync', [])
+                threadedCall('ownnotes.launchSync', []);
             }
         }
 
@@ -82,8 +82,8 @@ PageStackWindow {
         }
 
         onException: {
-            console.log(type + ' : ' + message)
-            onError(type + ' : ' + message);
+            console.log(type + ' : ' + data)
+            onError(type + ' : ' + data);
             running = false;
         }
 

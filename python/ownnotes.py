@@ -272,9 +272,6 @@ def listNotes(searchFilter):
 
 
 def reHighlight(text):
-    print text
-    print '---------------------'
-    print _uncolorize(text, strip=False)
     return _colorize(_uncolorize(text, strip=False))
 
 
@@ -301,15 +298,17 @@ def getSyncStatus():
 
 def launchSync():
     global sync
-    sync._wsync()
-    return True
+    return sync._wsync()
+
 
 def getCategoryFromPath(path):
     return os.path.dirname(
         os.path.relpath(path, NOTESPATH))
 
+
 def getTitleFromPath(path):
     return os.path.basename(path)
+
 
 def createNote():
     inc = '1'
