@@ -38,6 +38,7 @@ PageStackWindow {
                            '<br>1.2.0 : <br>' +
                            '  * Fix rehighlighting bug<br>' +
                            '  * Russian and French translation of Sailfish UI<br>' +
+                           '  * Fix sync encoding error<br>' +
                            '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +
