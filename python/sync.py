@@ -112,7 +112,9 @@ class Sync(object):
         try:
             self._sync_connect()
         except Exception, err:
-            self.logger.error('%s:%s' % (unicode(type(err)), unicode(err)))
+            self.logger.error(
+                '%s:%s' % (unicode(type(err), 'utf-8', errors='ignore'),
+                           unicode(err, 'utf-8', errors='ignore')))
             raise err
         return True
 
@@ -163,7 +165,10 @@ class Sync(object):
                     time_delta = None
                     print 'error parsing date', err
                     self.logger.error('Failed to parse datetime: %s:%s'
-                                      % (unicode(type(err)), unicode(err)))
+                                      % (unicode(type(err),
+                                                 'utf-8', errors='ignore'),
+                                         unicode(err,
+                                                 'utf-8', errors='ignore')))
                 isConnected = True
                 break  # break out of the authorization failure counter
             except AuthorizationError, err:
@@ -182,11 +187,18 @@ class Sync(object):
                     self.logger.error('Wrong login or password')
                     raise err
                 else:
-                    self.logger.error('%s:%s' % (unicode(type(err)),
-                                      unicode(err)))
+                    self.logger.error('%s:%s'
+                                      % (unicode(type(err),
+                                                 'utf-8', errors='ignore'),
+                                         unicode(err,
+                                                 'utf-8', errors='ignore')))
                     raise err
             except Exception, err2:
-                self.logger.error(unicode(type(err2)) + ':' + unicode(err2))
+                self.logger.error('%s:%s' % (unicode(type(err2),
+                                                     'utf-8', errors='ignore'),
+                                             unicode(err2,
+                                                     'utf-8',
+                                                     errors='ignore')))
                 raise err2
             authFailures += 1
         return (isConnected, webdavConnection, time_delta)
@@ -379,7 +391,8 @@ class Sync(object):
             self._unlock(webdavConnection)
             self.logger.debug('Sync end')
         except Exception, err:
-            self.logger.debug('Global sync error : %s' % unicode(err))
+            self.logger.debug('Global sync error : %s'
+                              % unicode(err, 'utf-8', errors='ignore'))
             if (type(err) == WebdavError) and (unicode(err) == u'Locked'):
                 raise err
             else:
@@ -479,10 +492,12 @@ class Sync(object):
                 index = json.load(fh)
         except (IOError, TypeError, ValueError), err:
             self.logger.debug(
-                'First sync detected or error: %s' % unicode(err))
+                'First sync detected or error: %s'
+                % unicode(err, 'utf-8', errors='ignore'))
         if type(index) == list:
             return index  # for compatibility with older release
-        self.logger.debug('Last sync filenames %s' % unicode(index))
+        self.logger.debug('Last sync filenames %s'
+                          % unicode(index, 'utf-8', errors='ignore'))
         return (index['remote'], index['local'])
 
     def _write_index(self, webdavConnection, time_delta):
@@ -641,7 +656,7 @@ class Sync(object):
                 self._lock = webdavConnection.lockAll(
                     'KhtNotes', timeout='Second-300')
         except Exception, err:
-            self.logger.error(unicode(err))
+            self.logger.error(unicode(err, 'utf-8', errors='ignore'))
             raise
         return True
 
@@ -673,7 +688,8 @@ class Sync(object):
             del index['.index.sync']
         except KeyError:
             pass
-        self.logger.debug('_get_remote_filenames: %s' % unicode(index))
+        self.logger.debug('_get_remote_filenames: %s'
+                          % unicode(index, 'utf-8', errors='ignore'))
         return index
 
     def _get_local_filenames(self):
@@ -691,7 +707,8 @@ class Sync(object):
         except KeyError:
             pass
 
-        self.logger.debug('_get_local_filenames: %s' % unicode(index))
+        self.logger.debug('_get_local_filenames: %s'
+                          % unicode(index, 'utf-8', errors='ignore'))
         return index
 
     def _get_running(self):
