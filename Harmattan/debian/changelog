@@ -1,3 +1,10 @@
+ownnotes (1.2.0) unstable; urgency=low
+  * Fix rehighlighting bug
+  * Russian and French translation of Sailfish UI
+  * Fix sync encoding error
+
+ -- Benoît HERVIER <khertan@khertan.net>  Wed, 20 Nov 2013 22:44:22 +0100
+
 ownnotes (1.1.0) unstable; urgency=low
   * Fix an other rehighlight bug
   * First desktop UI Release
