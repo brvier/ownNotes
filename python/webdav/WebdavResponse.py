@@ -42,7 +42,7 @@ __version__ = "$LastChangedRevision$"
 class HttpStatus(object):
     """
     TBD
-    
+
     @ivar code:
     @type code:
     @ivar reason:
@@ -50,11 +50,11 @@ class HttpStatus(object):
     @ivar errorCount:
     @type errorCount: int
     """
-    
+
     def __init__(self, elem):
         """
         TBD
-        
+
         @param elem: ...
         @type elem: instance of L{Element}
         """
@@ -63,11 +63,11 @@ class HttpStatus(object):
     def __str__(self):
         return "HTTP status %d: %s" % (self.code, self.reason)
 
-        
+
 class MultiStatusResponse(dict):
     """
     TBD
-    
+
     @ivar status:
     @type status:
     @ivar reason:
@@ -75,7 +75,7 @@ class MultiStatusResponse(dict):
     @ivar errorCount:
     @type errorCount:
     """
-    
+
     # restrict instance variables
     __slots__ = ('errorCount', 'reason', 'status')
 
@@ -87,7 +87,7 @@ class MultiStatusResponse(dict):
         if (domroot.ns != Constants.NS_DAV) or (domroot.name != Constants.TAG_MULTISTATUS):
             raise ResponseFormatError(domroot, 'Invalid response: <DAV:multistatus> expected.')
         self._scan(domroot)
-    
+
     def getCode(self):
         if self.errorCount == 0:
             return Constants.CODE_SUCCEEDED
@@ -100,8 +100,8 @@ class MultiStatusResponse(dict):
         for response in self.values():
             if response.code > Constants.CODE_LOWEST_ERROR:
                 result += response.reason
-        return result                    
-    
+        return result
+
     def __str__(self):
         result = u""
         for key, value in self.items():
@@ -111,7 +111,7 @@ class MultiStatusResponse(dict):
             else:
                 result += "Resource at %s returned " % key + unicode(value)
         return result.encode(sys.stdout.encoding or "ascii", "replace")
-    
+
     def _scan(self, root):
         for child in root.children:
             if child.ns != Constants.NS_DAV:
@@ -121,7 +121,7 @@ class MultiStatusResponse(dict):
             elif child.name == Constants.TAG_RESPONSE:
                 self._scanResponse(child)
             ### unknown child element
-        
+
     def _scanResponse(self, elem):
         hrefs = []
         response = None
@@ -140,16 +140,16 @@ class MultiStatusResponse(dict):
                 if not response:
                     if len(hrefs) != 1:
                         raise ResponseFormatError(child, 'Invalid response: One <DAV:href> expected.')
-                    response = PropertyResponse()                    
-                    self[hrefs[0]] = response                    
+                    response = PropertyResponse()
+                    self[hrefs[0]] = response
                 response._scan(child)
             elif child.name == Constants.TAG_RESPONSEDESCRIPTION:
                 for href in hrefs:
-                    self[href].reasons.append(child.textOf())            
+                    self[href].reasons.append(child.textOf())
             ### unknown child element
         if response and response.errorCount > 0:
             self.errorCount += 1
-                                    
+
     def _scanStatus(self, elem, *hrefs):
         if  len(hrefs) == 0:
             raise ResponseFormatError(elem, 'Invalid response: <DAV:href> expected.')
@@ -167,7 +167,7 @@ class MultiStatusResponse(dict):
 class PropertyResponse(dict):
     """
     TBD
-    
+
     @ivar errors:
     @type errors: list of ...
     @ivar reasons:
@@ -191,13 +191,13 @@ class PropertyResponse(dict):
             result += value.name + '= ' + value.textof() + '\n'
         result += self.getReason()
         return result
-        
+
     def getCode(self):
         if  len(self.errors) == 0:
             return Constants.CODE_SUCCEEDED
         if  len(self) > 0:
             return Constants.CODE_MULTISTATUS
-        return self.errors[-1].code       
+        return self.errors[-1].code
 
     def getReason(self):
         result = ""
@@ -208,7 +208,7 @@ class PropertyResponse(dict):
         for reason in self.reasons:
             result += "%s.  " % reason
         return result
-        
+
     def _scan(self, element):
         status = None
         statusElement = element.find(Constants.TAG_STATUS, Constants.NS_DAV)
@@ -216,7 +216,7 @@ class PropertyResponse(dict):
             status = HttpStatus(statusElement)
             if status.errorCount:
                 self.errors.append(status)
-        
+
         propElement = element.find(Constants.TAG_PROP, Constants.NS_DAV)
         if propElement:
             for prop in propElement.children:
@@ -228,7 +228,7 @@ class PropertyResponse(dict):
         reasonElement = element.find(Constants.TAG_RESPONSEDESCRIPTION, Constants.NS_DAV)
         if reasonElement:
             self.reasons.append(reasonElement.textOf())
-        
+
     # Instance properties
     code = property(getCode, None, None, "HTTP response code")
     errorCount = property(lambda self: len(self.errors), None, None, "HTTP response code")
@@ -236,17 +236,17 @@ class PropertyResponse(dict):
 
 
 
-        
+
 class LiveProperties(object):
     """
     This class provides convenient access to the WebDAV 'live' properties of a resource.
-    WebDav 'live' properties are defined in RFC 4918, Section 15. 
+    WebDav 'live' properties are defined in RFC 4918, Section 15.
     Each property is converted from string to its natural data type.
-    
+
     @version: $Revision$
     @author: Roland Betz
     """
-    
+
     # restrict instance variables
     __slots__ = ('properties')
 
@@ -255,16 +255,16 @@ class LiveProperties(object):
              Constants.PROP_LAST_MODIFIED, Constants.PROP_OWNER,
              Constants.PROP_LOCK_DISCOVERY, Constants.PROP_RESOURCE_TYPE, Constants.PROP_SUPPORTED_LOCK )
     _logger = logger.getDefaultLogger()
-    
+
     def __init__(self, properties=None, propElement=None):
         """
         Construct C{LiveProperties} from a dictionary of properties containing
         live properties or from a XML 'prop' element.
-        
+
         @param properties: map as implemented by class L{PropertyResponse}
         @param propElement: C{Element} value
         """
-        
+
         assert isinstance(properties, PropertyResponse) or \
                isinstance(propElement, qp_xml._element), \
                 "Argument properties has type %s" % str(type(properties))
@@ -276,10 +276,10 @@ class LiveProperties(object):
     def getContentLanguage(self):
         """
         Return the language of a resource's textual content or C{None}.
-        
+
         @rtype: C{string}
         """
-        
+
         xml = self.properties.get(Constants.PROP_CONTENT_LANGUAGE)
         if xml:
             return xml.textof()
@@ -287,10 +287,10 @@ class LiveProperties(object):
     def getContentLength(self):
         """
         Returns the length of the resource's content in bytes or C{None}.
-        
+
         @rtype: C{int}
         """
-        
+
         xml = self.properties.get(Constants.PROP_CONTENT_LENGTH)
         if xml:
             try:
@@ -301,10 +301,10 @@ class LiveProperties(object):
     def getContentType(self):
         """
         Return the resource's content MIME type or C{None}.
-        
+
         @rtype: C{string}
         """
-        
+
         xml = self.properties.get(Constants.PROP_CONTENT_TYPE)
         if xml:
             return xml.textof()
@@ -312,41 +312,41 @@ class LiveProperties(object):
     def getCreationDate(self):
         """
         Return the creation date as time tuple or C{None}.
-                
+
         @rtype: C{time.struct_time}
         """
-        
+
         datetimeString = None
         xml = self.properties.get(Constants.PROP_CREATION_DATE)
         if xml:
             datetimeString = xml.textof()
-        
+
         if datetimeString:
             try:
                 return _parseIso8601String(datetimeString)
             except ValueError:
                 self._logger.debug(
                     "Invalid date format: The server must provide an ISO8601 formatted date string.", exc_info=True)
-            
+
     def getEntityTag(self):
         """
         Return a entity tag which is unique for a particular version of a resource or C{None}.
-        Different resources or one resource before and after modification have different etags. 
-        
+        Different resources or one resource before and after modification have different etags.
+
         @rtype: C{string}
         """
-        
+
         xml = self.properties.get(Constants.PROP_ETAG)
         if xml:
             return xml.textof()
-            
+
     def getDisplayName(self):
         """
         Returns a resource's display name or C{None}.
-        
+
         @rtype: C{string}
         """
-        
+
         xml = self.properties.get(Constants.PROP_DISPLAY_NAME)
         if xml:
             return xml.textof()
@@ -354,10 +354,10 @@ class LiveProperties(object):
     def getLastModified(self):
         """
         Return last modification of a resource as time tuple or C{None}.
-        
+
         @rtype: C{time.struct_time}
         """
-        
+
         datetimeString = None
         xml = self.properties.get(Constants.PROP_LAST_MODIFIED)
         if xml:
@@ -373,15 +373,15 @@ class LiveProperties(object):
                 self._logger.debug(
                     "Invalid date format: "
                     "The server must provide a RFC822 or ISO8601 formatted date string.", exc_info=True)
-                
+
     def getLockDiscovery(self):
         """
-        Return all current locks applied to a resource or C{None} if it is not locked. The lock is represented by 
+        Return all current locks applied to a resource or C{None} if it is not locked. The lock is represented by
         a C{lockdiscovery} DOM element according to RFC 4918, Section 15.8.1.
-        
+
         @rtype: C{string}
         """
-        
+
         xml = self.properties.get(Constants.PROP_LOCK_DISCOVERY)
         if xml:
             return _scanLockDiscovery(xml)
@@ -393,7 +393,7 @@ class LiveProperties(object):
          * 'resource' => WebDAV resource
         @rtype: C{string}
         """
-        
+
         xml = self.properties.get(Constants.PROP_RESOURCE_TYPE)
         if xml and xml.children:
             return xml.children[0].name
@@ -402,21 +402,21 @@ class LiveProperties(object):
     def getSupportedLock(self):
         """
         Return a DOM element describing all supported lock options for a resource.
-        Shared and exclusive write locks are usually supported. The supported locks are represented by       
+        Shared and exclusive write locks are usually supported. The supported locks are represented by
         a C{supportedlock} DOM element according to RFC 4918, Section 15.10.1.
-        
+
         rtype: C{string}
         """
-        
+
         return self.properties.get(Constants.PROP_SUPPORTED_LOCK)
 
     def getOwnerAsUrl(self):
         """
         Return a resource's owner represented as URL or C{None}.
-        
+
         @rtype: C{string}
         """
-        
+
         xml = self.properties.get(Constants.PROP_OWNER)
         if xml and xml.children:
             return xml.children[0].textof()
@@ -442,7 +442,7 @@ class LiveProperties(object):
 
 
 def _parseIso8601String(date):
-    """ 
+    """
     Parses the given ISO 8601 string and returns a time tuple.
     The strings should be formatted according to RFC 3339 (see section 5.6).
     But currently there are two exceptions:
@@ -470,8 +470,8 @@ class ResponseFormatError(IOError):
         IOError.__init__(self, "ResponseFormatError at element %s: %s"  % (element.name, message))
         self.element = element
         self.message = message
-        
-    
+
+
 class Element(qp_xml._element):
     """
     This class improves the DOM interface (i.e. element interface) provided by the qp_xml module
@@ -481,10 +481,10 @@ class Element(qp_xml._element):
         qp_xml._element.__init__(self, ns=namespace, name=name, lang=None, parent=None,
                     children=[], ns_scope={}, attrs={},
                     first_cdata=cdata, following_cdata='')
-                    
+
     def __str__(self):
         return self.textof()
-        
+
     def __getattr__(self, name):
         if  (name == 'fullname'):
             return (self.__dict__['ns'], self.__dict__['name'])
@@ -500,7 +500,7 @@ def _scanLockDiscovery(root):
     if active:
         return _scanActivelock(active)
     return None
-    
+
 def _scanActivelock(root):
     assert root.name == Constants.TAG_ACTIVE_LOCK, "Invalid active lock XML element"
     token = _scanOrError(root, Constants.TAG_LOCK_TOKEN)
@@ -517,18 +517,18 @@ def _scanOwner(root):
             return href.textof()
         return owner.textof()
     return None
-    
+
 def _scanOrError(elem, childName):
     child = elem.find(childName, Constants.NS_DAV)
     if not child:
         raise ResponseFormatError(elem, "Invalid response: <"+childName+"> expected")
     return child
-    
-         
+
+
 def _unquoteHref(href):
     #print "*** Response HREF=", repr(href)
     if type(href) == type(u""):
-        try: 
+        try:
             href = href.encode('ascii')
         except UnicodeError:    # URL contains unescaped non-ascii character
             # handle bug in Tamino webdav server

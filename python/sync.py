@@ -22,7 +22,6 @@ import json
 import logging
 import logging.handlers
 import md5util
-import sys
 from webdav.Connection import WebdavError
 import urlparse
 
@@ -50,10 +49,10 @@ def local2utc(secs):
 
 def webdavPathJoin(path, *args):
     for arg in args:
-        if path.endswith(u"/"):
-            path = path + arg
+        if path.endswith(u'/'):
+            path = path + arg.decode('utf-8')
         else:
-            path = path + u"/" + arg
+            path = path + u'/' + arg.decode('utf-8')
     return path
 
 
@@ -84,7 +83,7 @@ class Sync(object):
         self._localDataFolder = NOTESPATH
         if not os.path.exists(self._localDataFolder):
             os.mkdir(self._localDataFolder)
-        self._remoteDataFolder = 'Notes'
+        self._remoteDataFolder = u'Notes'
         self.launch()
 
     def localBasename(self, path):
@@ -111,10 +110,9 @@ class Sync(object):
     def _wsync(self):
         try:
             self._sync_connect()
-        except Exception, err:
-            self.logger.error(
-                '%s:%s' % (unicode(type(err), 'utf-8', errors='ignore'),
-                           unicode(err, 'utf-8', errors='ignore')))
+        except Exception as err:
+            self.logger.error('%s:%s'
+                              % (str(type(err)), str(err)))
             raise err
         return True
 
@@ -161,14 +159,11 @@ class Sync(object):
                     time_delta = local2utc(time.mktime(remote_datetime)) \
                         - local_datetime
                     self.logger.debug('Time delta: %f' % time_delta)
-                except Exception, err:
+                except Exception as err:
                     time_delta = None
                     print 'error parsing date', err
                     self.logger.error('Failed to parse datetime: %s:%s'
-                                      % (unicode(type(err),
-                                                 'utf-8', errors='ignore'),
-                                         unicode(err,
-                                                 'utf-8', errors='ignore')))
+                                      % (str(type(err)), str(err)))
                 isConnected = True
                 break  # break out of the authorization failure counter
             except AuthorizationError, err:
@@ -188,17 +183,10 @@ class Sync(object):
                     raise err
                 else:
                     self.logger.error('%s:%s'
-                                      % (unicode(type(err),
-                                                 'utf-8', errors='ignore'),
-                                         unicode(err,
-                                                 'utf-8', errors='ignore')))
+                                      % (str(type(err)), str(err)))
                     raise err
             except Exception, err2:
-                self.logger.error('%s:%s' % (unicode(type(err2),
-                                                     'utf-8', errors='ignore'),
-                                             unicode(err2,
-                                                     'utf-8',
-                                                     errors='ignore')))
+                self.logger.error('%s:%s' % (str(type(err)), str(err)))
                 raise err2
             authFailures += 1
         return (isConnected, webdavConnection, time_delta)
@@ -392,8 +380,8 @@ class Sync(object):
             self.logger.debug('Sync end')
         except Exception, err:
             self.logger.debug('Global sync error : %s'
-                              % unicode(err, 'utf-8', errors='ignore'))
-            if (type(err) == WebdavError) and (unicode(err) == u'Locked'):
+                              % str(err))
+            if (type(err) == WebdavError) and (str(err) == 'Locked'):
                 raise err
             else:
                 import traceback
@@ -486,18 +474,18 @@ class Sync(object):
             with open(
                     os.path.join(
                         self._localDataFolder,
-                        u'.index.sync')
-                    .encode(sys.getfilesystemencoding()),
+                        '.index.sync')
+                    .encode('utf-8'),
                     'rb') as fh:
                 index = json.load(fh)
-        except (IOError, TypeError, ValueError), err:
+        except (IOError, TypeError, ValueError) as err:
             self.logger.debug(
                 'First sync detected or error: %s'
-                % unicode(err, 'utf-8', errors='ignore'))
+                % str(err))
         if type(index) == list:
             return index  # for compatibility with older release
         self.logger.debug('Last sync filenames %s'
-                          % unicode(index, 'utf-8', errors='ignore'))
+                          % str(index))
         return (index['remote'], index['local'])
 
     def _write_index(self, webdavConnection, time_delta):
@@ -508,7 +496,7 @@ class Sync(object):
                  'local': self._get_local_filenames()}
         with open(os.path.join(
                 self._localDataFolder, u'.index.sync'), 'wb') as fh:
-            json.dump(index, fh)
+            json.dump(index, fh, ensure_ascii=True, encoding='utf-8')
             merge_dir = os.path.join(
                 self._localDataFolder, u'.merge.sync/')
             if os.path.exists(merge_dir):
@@ -521,7 +509,9 @@ class Sync(object):
                     if os.path.isfile(filename):
                         shutil.copy(filename,
                                     os.path.join(merge_dir,
-                                                 self.localBasename(filename)))
+                                                 self.localBasename(
+                                                     filename.decode(
+                                                         'utf-8'))))
                 except IOError, err:
                     print err, 'filename:', filename, ' merge_dir:', merge_dir
 
@@ -628,11 +618,11 @@ class Sync(object):
             self._lock = None
 
     def _get_notes_path(self):
-        khtnotesPath = urlparse.urlparse(self.webdavUrl).path
-        if not khtnotesPath.endswith('/'):
-            return khtnotesPath + '/' + self._remoteDataFolder + '/'
+        khtnotesPath = unicode(urlparse.urlparse(self.webdavUrl).path)
+        if not khtnotesPath.endswith(u'/'):
+            return khtnotesPath + u'/' + self._remoteDataFolder + u'/'
         else:
-            return khtnotesPath + self._remoteDataFolder + '/'
+            return khtnotesPath + self._remoteDataFolder + u'/'
 
     def _check_khtnotes_folder_and_lock(self, webdavConnection):
         '''Check that khtnotes folder exists on webdav'''
@@ -656,7 +646,7 @@ class Sync(object):
                 self._lock = webdavConnection.lockAll(
                     'KhtNotes', timeout='Second-300')
         except Exception, err:
-            self.logger.error(unicode(err, 'utf-8', errors='ignore'))
+            self.logger.error(str(err))
             raise
         return True
 
@@ -668,7 +658,7 @@ class Sync(object):
                 index.update(self.__get_remote_filenames(webdavConnection,
                                                          resource.path))
             else:
-                index[self.remoteBasename(resource.path)] = \
+                index[self.remoteBasename(resource.path).encode('utf-8')] = \
                     time.mktime(properties.getLastModified())
         return index
 
@@ -689,7 +679,7 @@ class Sync(object):
         except KeyError:
             pass
         self.logger.debug('_get_remote_filenames: %s'
-                          % unicode(index, 'utf-8', errors='ignore'))
+                          % str(index))
         return index
 
     def _get_local_filenames(self):
@@ -697,8 +687,9 @@ class Sync(object):
         for root, folders, files in os.walk(self._localDataFolder):
             if self.localBasename(root) != u'.merge.sync':
                 for filename in files:
-                    index[self.localBasename(os.path.join(root,
-                                                          filename))] = \
+                    index[unicode(self.localBasename(os.path.join(root,
+                                                                  filename)),
+                                  'utf-8')] = \
                         round(os.path.getmtime(
                               os.path.join(root, filename)))
 
@@ -708,7 +699,7 @@ class Sync(object):
             pass
 
         self.logger.debug('_get_local_filenames: %s'
-                          % unicode(index, 'utf-8', errors='ignore'))
+                          % str(index))
         return index
 
     def _get_running(self):
