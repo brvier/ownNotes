@@ -32,7 +32,7 @@ STRIPTAGS = re.compile(r'<[^>]+>')
 STRIPHEAD = re.compile("<head>.*?</head>", re.DOTALL)
 EMPTYP = re.compile('<p style=\"-qt-paragraph-type:empty;.*(?=<p>)', re.DOTALL)
 
-NOTESPATH = os.path.expanduser('~/.ownnotes/')
+NOTESPATH = os.path.expanduser(u'~/.ownnotes/')
 
 COLOR_TITLE = '#441144'
 COLOR_LINK = '#115511'
@@ -47,7 +47,7 @@ if not os.path.exists(NOTESPATH):
 
 def _getValidFilename(filepath):
     dirname, filename = os.path.dirname(filepath), os.path.basename(filepath)
-    return os.path.join(dirname, ''.join(car for car in filename
+    return os.path.join(dirname, u''.join(car for car in filename
                         if car not in INVALID_FILENAME_CHARS))
 
 
@@ -238,7 +238,7 @@ def listNotes(searchFilter):
             category = os.path.relpath(root, path)
             if category == u'.':
                 category = u''
-            if category != '.merge.sync':
+            if category != u'.merge.sync':
                 notes.extend([{'title': os.path.splitext(filename)[0],
                                'category': category,
                                'timestp':
@@ -258,7 +258,7 @@ def listNotes(searchFilter):
                                'favorited': False,
                                'path': os.path.join(path, category, filename)}
                               for filename in filenames
-                              if filename != '.index.sync'])
+                              if filename != u'.index.sync'])
 
     notes.sort(key=lambda note: (not note['favorited'],
                                  note['category'],

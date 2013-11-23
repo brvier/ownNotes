@@ -16,7 +16,7 @@ PageStackWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.2.0'
+        property string version:'1.2.1'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                            '<br>Web Site : http://khertan.net/ownnotes' +
                            '<br><br>By Benoît HERVIER (Khertan)' +
@@ -24,21 +24,25 @@ PageStackWindow {
                            '<br><br><b>Changelog : </b><br>' +
                            '<br>1.0.0 : <br>' +
                            '  * Initial Fork from KhtNotes<br>' +
-                           '  * Use PyOtherSide instead of PySide' +
+                           '  * Use PyOtherSide instead of PySide<br>' +
                            '<br>1.0.1 : <br>' +
                            '  * Add auto sync at launch<br>' +
-                           '  * Push modification of a note to server once saved' +
+                           '  * Push modification of a note to server once saved<br>' +
                            '<br>1.0.2 : <br>' +
-                           '  * Fix rehighlighting that can lose cursor position' +
+                           '  * Fix rehighlighting that can lose cursor position<br>' +
                            '<br>1.1.0 : <br>' +
                            '  * First Desktop UX release<br>' +
                            '  * Fix an other rehighlight bug<br>' +
                            '<br>1.1.2 : <br>' +
-                           '  * Fix incorrect font size of the editor on SailfishOS.' +
+                           '  * Fix incorrect font size of the editor on SailfishOS.<br>' +
                            '<br>1.2.0 : <br>' +
                            '  * Fix rehighlighting bug<br>' +
                            '  * Russian and French translation of Sailfish UI<br>' +
                            '  * Fix sync encoding error<br>' +
+                             '<br>1.2.1 : <br>' +
+                             '  * Fix sync encoding error<br>' +
+                             '<br>1.2.2 : <br>' +
+                             '  * Fix encoding error in notes list view<br>' +
                            '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +
