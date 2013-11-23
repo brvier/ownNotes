@@ -542,7 +542,6 @@ class Sync(object):
                               (local_filename, remote_filename))
             rdirname, rfilename = (os.path.dirname(remote_filename),
                                    os.path.basename(remote_filename))
-            print rdirname, rfilename
             webdavConnection.path = webdavPathJoin(self._get_notes_path(),
                                                    rdirname, '')
             try:

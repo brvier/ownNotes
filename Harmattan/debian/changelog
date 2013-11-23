@@ -1,3 +1,9 @@
+ownnotes (1.2.2) unstable; urgency=low
+
+  * Fix unicode error in list view
+
+ -- Benoît HERVIER <khertan@khertan.net>  Sat, 23 Nov 2013 13:15:45 +0100
+
 ownnotes (1.2.1) unstable; urgency=low
   * Fix sync encoding error in sync
 
