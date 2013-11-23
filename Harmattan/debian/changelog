@@ -1,3 +1,9 @@
+ownnotes (1.2.3) unstable; urgency=low
+
+  * Bump release version (as previous release didn\'t display right version)
+
+ -- Benoît HERVIER <khertan@khertan.net>  Sat, 23 Nov 2013 17:24:55 +0100
+
 ownnotes (1.2.2) unstable; urgency=low
 
   * Fix unicode error in list view

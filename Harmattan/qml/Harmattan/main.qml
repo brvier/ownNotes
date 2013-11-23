@@ -16,7 +16,7 @@ PageStackWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.2.1'
+        property string version:'1.2.3'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                            '<br>Web Site : http://khertan.net/ownnotes' +
                            '<br><br>By Benoît HERVIER (Khertan)' +
@@ -39,14 +39,17 @@ PageStackWindow {
                            '  * Fix rehighlighting bug<br>' +
                            '  * Russian and French translation of Sailfish UI<br>' +
                            '  * Fix sync encoding error<br>' +
-                             '<br>1.2.1 : <br>' +
-                             '  * Fix sync encoding error<br>' +
-                             '<br>1.2.2 : <br>' +
-                             '  * Fix encoding error in notes list view<br>' +
+                           '<br>1.2.1 : <br>' +
+                           '  * Fix sync encoding error<br>' +
+                           '<br>1.2.2 : <br>' +
+                           '  * Fix encoding error in notes list view<br>' +
+                           '<br>1.2.3 : <br>' +
+                           '  * Bump release version (as previous release didn\'t display right version)<br>' +
                            '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +
                            '<br>Thomas Perl for PyOtherSide' +
+                           '<br>Antoine Vacher for debugging help and tests' +
                            '<br><br><b>Privacy Policy : </b>' +
                            '<br>ownNotes can sync your notes with a webdav storage or ownCloud instance. For this ownNotes need to know the Url, Login and Password to connect to. But this is optionnal, and you can use ownNotes without the sync feature.' +
                            '<br><br>' +
