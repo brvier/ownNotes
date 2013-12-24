@@ -196,7 +196,6 @@ ApplicationWindow {
 
         Component.onCompleted: {
             //addImportPath('/opt/ownNotes/python');
-            addImportPath('python');
             importModule('ownnotes');
         }
 
@@ -279,7 +278,6 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            addImportPath('python');
             //addImportPath('/opt/ownNotes/python');
             importModule('ownnotes');
         }

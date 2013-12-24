@@ -2,14 +2,147 @@
 
 
 #include <QtQml>
+#include <QDir>
+#include <QFile>
+
+#ifndef MAXPATHLEN
+#if defined(PATH_MAX) && PATH_MAX > 1024
+#define MAXPATHLEN PATH_MAX
+#else
+#define MAXPATHLEN 1024
+#endif
+#endif /* MAXPATHLEN */
 //#include <QResource>
 
 int
 QPython::instances = 0;
 
-static
-PyThreadState *ptsGlobal = NULL;
+static PyThreadState *ptsGlobal = NULL;
 
+/* Given a (sub)modulename, write the potential file path in the
+   archive (without extension) to the path buffer. Return the
+   length of the resulting string. */
+static int
+make_filename(char *prefix, char *name, char *path)
+{
+    size_t len;
+    char *p;
+
+    len = strlen(prefix);
+
+    /* self.prefix + name [+ SEP + "__init__"] + ".py[co]" */
+    if (len + strlen(name) + 13 >= MAXPATHLEN) {
+        PyErr_SetString(PyExc_ImportError, "path too long");
+        return -1;
+    }
+
+    strcpy(path, prefix);
+    strcpy(path + len, name);
+    for (p = path + len; *p; p++) {
+        if (*p == '.')
+            *p = '/';
+    }
+    len += strlen(name);
+    assert(len < INT_MAX);
+    return (int)len;
+}
+
+char *
+myotherside_search_module(char *fullpath, char *path) {
+
+    QDir res(":/");
+
+    qDebug() << fullpath;
+    qDebug() << path;
+
+    return NULL;
+}
+
+PyObject *
+myotherside_find_module(PyObject *self, PyObject *args) {
+
+    char *fullname, *path;
+    int err = PyArg_ParseTuple(args, "s|z", &fullname, &path);
+
+    qDebug() << self;
+    if(err == 0)
+    {
+        PyObject_Print(PyErr_Occurred(), stdout, Py_PRINT_RAW);
+        PySys_WriteStdout("\n");
+        PyErr_Print();
+        PySys_WriteStdout("\n");
+    }
+
+    //myotherside_search_module(fullname, path);
+
+    QString filename(fullname);
+    filename = ":/python/"+filename+".py";
+    qDebug() << filename;
+    QFile file(filename);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return Py_None;
+    } else {
+        qDebug() << self;
+        Py_INCREF(self);
+        return self;
+    }
+}
+
+PyObject *
+myotherside_load_module(PyObject *self, PyObject *args) {
+
+    qDebug() << "pyotherside_load_module called";
+
+    const char *module_source;
+    char *fullname;
+    PyArg_ParseTuple(args, "s", &fullname);
+    PyObject *mod, *dict;
+    PyObject *module_code;
+
+    mod = PyImport_AddModule(fullname);
+    if (mod == NULL) {
+        return NULL;
+    }
+
+    QString filename(fullname);
+    filename = ":/"+filename+".py";
+    QFile moduleContent(filename);
+
+    if(moduleContent.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        module_source = moduleContent.readAll().constData();
+
+        if(module_source == NULL) {
+            //We couldnt load the module. Raise ImportError
+            Py_RETURN_NONE;
+        }
+
+        // Compile module code
+        module_code = Py_CompileString(module_source, fullname, Py_file_input);
+        if (module_code == NULL){
+            //Can't compile the module
+            Py_RETURN_NONE;
+        }
+        // Set the __loader__ object to pyotherside module
+        dict = PyModule_GetDict(mod);
+        if (PyDict_SetItemString(dict, "__loader__", (PyObject *)self) != 0)
+            Py_RETURN_NONE;
+
+        // Import the compiled code module
+        mod = PyImport_ExecCodeModuleEx(fullname, module_code, fullname);
+
+        Py_DECREF(dict);
+
+        return mod;
+    }
+    Py_RETURN_NONE;
+}
+
+static PyMethodDef MyOtherSideMethods[] = {
+    {"find_module", myotherside_find_module, METH_VARARGS},
+    {"load_module", myotherside_load_module, METH_VARARGS},
+    {NULL, NULL, 0, NULL},
+};
 
 QPython::QPython(QObject *parent)
     : QObject(parent)
@@ -25,16 +158,30 @@ QPython::QPython(QObject *parent)
 
     }
 
-
     instances++;
+    PyObject *myotherside = Py_InitModule("myotherside", MyOtherSideMethods);
 
     PyGILState_STATE state = PyGILState_Ensure();
+
+//    PyImport_AppendInittab("myotherside", initMyOtherSide);
+/*    Py_InitModule3("mypyotherside", MyOtherSideMethods,
+               "Module Mecanichs to import module from qrc package");
+*/
+
+    PyObject *meta_path = PySys_GetObject("meta_path");
+    if (meta_path != NULL)
+    {
+        PyList_Append(meta_path, myotherside);
+    }
+
     if (PyDict_GetItemString(globals, "__builtins__") == NULL) {
         PyDict_SetItemString(globals, "__builtins__",
                 PyEval_GetBuiltins());
     }
-    PyGILState_Release (state);
+
+    PyGILState_Release (state);    
 }
+
 
 QPython::~QPython()
 {
@@ -43,8 +190,20 @@ QPython::~QPython()
         PyEval_AcquireLock();
         PyThreadState_Swap(ptsGlobal);
 
-        Py_Finalize();
+        Py_Finalize();                
     }
+}
+
+/* return fullname.split(".")[-1] */
+static char *
+get_subname(char *fullname)
+{
+    char *subname = strrchr(fullname, '.');
+    if (subname == NULL)
+        subname = fullname;
+    else
+        subname++;
+    return subname;
 }
 
 void
@@ -384,3 +543,9 @@ QPython::toPython(QVariant v)
     return NULL;
 }
 
+/*PyMODINIT_FUNC
+initMyOtherSide()
+{
+    Py_InitModule3("mypyotherside", MyOtherSideMethods,
+               "Module Mecanichs to import module from qrc package");
+}*/

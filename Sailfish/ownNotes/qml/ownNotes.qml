@@ -15,7 +15,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.2.0'
+        property string version:'1.2.1'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -89,7 +89,7 @@ ApplicationWindow
         }
 
         Component.onCompleted: {
-            addImportPath('/opt/ownNotes/python');
+            addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
         }
 
@@ -166,7 +166,7 @@ ApplicationWindow
 
         Component.onCompleted: {
             console.debug('pyNotes start oncompleted');
-            addImportPath('/opt/ownNotes/python');
+            addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
             console.debug('pyNotes completed');
         }

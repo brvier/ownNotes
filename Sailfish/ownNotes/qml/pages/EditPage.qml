@@ -16,9 +16,6 @@ Page {
     Python {
         id: noteSaver
 
-        /*function saveNote(filepath, data) {
-            threadedCall('ownnotes.saveNote', [filepath, data]);
-        }*/
         function saveNote(filepath, data) {
 
             var new_filepath = call('ownnotes.saveNote', [filepath, data]);
@@ -46,7 +43,7 @@ Page {
         }
 
         Component.onCompleted: {
-            addImportPath('/opt/ownNotes/python');
+            addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
         }
     }
@@ -59,19 +56,13 @@ Page {
             autoTimer.stop();
         }
 
-        /*function threadedHighligth() {
-            console.log(textEditor.data)
-            console.log(textEditor.text)
-            threadedCall('ownnotes.reHighlight', [textEditor.text,])
-        }*/
-
         onException: {
             console.log(type + ':' +data)
             onError(type + ' : ' + data);
         }
 
         Component.onCompleted: {
-            addImportPath('/opt/ownNotes/python');
+            addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
         }
     }

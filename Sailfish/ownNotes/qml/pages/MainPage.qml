@@ -56,7 +56,7 @@ Page {
             RemorseItem { id: remorse }
             function remorseDelete() {
                 remorse.execute(listItem, qsTr("Deleting"), function() {
-                    console.log('ownnotes.rm:'+path)
+                    console.log('ownNotes.rm:'+path)
                     if (path !== undefined)
                         pyNotes.remove(path);
                 });
@@ -181,7 +181,7 @@ Page {
                     pageStack.push(Qt.createComponent(Qt.resolvedUrl("AboutPage.qml")),
                                    {
                                        title : 'ownNotes ' + aboutInfos.version,
-                                       icon: Qt.resolvedUrl('/opt/ownNotes/icons/ownnotes.png'),
+                                       icon: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png'),
                                        slogan : qsTr('Notes in your own cloud !'),
                                        text : aboutInfos.text
                                    })

@@ -6,14 +6,12 @@ static {
 # Add more folders to ship with the application, here
 #folder_01.source = qml/Desktop
 #folder_01.target = qml
-folder_02.source = python/
-folder_02.target = .
 folder_03.source = icons/
 folder_03.target = .
 
 #DEPLOYMENTFOLDERS = folder_01
-DEPLOYMENTFOLDERS += folder_02
-#DEPLOYMENTFOLDERS += folder_03
+#DEPLOYMENTFOLDERS += folder_02
+DEPLOYMENTFOLDERS += folder_03
 
 desktopfile.path = .
 desktopfile.files = ownNotes.desktop
@@ -33,8 +31,13 @@ QML_IMPORT_PATH =
 SOURCES += main.cpp \
     qpython.cpp
 
-QMAKE_CXXFLAGS += $$system(python-config --includes)
-QMAKE_LIBS += $$system(python-config --libs)
+win32 {
+    INCLUDEPATH += C:\\Python27\\include
+    LIBS += C:\\Python27\\libs\\python27.lib
+} else {
+    QMAKE_CXXFLAGS += $$system(python-config --includes)
+    QMAKE_LIBS += $$system(python-config --libs)
+}
 
 HEADERS += \
     qpython.h
@@ -217,5 +220,4 @@ OTHER_FILES += \
 
 RESOURCES += \
     Packages.qrc
-
 }
