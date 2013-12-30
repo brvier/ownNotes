@@ -6,7 +6,7 @@
     <message>
         <location filename="../pages/AboutPage.qml" line="32"/>
         <source>About ownNotes</source>
-        <translation>A propos de ownNotes</translation>
+        <translation>A propos ...</translation>
     </message>
 </context>
 <context>
@@ -19,12 +19,12 @@
     <message>
         <location filename="../pages/EditPage.qml" line="99"/>
         <source>Publish as Post to KhtCms</source>
-        <translation>Publier comme Post vers KhtCMS</translation>
+        <translation>Publier Article vers KhtCMS</translation>
     </message>
     <message>
         <location filename="../pages/EditPage.qml" line="105"/>
         <source>Publish as Page to KhtCms</source>
-        <translation>Publier comme Page vers KhtCMS</translation>
+        <translation>Publier Page vers KhtCMS</translation>
     </message>
 </context>
 <context>
@@ -32,12 +32,12 @@
     <message>
         <location filename="../pages/MainPage.qml" line="58"/>
         <source>Deleting</source>
-        <translation>Effacer</translation>
+        <translation>Effacement</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="104"/>
         <source>Category</source>
-        <translation>Category</translation>
+        <translation>Categorie</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="110"/>
@@ -54,22 +54,22 @@
         <location filename="../pages/MainPage.qml" line="151"/>
         <location filename="../pages/MainPage.qml" line="195"/>
         <source>Sync</source>
-        <translation>Synchroniser</translation>
+        <translation>Synchro</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="157"/>
         <source>Search</source>
-        <translation>Rechercher</translation>
+        <translation>Recherche</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="179"/>
         <source>About</source>
-        <translation>A propos</translation>
+        <translation>About</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="185"/>
         <source>Notes in your own cloud !</source>
-        <translation>Vos notes dans votre cloud !</translation>
+        <translation>Notes dans votre propre(own) Cloud</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="191"/>
@@ -80,12 +80,12 @@
         <location filename="../pages/MainPage.qml" line="203"/>
         <location filename="../pages/MainPage.qml" line="216"/>
         <source>New note</source>
-        <translation>Nouvelle note</translation>
+        <translation>Creer note</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="229"/>
         <source>No notes.</source>
-        <translation>Aucunes notes</translation>
+        <translation>Aucune notes</translation>
     </message>
     <message>
         <location filename="../pages/MainPage.qml" line="304"/>
@@ -98,7 +98,7 @@
     <message>
         <location filename="../pages/SettingsPage.qml" line="23"/>
         <source>ownNotes Settings</source>
-        <translation>Paramètre d'ownNotes</translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <location filename="../pages/SettingsPage.qml" line="27"/>
@@ -118,7 +118,7 @@
     <message>
         <location filename="../pages/SettingsPage.qml" line="93"/>
         <source>ownCloud/WebDav Sync</source>
-        <translation>ownCloud/Webdav Sync</translation>
+        <translation>Syncho ownCloud/WebDav</translation>
     </message>
     <message>
         <location filename="../pages/SettingsPage.qml" line="98"/>
@@ -149,23 +149,23 @@
     <message>
         <location filename="../pages/SettingsPage.qml" line="138"/>
         <source>Use auto merge</source>
-        <translation>Utiliser la fusion automatique</translation>
+        <translation>Fusion automatique</translation>
     </message>
     <message>
         <location filename="../pages/SettingsPage.qml" line="139"/>
         <source>When note are edited in several places, ownNotes will try to merge the changes if possible</source>
-        <translation>Quand les notes sont éditées plusieurs emplacement, ownNotes va essayer de fusionner les modifications si cela est possible.</translation>
+        <translation>Quand des notes sont édités simultanément sur différent périphérique, ownNotes va essayer de fusionner les modifications si cela est possible.</translation>
     </message>
     <message>
         <location filename="../pages/SettingsPage.qml" line="153"/>
         <location filename="../pages/SettingsPage.qml" line="155"/>
         <source>User ID</source>
-        <translation>ID Utilisateur</translation>
+        <translation>User ID</translation>
     </message>
     <message>
         <location filename="../pages/SettingsPage.qml" line="179"/>
         <source>Api Key</source>
-        <translation>Clef API</translation>
+        <translation>Api Key</translation>
     </message>
 </context>
 </TS>

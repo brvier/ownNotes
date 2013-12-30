@@ -15,7 +15,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.2.1'
+        property string version:'1.2.2'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -40,6 +40,11 @@ ApplicationWindow
                              '  * Fix rehighlighting bug generating utf8 decode error<br>' +
                              '  * Russian and French translation of Sailfish UI<br>' +
                              '  * Fix sync encoding error<br>' +
+                             '<br>1.2.1 : <br>' +
+                             '  * Fix packaging<br>' +
+                             '<br>1.2.2 : <br>' +
+                             '  * Add translation<br>' +
+                             '  * Fix about<br>' +
                              '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +
                              '<br>caco3 on talk.maemo.org' +
