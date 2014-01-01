@@ -9,7 +9,7 @@ Page {
     property alias title:title.text
     property alias icon: icon.source
     property alias slogan: slogan.text
-    property alias text: content.text
+    property string contentText
 
     SilicaFlickable {
         id: aboutFlick
@@ -59,7 +59,7 @@ Page {
 
             TextArea {
                 id: content
-                text: ''
+                text: '<style>a:link {color: " + Theme.highlightColor + "; }</style>' + contentText
                 width: aboutFlick.width
                 wrapMode: TextEdit.WordWrap
                 readOnly: true

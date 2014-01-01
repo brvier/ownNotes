@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
@@ -167,7 +170,7 @@ class Sync(object):
                                       % (str(type(err)), str(err)))
                 isConnected = True
                 break  # break out of the authorization failure counter
-            except AuthorizationError, err:
+            except AuthorizationError as err:
                 if err.authType == "Basic":
                     webdavConnection.connection.\
                         addBasicAuthorization(webdavLogin, webdavPasswd)
@@ -186,7 +189,7 @@ class Sync(object):
                     self.logger.error('%s:%s'
                                       % (str(type(err)), str(err)))
                     raise err
-            except Exception, err2:
+            except Exception as err2:
                 self.logger.error('%s:%s' % (str(type(err)), str(err)))
                 raise err2
             authFailures += 1
@@ -379,7 +382,7 @@ class Sync(object):
             # Unlock the collection
             self._unlock(webdavConnection)
             self.logger.debug('Sync end')
-        except Exception, err:
+        except Exception as err:
             self.logger.debug('Global sync error : %s'
                               % str(err))
             if (type(err) == WebdavError) and (str(err) == 'Locked'):
@@ -561,7 +564,7 @@ class Sync(object):
                 mtime = local2utc(time.mktime(resource.readStandardProperties()
                                               .getLastModified())) - time_delta
                 os.utime(lpath, (-1, mtime))
-        except WebdavError, err:
+        except WebdavError as err:
             self.logger.debug(err)
             raise err
 

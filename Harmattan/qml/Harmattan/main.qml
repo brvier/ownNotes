@@ -16,7 +16,7 @@ PageStackWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.2.3'
+        property string version:'1.2.4'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                            '<br>Web Site : http://khertan.net/ownnotes' +
                            '<br><br>By Benoît HERVIER (Khertan)' +
@@ -45,6 +45,10 @@ PageStackWindow {
                            '  * Fix encoding error in notes list view<br>' +
                            '<br>1.2.3 : <br>' +
                            '  * Bump release version (as previous release didn\'t display right version)<br>' +
+                           '<br>1.2.4 : <br>' +
+                           '  * Add translation (Sailfish)<br>' +
+                           '  * Fix about (Sailfish)<br>' +
+                           '  * Add a workarround for link color in About (Sailfish)<br>' +
                            '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +

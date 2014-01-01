@@ -183,7 +183,7 @@ Page {
                                        title : 'ownNotes ' + aboutInfos.version,
                                        icon: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png'),
                                        slogan : qsTr('Notes in your own cloud !'),
-                                       text : aboutInfos.text
+                                       contentText : aboutInfos.contentText
                                    })
 
             }

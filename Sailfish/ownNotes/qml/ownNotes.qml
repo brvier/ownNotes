@@ -15,8 +15,8 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.2.2'
-        property string text:'A note taking application with sync for ownCloud or any WebDav.' +
+        property string version:'1.2.5'
+        property string contentText:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
                              '<br><b>Licensed under GPLv3</b>' +
@@ -43,8 +43,15 @@ ApplicationWindow
                              '<br>1.2.1 : <br>' +
                              '  * Fix packaging<br>' +
                              '<br>1.2.2 : <br>' +
-                             '  * Add translation<br>' +
-                             '  * Fix about<br>' +
+                             '  * Fix encoding error in notes list view<br>' +
+                             '<br>1.2.3 : <br>' +
+                             '  * Bump release version (as previous release didn\'t display right version)<br>' +
+                             '<br>1.2.4 : <br>' +
+                             '  * Add translation (Sailfish)<br>' +
+                             '  * Fix about (Sailfish)<br>' +
+                             '  * Add a workarround for link color in About (Sailfish)<br>' +
+                             '<br>1.2.5 : <br>' +
+                             '  * Add french translation (Sailfish)<br>' +
                              '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +
                              '<br>caco3 on talk.maemo.org' +
