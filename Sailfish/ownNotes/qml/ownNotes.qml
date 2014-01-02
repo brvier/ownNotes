@@ -6,6 +6,7 @@ import Sailfish.Silica.theme 1.0
 
 ApplicationWindow
 {
+    id: appWindow
     initialPage: MainPage { }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
@@ -15,7 +16,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.2.5'
+        property string version:'1.2.6'
         property string contentText:'A note taking application with sync for ownCloud or any WebDav.' +
                              '<br>Web Site : http://khertan.net/ownnotes' +
                              '<br><br>By Benoît HERVIER (Khertan)' +
@@ -52,6 +53,12 @@ ApplicationWindow
                              '  * Add a workarround for link color in About (Sailfish)<br>' +
                              '<br>1.2.5 : <br>' +
                              '  * Add french translation (Sailfish)<br>' +
+                             '<br>1.2.6 : <br>' +
+                             '  * Fix refreshing bug after creating a new note (Sailfish)<br>' +
+                             '  * Add sync and new feature to cover, and sync indicator (Sailfish)<br>' +
+                             '  * Fix a bug in unlock at end of a sync<br>' +
+                             '  * Fix a bug in delete between list refresh and remorse item (Sailfish)<br>' +
+                             '  * Fix loading of translations (still partial) (Sailfish)<br>' +
                              '<br><br><b>Thanks to : </b>' +
                              '<br>Radek Novacek' +
                              '<br>caco3 on talk.maemo.org' +
@@ -111,6 +118,7 @@ ApplicationWindow
     Python {
         id: pyNotes
         signal requireRefresh()
+        signal noteDeleted(string path)
 
         function loadNote(path) {
             var message = call('ownnotes.loadNote', [path,]);
@@ -138,7 +146,7 @@ ApplicationWindow
 
         function remove(path) {
             call('ownnotes.rm', [path, ]);
-            requireRefresh();
+            noteDeleted(path);
         }
 
         function duplicate(path) {

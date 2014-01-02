@@ -13,7 +13,7 @@ Name:       ownNotes
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    A notes taking app with ownCloud Sync
-Version:    1.2.5
+Version:    1.2.6
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
@@ -21,10 +21,10 @@ URL:        http://example.org/
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  ownNotes.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
-BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
-BuildRequires:  pkgconfig(Qt5Core)
-BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5Qml)
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
 BuildRequires:  python-devel
 BuildRequires:  desktop-file-utils
 
@@ -64,15 +64,16 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
-/usr/share/icons/hicolor/86x86/apps
-/usr/share/applications
-/usr/share/ownNotes
-/usr/bin
-%{_datadir}/icons/hicolor/86x86/apps/%{name}.png
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/%{name}/qml
-%{_bindir}
-%{_datadir}/%{name}/python
+/usr/share/ownNotes/i18n
 /usr/share/ownNotes/python
+%{_datadir}/%{name}/python
+%{_bindir}
+%{_datadir}/%{name}/qml
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/86x86/apps/%{name}.png
+/usr/bin
+/usr/share/ownNotes
+/usr/share/applications
+/usr/share/icons/hicolor/86x86/apps
 # >> files
 # << files

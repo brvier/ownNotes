@@ -35,7 +35,8 @@
 #endif
 
 #include <sailfishapp.h>
-
+#include <QTranslator>
+#include <QGuiApplication>
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +49,12 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
-    SailfishApp::application(argc, argv);
+    QGuiApplication *app = SailfishApp::application(argc, argv);
+    QTranslator translator;
+    translator.load(QLocale::system(), "ownNotes", ".", SailfishApp::pathTo("i18n").toLocalFile(), ".qm");
+    qDebug() << SailfishApp::pathTo("i18n").toLocalFile();
+    qDebug() << QLocale::system();
+    app->installTranslator(&translator);
     QPython::registerQML();
     return SailfishApp::main(argc, argv);
 }

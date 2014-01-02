@@ -175,7 +175,7 @@ Page {
 
     onStatusChanged: {
         if (status == PageStatus.Deactivating) {
-            console.debug('onStatusChanged');
+            console.debug('onStatusChanged : PageStatus.Deactivating');
             noteSaver.saveNote(textEditor.path, textEditor.text);
         }
     }

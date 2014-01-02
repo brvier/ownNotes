@@ -612,7 +612,7 @@ class Sync(object):
 
     def _unlock(self, webdavConnection):
         # TODO
-        if webdavConnection is not None:
+        if (webdavConnection is not None) and (self._lock is not None):
             webdavConnection.path = self._get_notes_path()
             webdavConnection.unlock(self._lock)
             self._lock = None

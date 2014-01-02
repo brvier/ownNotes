@@ -14,6 +14,34 @@ CoverBackground {
         anchors.bottom: label.top
     }
 
+    BusyIndicator {
+        size: BusyIndicatorSize.Small
+        running: sync.running && Cover.active
+        opacity: running === true ? 1.0 : 0.0
+    }
+
+    CoverActionList {
+
+        CoverAction {
+            iconSource: "image://theme/icon-cover-sync"
+            onTriggered: {
+                if (sync.running === false)
+                    sync.launch()
+            }
+        }
+
+        CoverAction {
+            iconSource: "image://theme/icon-cover-new"
+            onTriggered: {
+                appWindow.activate();
+                var path = pyNotes.createNote();
+                pageStack.push(
+                            Qt.createComponent(Qt.resolvedUrl("../pages/EditPage.qml")),
+                            {path:path});
+            }
+        }
+
+    }
 }
 
 
