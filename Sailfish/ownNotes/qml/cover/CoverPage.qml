@@ -16,7 +16,7 @@ CoverBackground {
 
     BusyIndicator {
         size: BusyIndicatorSize.Small
-        running: sync.running && Cover.active
+        running: appWindow.syncing
         opacity: running === true ? 1.0 : 0.0
     }
 

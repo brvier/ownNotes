@@ -28,7 +28,6 @@ OTHER_FILES += qml/ownNotes.qml \
     qml/pages/FontComboBox.qml \
     qml/pages/EditPage.qml \
     qml/pages/AboutPage.qml \
-    i18n/* \
     icons/*
 
 HEADERS += \
@@ -36,8 +35,8 @@ HEADERS += \
 
 python_files.files = ../../python/*
 python_files.path = /usr/share/$$TARGET/python
-qm_files.files = i18n/*.qm
-qm_files.path = /usr/share/$$TARGET/i18n
+qm_files.files = i18n
+qm_files.path = /usr/share/$$TARGET
 INSTALLS += python_files qm_files
 
 lupdate_only {
@@ -48,7 +47,7 @@ SOURCES = main.qml \
 
 RESOURCES +=
 
-TRANSLATIONS = i18n/en_US.ts \
-            i18n/ru_RU.ts \
-            i18n/fr_FR.ts
+TRANSLATIONS = i18n/ownNotes_en.ts \
+            i18n/ownNotes_ru.ts \
+            i18n/ownNotes_fr.ts
 

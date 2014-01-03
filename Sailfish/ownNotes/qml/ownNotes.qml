@@ -9,6 +9,7 @@ ApplicationWindow
     id: appWindow
     initialPage: MainPage { }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+    property alias syncing: sync.running
 
     InfoBanner {
         id: errorPanel
@@ -24,7 +25,7 @@ ApplicationWindow
                              '<br><br><b>Changelog : </b><br>' +
                              '<br>1.0.0 : <br>' +
                              '  * Initial Fork from KhtNotes<br>' +
-                             '  * Use PyOtherSide instead of PySide' +
+                             '  * Use PyOtherSide instead of PySide<br>' +
                              '<br>1.0.1 : <br>' +
                              '  * Add auto sync at launch<br>' +
                              '  * Push modification of a note to server once saved<br>' +
@@ -34,9 +35,9 @@ ApplicationWindow
                              '  * First Desktop UX release<br>' +
                              '  * Fix an other rehighlight bug<br>' +
                              '<br>1.1.1 : <br>' +
-                             '  * Should fix the crash at startup on Jolla Device (Send me a device to be sure and i could test :p )' +
+                             '  * Should fix the crash at startup on Jolla Device (Send me a device to be sure and i could test :p )<br>' +
                              '<br>1.1.2 : <br>' +
-                             '  * Fix incorrect font size of the editor on SailfishOS.' +
+                             '  * Fix incorrect font size of the editor on SailfishOS.<br>' +
                              '<br>1.2.0 : <br>' +
                              '  * Fix rehighlighting bug generating utf8 decode error<br>' +
                              '  * Russian and French translation of Sailfish UI<br>' +
