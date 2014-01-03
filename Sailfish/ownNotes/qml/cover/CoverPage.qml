@@ -14,14 +14,18 @@ CoverBackground {
         anchors.bottom: label.top
     }
 
-    BusyIndicator {
-        size: BusyIndicatorSize.Small
-        running: appWindow.syncing
-        opacity: running === true ? 1.0 : 0.0
+    Label {
+        anchors.horizontalCenter: label.horizontalCenter
+        anchors.top: label.bottom
+        anchors.topMargin: 5
+        text: qsTr("Syncing ...")
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeSmall
+        visible: sync.running
+        opacity: visible === true ? 1.0 : 0.0
     }
 
     CoverActionList {
-
         CoverAction {
             iconSource: "image://theme/icon-cover-sync"
             onTriggered: {

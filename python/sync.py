@@ -70,7 +70,7 @@ class Sync(object):
 
         # Logging sync
         self.logger = logging.getLogger('ownNotes')
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.WARNING)
         handler = logging.handlers.RotatingFileHandler(
             os.path.expanduser('~/.ownnotes.sync.log'),
             maxBytes=500 * 1024,
@@ -80,7 +80,7 @@ class Sync(object):
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         streamHandler = logging.StreamHandler()
-        streamHandler.setLevel(logging.DEBUG)
+        streamHandler.setLevel(logging.WARNING)
         streamHandler.setFormatter(formatter)
         self.logger.addHandler(streamHandler)
 
@@ -88,7 +88,6 @@ class Sync(object):
         if not os.path.exists(self._localDataFolder):
             os.mkdir(self._localDataFolder)
         self._remoteDataFolder = 'Notes'
-        self.launch()
 
     def localBasename(self, path):
         return os.path.relpath(path, self._localDataFolder)
@@ -141,7 +140,7 @@ class Sync(object):
         isConnected = False
         webdavConnection = CollectionStorer(self.webdavUrl,
                                             validateResourceNames=False)
-        webdavConnection.connection.logger.setLevel(logging.DEBUG)
+        webdavConnection.connection.logger.setLevel(logging.WARNING)
         time_delta = None
 
         # Test KhtNotes folder and authenticate

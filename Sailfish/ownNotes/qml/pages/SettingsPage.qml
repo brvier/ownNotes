@@ -174,7 +174,7 @@ Page {
 
             TextField {
                 width: parent.width
-                label: qsTR("Api Key")
+                label: qsTr("Api Key")
                 text: pyNotes.get('KhtCms','apikey')
                 placeholderText: qsTr("Api Key")
                 onTextChanged: {

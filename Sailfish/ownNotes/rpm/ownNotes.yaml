@@ -1,6 +1,6 @@
 Name: ownNotes
 Summary: A notes taking app with ownCloud Sync
-Version: 1.2.6
+Version: 1.2.7
 Release: 1
 Group: Qt/Qt
 URL: http://example.org/
@@ -12,22 +12,22 @@ Description: |
 Configure: none
 Builder: qtc5
 PkgConfigBR:
-- sailfishapp >= 0.0.10
-- Qt5Core
-- Qt5Qml
 - Qt5Quick
+- Qt5Qml
+- Qt5Core
+- sailfishapp >= 0.0.10
 Requires:
 - sailfishsilica-qt5 >= 0.10.9
 Files:
-- /usr/share/icons/hicolor/86x86/apps
-- /usr/share/applications
-- /usr/share/ownNotes
-- /usr/bin
-- '%{_datadir}/icons/hicolor/86x86/apps/%{name}.png'
-- '%{_datadir}/applications/%{name}.desktop'
-- '%{_datadir}/%{name}/qml'
-- '%{_bindir}'
-- '%{_datadir}/%{name}/python'
-- /usr/share/ownNotes/python
 - /usr/share/ownNotes/i18n
+- /usr/share/ownNotes/python
+- '%{_datadir}/%{name}/python'
+- '%{_bindir}'
+- '%{_datadir}/%{name}/qml'
+- '%{_datadir}/applications/%{name}.desktop'
+- '%{_datadir}/icons/hicolor/86x86/apps/%{name}.png'
+- /usr/bin
+- /usr/share/ownNotes
+- /usr/share/applications
+- /usr/share/icons/hicolor/86x86/apps
 PkgBR: [python-devel]

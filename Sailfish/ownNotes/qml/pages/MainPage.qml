@@ -50,8 +50,6 @@ Page {
 
     }
 
-    // Place our content in a Column.  The PageHeader is always placed at the top
-    // of the page, followed by our content.
 
     Component {
         id:notesViewDelegate
@@ -142,6 +140,10 @@ Page {
         }
     }
 
+    // Place our content in a Column.  The PageHeader is always placed at the top
+    // of the page, followed by our content.
+
+
     SilicaListView {
         id: notesView
         model: notesModel
@@ -149,19 +151,19 @@ Page {
         currentIndex: -1
         header: Column {
             width: parent.width
+
             PageHeader {
                 id: header
                 title: "ownNotes"
-
             }
 
-            ProgressBar {
+            /*ProgressBar {
                 width: parent.width
                 indeterminate: true
                 label: qsTr("Sync")
                 valueText: qsTr("Sync")
                 visible: sync.running ? true : false
-            }
+            }*/
 
             SearchField {
                 id: searchField
@@ -186,6 +188,8 @@ Page {
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
+            busy: sync.running
+
             MenuItem {
                 text: qsTr("About")
                 onClicked:
@@ -219,6 +223,11 @@ Page {
                                 {path:path});
                 }
             }
+
+            MenuLabel {
+                text: qsTr("Syncing ...")
+            }
+
         }
 
         PushUpMenu {
@@ -241,18 +250,11 @@ Page {
         }
 
     }
+
+
     Component.onCompleted: {
-        console.debug('onCompleted notesModel')
         pyNotes.listNotes('');
-    }
-
-    //State used to detect when we should refresh view
-    onStatusChanged: {
-        if (status === PageStatus.Activating) {
-            console.log('Page Status Activating (MainPage)')
-            notesModel.applyFilter(searchText);
-        }
-
+        notesView.scrollToTop()
     }
 
     Component {
@@ -329,9 +331,16 @@ Page {
             }
 
             onAccepted: {
-                //wizard.selection = selector.value
                 pyNotes.setCategory(path, selector.value)
             }
+        }
+    }
+
+    //State used to detect when we should refresh view
+    onStatusChanged: {
+        if (status === PageStatus.Activating) {
+            console.log('Page Status Activating (MainPage)')
+            notesModel.applyFilter(searchText);
         }
     }
 

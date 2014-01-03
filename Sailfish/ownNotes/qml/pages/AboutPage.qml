@@ -23,7 +23,7 @@ Page {
             anchors {
                 left: parent.left
                 right: parent.right
-                margins: 10
+                margins: 2
             }
 
             spacing: 10

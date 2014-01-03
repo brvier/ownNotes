@@ -7,12 +7,6 @@ Page {
     id: page
     property alias path: textEditor.path;
 
-    /*function saveFile() {
-        if ((textEditor.modified == true)) {
-            noteSaver.saveNote(textEditor.path, textEditor.text);
-        }
-    }*/
-
     Python {
         id: noteSaver
 
@@ -74,38 +68,77 @@ Page {
         }
     }*/
 
+    function publishToScriptogram() {
+        remorsePublish.execute(qsTr("Publish to Scriptogr.am"),
+                               function() { pyNotes.publishToScriptogram(textEditor.text) } )
+    }
+    function publishAsPostToKhtCMS() {
+        remorsePublish.execute(qsTr("Publish as Post to KhtCms"),
+                               function() { pyNotes.publishAsPostToKhtCMS(textEditor.text) } )
+    }
+    function publishAsPageToKhtCMS() {
+        remorsePublish.execute(qsTr("Publish as Page to KhtCms"),
+                               function() { pyNotes.publishAsPageToKhtCMS(textEditor.text) } )
+    }
+
+    RemorsePopup {
+        id: remorsePublish
+    }
+
     SilicaFlickable {
         id: flick
         anchors.fill: parent
-        contentHeight:  contentItem.childrenRect.height
+        contentHeight:  contentColumn.height
+        contentWidth: flick.width
+
+        /*PullDownMenu {
+            MenuItem {
+                text: qsTr("About")
+                onClicked:
+                    pageStack.push(Qt.createComponent(Qt.resolvedUrl("AboutPage.qml")),
+                                   {
+                                       title : 'ownNotes ' + aboutInfos.version,
+                                       icon: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png'),
+                                       slogan : qsTr('Notes in your own cloud !'),
+                                       contentText : aboutInfos.contentText
+                                   })
+
+            }
+            MenuItem {
+                text: qsTr("Settings")
+                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
+            }
+
+        }*/
 
         PullDownMenu {
             MenuItem {
                 text: qsTr("Publish to Scriptogr.am");
                 visible: pyNotes.get('Scriptogram','userid') != '' ? true : false;
-                onClicked: {pyNote.publishToScriptogram(textEditor.text);
-                }
+                onClicked: {publishToScriptogram();}
             }
             MenuItem {
                 text: qsTr("Publish as Post to KhtCms");
                 visible: pyNotes.get('KhtCms','apikey') != '' ? true : false;
-                onClicked: {pyNotes.publishAsPostToKhtCMS(textEditor.text);
-                }
+                onClicked: {publishAsPostToKhtCMS();}
             }
+
             MenuItem {
                 text: qsTr("Publish as Page to KhtCms");
                 visible: pyNotes.get('KhtCms','apikey') != '' ? true : false;
-                onClicked: {pyNote.publishAsPageToKhtCMS(textEditor.text);
-                }
+                onClicked: {publishAsPageToKhtCMS();}
             }
+
         }
 
         Column {
-            width: page.width
-            spacing: 20
+            id: contentColumn
+            anchors.fill: parent
+            spacing: 5
             PageHeader {
                 title: "ownNotes"
             }
+
             TextArea {
                 id:textEditor
                 property bool modified: false
@@ -168,6 +201,7 @@ Page {
                         }
                     }
                 }
+
             }
 
         }
@@ -180,7 +214,6 @@ Page {
         }
     }
 }
-
 
 
 
