@@ -23,10 +23,10 @@ Page {
             anchors {
                 left: parent.left
                 right: parent.right
-                margins: 2
+                margins: 0
             }
 
-            spacing: 10
+            spacing: 2
 
             PageHeader {
                 title: qsTr('About ownNotes')
@@ -59,7 +59,7 @@ Page {
 
             TextArea {
                 id: content
-                text: '<style>a:link {color: " + Theme.highlightColor + "; }</style>' + contentText
+                text: '<style>a:link {color: ' + Theme.highlightColor + '; }</style>' + contentText
                 width: aboutFlick.width
                 wrapMode: TextEdit.WordWrap
                 readOnly: true

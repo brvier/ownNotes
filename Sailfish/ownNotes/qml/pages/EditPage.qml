@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.Silica.theme 1.0
 import net.khertan.python 1.0
+import net.khertan.documenthandler 1.0
 
 Page {
     id: page
@@ -12,7 +13,7 @@ Page {
 
         function saveNote(filepath, data) {
 
-            var new_filepath = call('ownnotes.saveNote', [filepath, data]);
+            var new_filepath = call('ownnotes.saveNote', [filepath, data, false]);
             if (filepath != new_filepath) {
                 textEditor.modified = false;
                 textEditor.load(new_filepath); }
@@ -45,10 +46,10 @@ Page {
     Python {
         id: noteHighlighter
 
-        function highligth() {
+        /*function highligth() {
             textEditor.fill(call('ownnotes.reHighlight', [textEditor.text,]))
-            autoTimer.stop();
-        }
+            //autoTimer.stop();
+        }*/
 
         onException: {
             console.log(type + ':' +data)
@@ -70,15 +71,15 @@ Page {
 
     function publishToScriptogram() {
         remorsePublish.execute(qsTr("Publish to Scriptogr.am"),
-                               function() { pyNotes.publishToScriptogram(textEditor.text) } )
+                               function() { pyNotes.publishToScriptogram(documentHandler.text) } )
     }
     function publishAsPostToKhtCMS() {
         remorsePublish.execute(qsTr("Publish as Post to KhtCms"),
-                               function() { pyNotes.publishAsPostToKhtCMS(textEditor.text) } )
+                               function() { pyNotes.publishAsPostToKhtCMS(documentHandler.text) } )
     }
     function publishAsPageToKhtCMS() {
         remorsePublish.execute(qsTr("Publish as Page to KhtCms"),
-                               function() { pyNotes.publishAsPageToKhtCMS(textEditor.text) } )
+                               function() { pyNotes.publishAsPageToKhtCMS(documentHandler.text) } )
     }
 
     RemorsePopup {
@@ -147,29 +148,32 @@ Page {
                 color: Theme.primaryColor
                 font.family: pyNotes.get('Display', 'fontfamily')
                 font.pixelSize: pyNotes.get('Display', 'fontsize')
-
-                function fill(data){
+                text: documentHandler.text
+                //textFormat: Text.PlainText
+                /*function fill(data){
                     var curPos = textEditor.cursorPosition;
                     var rectPos = textEditor.positionToRectangle(curPos)
                     var selStart = textEditor.selectionStart;
                     var selEnd = textEditor.selectionEnd;
                     var txt = data;
-                    textEditor.text = txt;
+                    textEditor.text = document.text;
                     curPos = textEditor.positionAt(rectPos.x, rectPos.y)
                     textEditor.cursorPosition = curPos
                     textEditor.select(selStart,selEnd);
-                    autoTimer.stop();
-                }
+                    //autoTimer.stop();
+                }*/
 
                 Component.onCompleted: {
                     pyNotes.setColors(Theme.highlightColor,
                                       Theme.secondaryHighlightColor,
                                       '#65ffdd')
                     var txt = pyNotes.loadNote(textEditor.path);
-                    _editor.textFormat = Text.RichText;
-                    textEditor.text = txt;
+                    //_editor.textFormat = Text.RichText;
+                    documentHandler.text = txt;
                     textEditor.modified = false;
                     autoTimer.stop();
+                    forceActiveFocus();
+
                 }
 
                 onTextChanged: {
@@ -197,11 +201,20 @@ Page {
                     repeat: false
                     onTriggered: {
                         if (textEditor.modified) {
-                            noteHighlighter.highligth();
+                            noteSaver.saveNote(textEditor.path, textEditor.text);
                         }
                     }
                 }
 
+                DocumentHandler {
+                    id: documentHandler
+                    target: textEditor._editor
+                    cursorPosition: textEditor.cursorPosition
+                    selectionStart: textEditor.selectionStart
+                    selectionEnd: textEditor.selectionEnd
+                    Component.onCompleted: documentHandler.setColors(Theme.primaryColor, Theme.secondaryColor,
+                                                                     Theme.highlightColor, Theme.secondaryHighlightColor);
+                }
             }
 
         }

@@ -1,0 +1,80 @@
+# **Light background (with subtler emphasis styles)** version of styles
+# using _'Solarized'_ color scheme
+# by _Ethan Schoonover_: <http://ethanschoonover.com/solarized>
+# 
+
+editor
+foreground: 657b83 # base00
+background: fdf6e3 # base3
+caret: 073642 # base02
+
+editor-current-line
+background: eee8d5 # base2
+
+H1
+foreground: 6c71c4 # violet
+font-style: bold
+
+H2
+foreground: 268bd2 # blue
+font-style: bold
+
+H3
+foreground: 268bd2 # blue
+
+H4
+foreground: 268bd2 # blue
+
+H5
+foreground: 268bd2 # blue
+
+H6
+foreground: 268bd2 # blue
+
+HRULE
+foreground: 586e75 # base01
+
+LIST_BULLET
+foreground: b58900 # yellow
+
+LIST_ENUMERATOR
+foreground: b58900 # yellow
+
+LINK
+foreground: 2aa198 # cyan
+
+AUTO_LINK_URL
+foreground: 2aa198 # cyan
+
+AUTO_LINK_EMAIL
+foreground: 2aa198 # cyan
+
+IMAGE
+foreground: d33682 # magenta
+
+REFERENCE
+foreground: 80b58900 # yellow, reduced alpha
+
+CODE
+foreground: 859900 # green
+
+EMPH
+foreground: 586e75 # base01
+font-style: italic
+
+STRONG
+foreground: 586e75 # base01
+font-style: bold
+
+HTML_ENTITY
+foreground: 6c71c4 # violet
+
+COMMENT
+foreground: 93a1a1 # base1
+
+VERBATIM
+foreground: 859900 # green
+
+BLOCKQUOTE
+foreground: d33682 # magenta
+

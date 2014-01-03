@@ -16,7 +16,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.2.7'
+        property string version:'1.5.0'
         property string contentText:'A note taking application with sync for ownCloud or any WebDav.' +
                                     '<br>Web Site : http://khertan.net/ownnotes' +
                                     '<br><br>By Benoît HERVIER (Khertan)' +
@@ -62,7 +62,10 @@ ApplicationWindow
                                     '<br>1.2.7 : <br>' +
                                     '  * Replace busycircle on Cover for a label (Sailfish)<br>' +
                                     '  * Add remorse to publish menu (Sailfish)<br>' +
-                                    '  * Use pull down busy instead of ugly progress bar (Sailfish)<br>' +                                    '<br><br><b>Thanks to : </b>' +
+                                    '  * Use pull down busy instead of ugly progress bar (Sailfish)<br>' +
+                                    '<br>1.5.0 : <br>' +
+                                    '  * Use a real markdown parser with QSyntaxHighligher (Sailfish)<br>' +
+                                    '<br><br><b>Thanks to : </b>' +
                                     '<br>Radek Novacek' +
                                     '<br>caco3 on talk.maemo.org' +
                                     '<br>Thomas Perl for PyOtherSide' +
@@ -127,7 +130,7 @@ ApplicationWindow
         signal noteDeleted(string path)
 
         function loadNote(path) {
-            var message = call('ownnotes.loadNote', [path,]);
+            var message = call('ownnotes.loadNote', [path, false]);
             return message;
         }
 

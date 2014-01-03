@@ -39,6 +39,9 @@
 #include <QGuiApplication>
 #include <QQuickView>
 
+#include <QtCore/QString>
+#include "documenthandler.h"
+
 int main(int argc, char *argv[])
 {
     // SailfishApp::main() will display "qml/template.qml", if you need more
@@ -56,6 +59,7 @@ int main(int argc, char *argv[])
     translator.load(QLocale::system(), "ownNotes", "_", SailfishApp::pathTo("i18n").toLocalFile(), ".qm");
     app->installTranslator(&translator);
     QPython::registerQML();
+    qmlRegisterType<DocumentHandler>("net.khertan.documenthandler", 1, 0, "DocumentHandler");
     QQuickView *v = SailfishApp::createView();
     v->setSource(SailfishApp::pathTo("qml/ownNotes.qml"));
     v->show();
