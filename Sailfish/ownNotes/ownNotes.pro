@@ -35,6 +35,7 @@ OTHER_FILES += qml/ownNotes.qml \
     qml/pages/EditPage.qml \
     qml/pages/AboutPage.qml \
     icons/* \
+    i18n/*
 
 HEADERS += \
     src/qpython.h \
@@ -43,7 +44,7 @@ HEADERS += \
 
 python_files.files = ../../python/*
 python_files.path = /usr/share/$$TARGET/python
-qm_files.files = i18n/*.qm
+qm_files.files = i18n
 qm_files.path = /usr/share/$$TARGET
 INSTALLS += python_files qm_files
 
