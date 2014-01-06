@@ -42,7 +42,7 @@
 #define DOCUMENTHANDLER_H
 
 #include <QQuickTextDocument>
-#include "peg-markdown-highlight/highlighter.h"
+#include "highlighter.h"
 #include <QtGui/QTextCharFormat>
 #include <QtCore/QTextCodec>
 
@@ -63,21 +63,7 @@ class DocumentHandler : public QObject
     Q_PROPERTY(int selectionStart READ selectionStart WRITE setSelectionStart NOTIFY selectionStartChanged)
     Q_PROPERTY(int selectionEnd READ selectionEnd WRITE setSelectionEnd NOTIFY selectionEndChanged)
 
-    Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor NOTIFY textColorChanged)
-    Q_PROPERTY(QString fontFamily READ fontFamily WRITE setFontFamily NOTIFY fontFamilyChanged)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment NOTIFY alignmentChanged)
-
-    Q_PROPERTY(bool bold READ bold WRITE setBold NOTIFY boldChanged)
-    Q_PROPERTY(bool italic READ italic WRITE setItalic NOTIFY italicChanged)
-    Q_PROPERTY(bool underline READ underline WRITE setUnderline NOTIFY underlineChanged)
-
-    Q_PROPERTY(int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
-
-    Q_PROPERTY(QStringList defaultFontSizes READ defaultFontSizes NOTIFY defaultFontSizesChanged)
-
-    Q_PROPERTY(QUrl fileUrl READ fileUrl WRITE setFileUrl NOTIFY fileUrlChanged)
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
-    Q_PROPERTY(QString documentTitle READ documentTitle WRITE setDocumentTitle NOTIFY documentTitleChanged)
 
 public:
     DocumentHandler();
@@ -94,63 +80,18 @@ public:
     int selectionStart() const { return m_selectionStart; }
     int selectionEnd() const { return m_selectionEnd; }
 
-    QString fontFamily() const;
-
-    QColor textColor() const;
-
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment a);
-
-    bool bold() const;
-    bool italic() const;
-    bool underline() const;
-    int fontSize() const;
-
-    QStringList defaultFontSizes() const;
-    QUrl fileUrl() const;
     QString text() const;
 
-    QString documentTitle() const;
-
-private Q_SLOTS:
-    void emitTextChanged();
-
 public Q_SLOTS:
-    void setBold(bool arg);
-    void setItalic(bool arg);
-    void setUnderline(bool arg);
-    void setFontSize(int arg);
-    void setTextColor(const QColor &arg);
-    void setFontFamily(const QString &arg);
-
-    void setFileUrl(const QUrl &arg);
     void setText(const QString &arg);
-
-    void setDocumentTitle(QString arg);
-
-    void setColors(QString primaryColor, QString secondaryColor, QString highlightColor, QString secondaryHighlightColor);
+    void setStyle(QString primaryColor, QString secondaryColor, QString highlightColor, QString secondaryHighlightColor, qreal m_baseFontPointSize);
 
 Q_SIGNALS:
     void targetChanged();
     void cursorPositionChanged();
     void selectionStartChanged();
     void selectionEndChanged();
-
-    void fontFamilyChanged();
-    void textColorChanged();
-    void alignmentChanged();
-
-    void boldChanged();
-    void italicChanged();
-    void underlineChanged();
-
-    void fontSizeChanged();
-    void defaultFontSizesChanged();
-
-    void fileUrlChanged();
-
     void textChanged();
-    void documentTitleChanged();
 
 private:
     void reset();
@@ -161,22 +102,14 @@ private:
 
     QQuickItem *m_target;
     QTextDocument *m_doc;
-    HGMarkdownHighlighter *m_highlighter;
+    Highlighter *m_highlighter;
 
     int m_cursorPosition;
     int m_selectionStart;
     int m_selectionEnd;
 
-    QFont m_font;
-    int m_fontSize;
-    QUrl m_fileUrl;
     QString m_text;
-    QString m_documentTitle;
 
-    QString m_primaryColor;
-    QString m_secondaryColor;
-    QString m_highlightColor;
-    QString m_secondaryHighlightColor;
 };
 
 #endif

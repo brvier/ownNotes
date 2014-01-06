@@ -21,9 +21,7 @@ qtHaveModule(widgets) {
 SOURCES += src/ownNotes.cpp \
     src/qpython.cpp \
     src/documenthandler.cpp \
-    src/peg-markdown-highlight/pmh_styleparser.c \
-    src/peg-markdown-highlight/pmh_parser.c \
-    src/peg-markdown-highlight/highlighter.cpp
+    src/highlighter.cpp
 
 OTHER_FILES += qml/ownNotes.qml \
     qml/cover/CoverPage.qml \
@@ -37,19 +35,11 @@ OTHER_FILES += qml/ownNotes.qml \
     qml/pages/EditPage.qml \
     qml/pages/AboutPage.qml \
     icons/* \
-    src/peg-markdown-highlight/styles/solarized-light-subtle.style \
-    src/peg-markdown-highlight/styles/solarized-light.style \
-    src/peg-markdown-highlight/styles/solarized-dark-subtle.style \
-    src/peg-markdown-highlight/styles/solarized-dark.style \
-    src/peg-markdown-highlight/styles/default.style
 
 HEADERS += \
     src/qpython.h \
     src/documenthandler.h \
-    src/peg-markdown-highlight/pmh_styleparser.h \
-    src/peg-markdown-highlight/pmh_parser.h \
-    src/peg-markdown-highlight/pmh_definitions.h \
-    src/peg-markdown-highlight/highlighter.h
+    src/highlighter.h
 
 python_files.files = ../../python/*
 python_files.path = /usr/share/$$TARGET/python

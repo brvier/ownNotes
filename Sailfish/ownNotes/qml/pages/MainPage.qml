@@ -42,7 +42,10 @@ Page {
             notesModel.fill(data)
         }
         onRequireRefresh: {
-            notesModel.applyFilter(searchText)
+            if ((page.status === PageStatus.Activating) |
+                (page.status === PageStatus.Active)) {
+                notesModel.applyFilter(searchText);
+            }
         }
         onNoteDeleted: {
             notesModel.rm(path)

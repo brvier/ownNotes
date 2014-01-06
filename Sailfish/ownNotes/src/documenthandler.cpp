@@ -68,68 +68,15 @@ void DocumentHandler::setTarget(QQuickItem *target)
         QQuickTextDocument *qqdoc = doc.value<QQuickTextDocument*>();
         if (qqdoc)
             m_doc = qqdoc->textDocument();
-            m_highlighter = new HGMarkdownHighlighter(m_doc);
-            m_highlighter->setWaitInterval(1.0);
-            m_highlighter->setMakeLinksClickable(false);
-            m_highlighter->parseAndHighlightNow();
-            //connect(m_doc, SIGNAL(contentsChange(int,int,int)),
-            //        m_highlighter, SLOT(handleContentsChange(int, int, int)));
-            connect(m_doc, SIGNAL(contentsChanged()),
-                    this, SLOT(emitTextChanged()));
+            m_highlighter = new Highlighter(m_doc);
     }
     emit targetChanged();
 }
 
-void DocumentHandler::setColors(QString primaryColor, QString secondaryColor, QString highlightColor, QString secondaryHighlightColor)
+void DocumentHandler::setStyle(QString primaryColor, QString secondaryColor, QString highlightColor, QString secondaryHighlightColor, qreal m_baseFontPointSize)
 {
-    /*m_primaryColor = QString(primaryColor);
-    m_secondaryColor = QString(secondaryColor);
-    m_highlightColor = QString(highlightColor);
-    m_secondaryHighlightColor = QString(secondaryHighlightColor);*/
-
     if (m_highlighter) {
-        m_highlighter->setColors(primaryColor, secondaryColor, highlightColor, secondaryHighlightColor);
-    }
-
-}
-void DocumentHandler::setFileUrl(const QUrl &arg)
-{
-    if (m_fileUrl != arg) {
-        m_fileUrl = arg;
-        QString fileName = QQmlFile::urlToLocalFileOrQrc(arg);
-        if (QFile::exists(fileName)) {
-            QFile file(fileName);
-            if (file.open(QFile::ReadOnly)) {
-                QByteArray data = file.readAll();
-                QTextCodec *codec = QTextCodec::codecForHtml(data);
-                setText(codec->toUnicode(data));
-                if (m_doc)
-                    m_doc->setModified(false);
-                if (fileName.isEmpty())
-                    m_documentTitle = QStringLiteral("untitled.txt");
-                else
-                    m_documentTitle = QFileInfo(fileName).fileName();
-
-                emit textChanged();
-                emit documentTitleChanged();
-
-                reset();
-            }
-        }
-        emit fileUrlChanged();
-    }
-}
-
-QString DocumentHandler::documentTitle() const
-{
-    return m_documentTitle;
-}
-
-void DocumentHandler::setDocumentTitle(QString arg)
-{
-    if (m_documentTitle != arg) {
-        m_documentTitle = arg;
-        emit documentTitleChanged();
+        m_highlighter->setStyle(primaryColor, secondaryColor, highlightColor, secondaryHighlightColor, m_baseFontPointSize);
     }
 }
 
@@ -140,11 +87,6 @@ void DocumentHandler::setText(const QString &arg)
         m_text = arg;
         emit textChanged();
     }
-}
-
-QUrl DocumentHandler::fileUrl() const
-{
-    return m_fileUrl;
 }
 
 QString DocumentHandler::text() const
@@ -164,20 +106,9 @@ void DocumentHandler::setCursorPosition(int position)
 
 void DocumentHandler::reset()
 {
-    emit fontFamilyChanged();
-    emit alignmentChanged();
-    emit boldChanged();
-    emit italicChanged();
-    emit underlineChanged();
-    emit fontSizeChanged();
-    emit textColorChanged();
+
 }
 
-void DocumentHandler::emitTextChanged()
-{
-
-    qDebug() << "textChanged emited";
-}
 
 QTextCursor DocumentHandler::textCursor() const
 {
@@ -209,139 +140,3 @@ void DocumentHandler::setSelectionEnd(int position)
     m_selectionEnd = position;
 }
 
-void DocumentHandler::setAlignment(Qt::Alignment a)
-{
-    QTextBlockFormat fmt;
-    fmt.setAlignment((Qt::Alignment) a);
-    QTextCursor cursor = QTextCursor(m_doc);
-    cursor.setPosition(m_selectionStart, QTextCursor::MoveAnchor);
-    cursor.setPosition(m_selectionEnd, QTextCursor::KeepAnchor);
-    cursor.mergeBlockFormat(fmt);
-    emit alignmentChanged();
-}
-
-Qt::Alignment DocumentHandler::alignment() const
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return Qt::AlignLeft;
-    return textCursor().blockFormat().alignment();
-}
-
-bool DocumentHandler::bold() const
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return false;
-    return textCursor().charFormat().fontWeight() == QFont::Bold;
-}
-
-bool DocumentHandler::italic() const
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return false;
-    return textCursor().charFormat().fontItalic();
-}
-
-bool DocumentHandler::underline() const
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return false;
-    return textCursor().charFormat().fontUnderline();
-}
-
-void DocumentHandler::setBold(bool arg)
-{
-    QTextCharFormat fmt;
-    fmt.setFontWeight(arg ? QFont::Bold : QFont::Normal);
-    mergeFormatOnWordOrSelection(fmt);
-    emit boldChanged();
-}
-
-void DocumentHandler::setItalic(bool arg)
-{
-    QTextCharFormat fmt;
-    fmt.setFontItalic(arg);
-    mergeFormatOnWordOrSelection(fmt);
-    emit italicChanged();
-}
-
-void DocumentHandler::setUnderline(bool arg)
-{
-    QTextCharFormat fmt;
-    fmt.setFontUnderline(arg);
-    mergeFormatOnWordOrSelection(fmt);
-    emit underlineChanged();
-}
-
-int DocumentHandler::fontSize() const
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return 0;
-    QTextCharFormat format = cursor.charFormat();
-    return format.font().pointSize();
-}
-
-void DocumentHandler::setFontSize(int arg)
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return;
-    QTextCharFormat format;
-    format.setFontPointSize(arg);
-    mergeFormatOnWordOrSelection(format);
-    emit fontSizeChanged();
-}
-
-QColor DocumentHandler::textColor() const
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return QColor(Qt::black);
-    QTextCharFormat format = cursor.charFormat();
-    return format.foreground().color();
-}
-
-void DocumentHandler::setTextColor(const QColor &c)
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return;
-    QTextCharFormat format;
-    format.setForeground(QBrush(c));
-    mergeFormatOnWordOrSelection(format);
-    emit textColorChanged();
-}
-
-QString DocumentHandler::fontFamily() const
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return QString();
-    QTextCharFormat format = cursor.charFormat();
-    return format.font().family();
-}
-
-void DocumentHandler::setFontFamily(const QString &arg)
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.isNull())
-        return;
-    QTextCharFormat format;
-    format.setFontFamily(arg);
-    mergeFormatOnWordOrSelection(format);
-    emit fontFamilyChanged();
-}
-
-QStringList DocumentHandler::defaultFontSizes() const
-{
-    // uhm... this is quite ugly
-    QStringList sizes;
-    QFontDatabase db;
-    foreach (int size, db.standardSizes())
-        sizes.append(QString::number(size));
-    return sizes;
-}

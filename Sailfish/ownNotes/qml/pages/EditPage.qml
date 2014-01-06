@@ -13,6 +13,7 @@ Page {
 
         function saveNote(filepath, data) {
 
+            console.debug('Calling saveNote')
             var new_filepath = call('ownnotes.saveNote', [filepath, data, false]);
             if (filepath != new_filepath) {
                 textEditor.modified = false;
@@ -21,7 +22,7 @@ Page {
                 textEditor.modified = false;
                 autoTimer.stop()
             }
-            pyNotes.requireRefresh();
+            //pyNotes.requireRefresh();
         }
 
         onFinished: {
@@ -134,8 +135,11 @@ Page {
 
         Column {
             id: contentColumn
-            anchors.fill: parent
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
             spacing: 5
+
             PageHeader {
                 title: "ownNotes"
             }
@@ -164,20 +168,18 @@ Page {
                 }*/
 
                 Component.onCompleted: {
-                    pyNotes.setColors(Theme.highlightColor,
+                    /*pyNotes.setColors(Theme.highlightColor,
                                       Theme.secondaryHighlightColor,
-                                      '#65ffdd')
+                                      '#65ffdd')*/
                     var txt = pyNotes.loadNote(textEditor.path);
                     //_editor.textFormat = Text.RichText;
                     documentHandler.text = txt;
                     textEditor.modified = false;
                     autoTimer.stop();
-                    forceActiveFocus();
-
+                    textEditor.forceActiveFocus();
                 }
 
                 onTextChanged: {
-                    console.log('onTextChanged emited')
                     if (focus) {
                         textEditor.modified = true;
                         autoTimer.restart();
@@ -197,7 +199,7 @@ Page {
 
                 Timer {
                     id: autoTimer
-                    interval: 2000
+                    interval: 5000
                     repeat: false
                     onTriggered: {
                         if (textEditor.modified) {
@@ -209,11 +211,26 @@ Page {
                 DocumentHandler {
                     id: documentHandler
                     target: textEditor._editor
+
                     cursorPosition: textEditor.cursorPosition
                     selectionStart: textEditor.selectionStart
                     selectionEnd: textEditor.selectionEnd
-                    Component.onCompleted: documentHandler.setColors(Theme.primaryColor, Theme.secondaryColor,
-                                                                     Theme.highlightColor, Theme.secondaryHighlightColor);
+                    Component.onCompleted: {
+                        documentHandler.setStyle(Theme.primaryColor, Theme.secondaryColor,
+                                                  Theme.highlightColor, Theme.secondaryHighlightColor,
+                                                  textEditor.font.pixelSize);
+
+                        var txt = pyNotes.loadNote(textEditor.path);
+                        documentHandler.text = txt;
+                        textEditor.modified = false;
+                        autoTimer.stop();
+                        textEditor.forceActiveFocus();
+
+                    }
+                    onTextChanged: {
+                        textEditor.update()
+                    }
+
                 }
             }
 
@@ -224,6 +241,7 @@ Page {
         if (status == PageStatus.Deactivating) {
             console.debug('onStatusChanged : PageStatus.Deactivating');
             noteSaver.saveNote(textEditor.path, textEditor.text);
+            pyNotes.requireRefresh();
         }
     }
 }
