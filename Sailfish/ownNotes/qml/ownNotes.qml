@@ -194,16 +194,12 @@ ApplicationWindow
         }
 
         Component.onCompleted: {
-            console.debug('pyNotes start oncompleted');
             addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
-            console.debug('pyNotes completed');
         }
     }
 
     function onError(errMsg) {
-        //errorEditBanner.text = errMsg;
-        //errorEditBanner.show();
         errorPanel.displayError(errMsg)
         console.log(errMsg)
     }

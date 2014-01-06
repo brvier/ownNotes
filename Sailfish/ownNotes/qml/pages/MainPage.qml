@@ -11,14 +11,12 @@ Page {
 
     ListModel {
         id: notesModel
-
         function applyFilter(text) {
             pyNotes.listNotes(text);
         }
 
         function fill(data) {
             notesModel.clear();
-
             // Python returns a list of dicts - we can simply append
             // each dict in the list to the list model
             for (var i=0; i<data.length; i++) {
@@ -42,8 +40,7 @@ Page {
             notesModel.fill(data)
         }
         onRequireRefresh: {
-            if ((page.status === PageStatus.Activating) |
-                (page.status === PageStatus.Active)) {
+            if (page.status === PageStatus.Active) {
                 notesModel.applyFilter(searchText);
             }
         }
@@ -58,10 +55,6 @@ Page {
         id:notesViewDelegate
 
         ListItem {
-            /*                Column {
-                    x: Theme.paddingLarge
-                    height: Theme.itemSizeSmall
-                    width: notesView.width*/
             id: listItem
             menu: contextMenuComponent
 
@@ -135,8 +128,6 @@ Page {
             }
 
             onClicked: {
-
-                console.log("Clicked " + path)
                 var editingPage = Qt.createComponent(Qt.resolvedUrl("EditPage.qml"));
                 pageStack.push(editingPage, {path: path});
             }
@@ -145,8 +136,6 @@ Page {
 
     // Place our content in a Column.  The PageHeader is always placed at the top
     // of the page, followed by our content.
-
-
     SilicaListView {
         id: notesView
         model: notesModel
@@ -154,19 +143,12 @@ Page {
         currentIndex: -1
         header: Column {
             width: parent.width
+            height: header.height + searchField.height
 
             PageHeader {
                 id: header
                 title: "ownNotes"
             }
-
-            /*ProgressBar {
-                width: parent.width
-                indeterminate: true
-                label: qsTr("Sync")
-                valueText: qsTr("Sync")
-                visible: sync.running ? true : false
-            }*/
 
             SearchField {
                 id: searchField
@@ -252,12 +234,10 @@ Page {
             text: qsTr("No notes.")
         }
 
-    }
+        Component.onCompleted: {
+            notesView.scrollToTop()
+        }
 
-
-    Component.onCompleted: {
-        pyNotes.listNotes('');
-        notesView.scrollToTop()
     }
 
     Component {

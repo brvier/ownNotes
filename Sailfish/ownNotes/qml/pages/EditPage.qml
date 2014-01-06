@@ -28,16 +28,13 @@ Page {
         onFinished: {
             pyNotes.requireRefresh();
         }
-
         onMessage: {
             console.log('saveNote result:' + data);
         }
-
         onException: {
             console.log(type + ':' + data)
             onError(type + ' : ' + data);
         }
-
         Component.onCompleted: {
             addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
@@ -46,11 +43,6 @@ Page {
 
     Python {
         id: noteHighlighter
-
-        /*function highligth() {
-            textEditor.fill(call('ownnotes.reHighlight', [textEditor.text,]))
-            //autoTimer.stop();
-        }*/
 
         onException: {
             console.log(type + ':' +data)
@@ -62,13 +54,6 @@ Page {
             importModule('ownnotes');
         }
     }
-
-    /*Connections {
-        target: noteHighlighter
-        onMessage: {
-            textEditor.fill(data)
-        }
-    }*/
 
     function publishToScriptogram() {
         remorsePublish.execute(qsTr("Publish to Scriptogr.am"),
@@ -92,26 +77,6 @@ Page {
         anchors.fill: parent
         contentHeight:  contentColumn.height
         contentWidth: flick.width
-
-        /*PullDownMenu {
-            MenuItem {
-                text: qsTr("About")
-                onClicked:
-                    pageStack.push(Qt.createComponent(Qt.resolvedUrl("AboutPage.qml")),
-                                   {
-                                       title : 'ownNotes ' + aboutInfos.version,
-                                       icon: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png'),
-                                       slogan : qsTr('Notes in your own cloud !'),
-                                       contentText : aboutInfos.contentText
-                                   })
-
-            }
-            MenuItem {
-                text: qsTr("Settings")
-                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
-            }
-
-        }*/
 
         PullDownMenu {
             MenuItem {
@@ -153,26 +118,9 @@ Page {
                 font.family: pyNotes.get('Display', 'fontfamily')
                 font.pixelSize: pyNotes.get('Display', 'fontsize')
                 text: documentHandler.text
-                //textFormat: Text.PlainText
-                /*function fill(data){
-                    var curPos = textEditor.cursorPosition;
-                    var rectPos = textEditor.positionToRectangle(curPos)
-                    var selStart = textEditor.selectionStart;
-                    var selEnd = textEditor.selectionEnd;
-                    var txt = data;
-                    textEditor.text = document.text;
-                    curPos = textEditor.positionAt(rectPos.x, rectPos.y)
-                    textEditor.cursorPosition = curPos
-                    textEditor.select(selStart,selEnd);
-                    //autoTimer.stop();
-                }*/
 
                 Component.onCompleted: {
-                    /*pyNotes.setColors(Theme.highlightColor,
-                                      Theme.secondaryHighlightColor,
-                                      '#65ffdd')*/
                     var txt = pyNotes.loadNote(textEditor.path);
-                    //_editor.textFormat = Text.RichText;
                     documentHandler.text = txt;
                     textEditor.modified = false;
                     autoTimer.stop();
@@ -181,21 +129,12 @@ Page {
 
                 onTextChanged: {
                     if (focus) {
+                        console.debug("onTextChanged")
                         textEditor.modified = true;
                         autoTimer.restart();
                     }
                 }
 
-                /*Component.onDestruction: {
-                    console.log('On destruction texteditor called');
-                    console.log(textEditor.modified);
-                    if (textEditor.modified == true) {
-                        console.log('saving notes');
-                        console.log(textEditor.path);
-                        console.log(textEditor.text);
-                        noteSaver.saveNote(textEditor.path, textEditor.text);
-                    }
-                }*/
 
                 Timer {
                     id: autoTimer
@@ -238,10 +177,12 @@ Page {
     }
 
     onStatusChanged: {
-        if (status == PageStatus.Deactivating) {
+        if (status === PageStatus.Deactivating) {
             console.debug('onStatusChanged : PageStatus.Deactivating');
-            noteSaver.saveNote(textEditor.path, textEditor.text);
-            pyNotes.requireRefresh();
+            if (textEditor.modified===true) {
+                noteSaver.saveNote(textEditor.path, textEditor.text);
+                pyNotes.requireRefresh();
+            }
         }
     }
 }
