@@ -9,10 +9,25 @@
     </message>
 </context>
 <context>
+    <name>CoverPage</name>
+    <message>
+        <source>Syncing ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>EditPage</name>
     <message>
         <source>Publish to Scriptogr.am</source>
         <translation>Опубликовать в Scriptogr.am</translation>
+    </message>
+    <message>
+        <source>Publish as Post to KhtCms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Publish as Page to KhtCms</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -61,6 +76,14 @@
         <source>Category:</source>
         <translation>Категория:</translation>
     </message>
+    <message>
+        <source>Notes in your own cloud !</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Syncing ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SettingsPage</name>
@@ -107,6 +130,14 @@
     <message>
         <source>When note are edited in several places, ownNotes will try to merge the changes if possible</source>
         <translation>Если запись редактируется в нескольких местах, ownNotes будет пытаться объединить изменения</translation>
+    </message>
+    <message>
+        <source>User ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Api Key</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

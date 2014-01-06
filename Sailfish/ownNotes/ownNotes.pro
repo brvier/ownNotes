@@ -14,9 +14,9 @@ QMAKE_LIBS += $$system(python-config --libs)
 
 CONFIG += sailfishapp
 
-qtHaveModule(widgets) {
+#qtHaveModule(widgets) {
     QT += widgets
-}
+#}
 
 SOURCES += src/ownNotes.cpp \
     src/qpython.cpp \
@@ -43,14 +43,14 @@ HEADERS += \
 
 python_files.files = ../../python/*
 python_files.path = /usr/share/$$TARGET/python
-qm_files.files = i18n
+qm_files.files = i18n/*.qm
 qm_files.path = /usr/share/$$TARGET
 INSTALLS += python_files qm_files
 
 lupdate_only {
-SOURCES = main.qml \
-          pages/*.qml \
-          cover/*.qml
+SOURCES = qml/main.qml \
+          qml/pages/*.qml \
+          qml/cover/*.qml
 }
 
 RESOURCES +=

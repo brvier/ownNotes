@@ -341,7 +341,7 @@ Page {
 
     //State used to detect when we should refresh view
     onStatusChanged: {
-        if (status === PageStatus.Activating) {
+        if (status === PageStatus.Active) {
             console.log('Page Status Activating (MainPage)')
             notesModel.applyFilter(searchText);
         }

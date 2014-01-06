@@ -9,6 +9,13 @@
     </message>
 </context>
 <context>
+    <name>CoverPage</name>
+    <message>
+        <source>Syncing ...</source>
+        <translation>Synchro ...</translation>
+    </message>
+</context>
+<context>
     <name>EditPage</name>
     <message>
         <source>Publish to Scriptogr.am</source>
@@ -72,6 +79,10 @@
     <message>
         <source>Category:</source>
         <translation>Categorie:</translation>
+    </message>
+    <message>
+        <source>Syncing ...</source>
+        <translation>Synchro ...</translation>
     </message>
 </context>
 <context>
