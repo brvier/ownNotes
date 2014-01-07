@@ -46,7 +46,10 @@ python_files.files = ../../python/*
 python_files.path = /usr/share/$$TARGET/python
 qm_files.files = i18n
 qm_files.path = /usr/share/$$TARGET
-INSTALLS += python_files qm_files
+icons_files.files = icons
+icons_files.path = /usr/share/$$TARGET
+
+INSTALLS += python_files qm_files icons_files
 
 lupdate_only {
 SOURCES = qml/ownNotes.qml \
