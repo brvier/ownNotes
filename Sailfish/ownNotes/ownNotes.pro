@@ -49,7 +49,7 @@ qm_files.path = /usr/share/$$TARGET
 INSTALLS += python_files qm_files
 
 lupdate_only {
-SOURCES = qml/main.qml \
+SOURCES = qml/ownNotes.qml \
           qml/pages/*.qml \
           qml/cover/*.qml
 }

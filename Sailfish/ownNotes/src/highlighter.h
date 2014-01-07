@@ -81,6 +81,7 @@ private:
 
     QTextCharFormat italicFormat;
     QTextCharFormat boldFormat;
+    QTextCharFormat boldItalicFormat;
     QTextCharFormat header6Format;
     QTextCharFormat header5Format;
     QTextCharFormat header4Format;

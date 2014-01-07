@@ -56,13 +56,25 @@ void Highlighter::updateRules()
 
     italicFormat.setFontItalic(true);
     rule.pattern = QRegExp("\\*([^\\\\]+)\\*");
+    rule.pattern.setMinimal(true);
     rule.format = italicFormat;
     highlightingRules.append(rule);
 
     boldFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegExp("\\*\\*([^\\\\]+)\\*\\*");
+    rule.pattern.setMinimal(true);
     rule.format = boldFormat;
     highlightingRules.append(rule);
+
+    boldItalicFormat.setFontWeight(QFont::Bold);
+    boldItalicFormat.setFontItalic(true);
+    rule.pattern = QRegExp("\\*\\*\\*([^\\\\]+)\\*\\*\\*");
+    rule.pattern.setMinimal(true);
+    rule.format = boldItalicFormat;
+    highlightingRules.append(rule);
+
+
+
 
     header6Format.setForeground(QColor(m_secondaryHighlightColor));
     header6Format.setFontPointSize(m_baseFontPointSize*0.6);
@@ -102,11 +114,13 @@ void Highlighter::updateRules()
 
     imageFormat.setForeground(QColor(m_highlightColor));
     rule.pattern = QRegExp("!\\[(.*)\\]\\((.*)\\)");
+    rule.pattern.setMinimal(true);
     rule.format = imageFormat;
     highlightingRules.append(rule);
 
     linkFormat.setForeground(QColor(m_highlightColor));
     rule.pattern = QRegExp("\\[(.*)\\]\\((.*)\\)");
+    rule.pattern.setMinimal(true);
     rule.format = linkFormat;
     highlightingRules.append(rule);
 

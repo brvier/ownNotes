@@ -17,11 +17,11 @@ ApplicationWindow
     Item {
         id: aboutInfos
         property string version:'1.5.0'
-        property string contentText:'A note taking application with sync for ownCloud or any WebDav.' +
-                                    '<br>Web Site : http://khertan.net/ownnotes' +
-                                    '<br><br>By Benoît HERVIER (Khertan)' +
-                                    '<br><b>Licensed under GPLv3</b>' +
-                                    '<br><br><b>Changelog : </b><br>' +
+        property string contentText:qsTr('A note taking application with sync for ownCloud or any WebDav.') +
+                                    '<br>' + qsTr('Web Site : http://khertan.net/ownnotes') +
+                                    '<br><br>' + qsTr('By') +' Benoît HERVIER (Khertan)' +
+                                    '<br><b>' + qsTr('Licensed under GPLv3') + '</b>'+
+                                    '<br><br><b>Changeslog : </b><br>' +
                                     '<br>1.0.0 : <br>' +
                                     '  * Initial Fork from KhtNotes<br>' +
                                     '  * Use PyOtherSide instead of PySide<br>' +
@@ -65,10 +65,16 @@ ApplicationWindow
                                     '  * Use pull down busy instead of ugly progress bar (Sailfish)<br>' +
                                     '<br>1.5.0 : <br>' +
                                     '  * Use a real markdown parser with QSyntaxHighligher (Sailfish)<br>' +
+                                    '  * Translations : Chinese, Finnish, French, Russian (Sailfish)<br>' +
+                                    '  * New icon (Sailfish)<br>' +
                                     '<br><br><b>Thanks to : </b>' +
                                     '<br>Radek Novacek' +
-                                    '<br>caco3 on talk.maemo.org' +
+                                    '<br>caco3 on talk.maemo.org for debugging' +
                                     '<br>Thomas Perl for PyOtherSide' +
+                                    '<br>Antoine Vacher for debugging help and tests' +
+                                    '<br>太空飞瓜 for Chinese translation' +
+                                    '<br>Janne Edelman for Finnish translation' +
+                                    '<br>Equeim for Russian translation and translation patch' +
                                     '<br><br><b>Privacy Policy : </b>' +
                                     '<br>ownNotes can sync your notes with a webdav storage or ownCloud instance. For this ownNotes need to know the Url, Login and Password to connect to. But this is optionnal, and you can use ownNotes without the sync feature.' +
                                     '<br><br>' +

@@ -140,4 +140,23 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>ownNotes</name>
+    <message>
+        <source>A note taking application with sync for ownCloud or any WebDav.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web Site : http://khertan.net/ownnotes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licensed under GPLv3</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>
