@@ -10,13 +10,13 @@ def current_version():
         ["git", "describe", "--abbrev=0", "--tags"], stdout=subprocess.PIPE)
     for version in process.stdout:
         break
-    return str(version, 'ascii').strip()
+    return str(version, 'utf-8').strip()
 
 
 def check_tag(tag):
     process = subprocess.Popen(["git", "tag"], stdout=subprocess.PIPE)
     for existing_tag in process.stdout:
-        if tag == str(existing_tag, 'ascii').strip():
+        if tag == str(existing_tag, 'utf-8').strip():
             return False
     return True
 
@@ -40,7 +40,7 @@ def generate_changelog(version):
     process = subprocess.Popen(
         ["git", "log", "%s..HEAD" % current_version()], stdout=subprocess.PIPE)
     for line in process.stdout:
-        stripedLine = str(line, 'ascii').strip()
+        stripedLine = str(line, 'utf-8').strip()
         if stripedLine.startswith("[B]"):
             bugs.append({"type": "bug", "text": stripedLine[3:].strip()})
         if stripedLine.startswith("[F]"):
