@@ -13,7 +13,7 @@ Name:       ownNotes
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    A notes taking app with ownCloud Sync
-Version:    1.5.0
+Version:    1.5.1
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
@@ -30,8 +30,7 @@ BuildRequires:  python-devel
 BuildRequires:  desktop-file-utils
 
 %description
-Short description of my SailfishOS Application
-
+A notes taking app with ownCloud Sync and markdown support.
 
 %prep
 %setup -q -n %{name}-%{version}

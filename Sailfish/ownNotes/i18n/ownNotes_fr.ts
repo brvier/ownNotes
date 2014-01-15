@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.0">
 <context>
     <name>AboutPage</name>
     <message>
@@ -49,10 +47,6 @@
         <translation>Effacer</translation>
     </message>
     <message>
-        <source>Sync</source>
-        <translation>Synchro</translation>
-    </message>
-    <message>
         <source>Search</source>
         <translation>Recherche</translation>
     </message>
@@ -69,8 +63,16 @@
         <translation>Paramètres</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>Synchro</translation>
+    </message>
+    <message>
         <source>New note</source>
         <translation>Creer note</translation>
+    </message>
+    <message>
+        <source>Syncing ...</source>
+        <translation>Synchro ...</translation>
     </message>
     <message>
         <source>No notes.</source>
@@ -79,10 +81,6 @@
     <message>
         <source>Category:</source>
         <translation>Categorie:</translation>
-    </message>
-    <message>
-        <source>Syncing ...</source>
-        <translation>Synchro ...</translation>
     </message>
 </context>
 <context>
@@ -144,19 +142,19 @@
     <name>ownNotes</name>
     <message>
         <source>A note taking application with sync for ownCloud or any WebDav.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une application de prise de note, avec synchronisation ownCloud ou par WebDav</translation>
     </message>
     <message>
         <source>Web Site : http://khertan.net/ownnotes</source>
-        <translation type="unfinished"></translation>
+        <translation>Site web : http://khertan.net/ownnotes</translation>
     </message>
     <message>
         <source>By</source>
-        <translation type="unfinished"></translation>
+        <translation>Par</translation>
     </message>
     <message>
         <source>Licensed under GPLv3</source>
-        <translation type="unfinished"></translation>
+        <translation>Sous licence GPLv3</translation>
     </message>
 </context>
 </TS>

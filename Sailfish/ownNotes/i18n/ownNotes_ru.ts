@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" version="2.0">
 <context>
     <name>AboutPage</name>
     <message>
@@ -12,7 +10,7 @@
     <name>CoverPage</name>
     <message>
         <source>Syncing ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -23,11 +21,11 @@
     </message>
     <message>
         <source>Publish as Post to KhtCms</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Publish as Page to KhtCms</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -49,10 +47,6 @@
         <translation>Удалить</translation>
     </message>
     <message>
-        <source>Sync</source>
-        <translation>Синхронизировать</translation>
-    </message>
-    <message>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
@@ -61,12 +55,24 @@
         <translation>О программе</translation>
     </message>
     <message>
+        <source>Notes in your own cloud !</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
+        <source>Sync</source>
+        <translation>Синхронизировать</translation>
+    </message>
+    <message>
         <source>New note</source>
         <translation>Новая заметка</translation>
+    </message>
+    <message>
+        <source>Syncing ...</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>No notes.</source>
@@ -75,14 +81,6 @@
     <message>
         <source>Category:</source>
         <translation>Категория:</translation>
-    </message>
-    <message>
-        <source>Notes in your own cloud !</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Syncing ...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -133,30 +131,30 @@
     </message>
     <message>
         <source>User ID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Api Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>ownNotes</name>
     <message>
         <source>A note taking application with sync for ownCloud or any WebDav.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Web Site : http://khertan.net/ownnotes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>By</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Licensed under GPLv3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>

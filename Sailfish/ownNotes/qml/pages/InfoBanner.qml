@@ -31,27 +31,27 @@ import Sailfish.Silica.theme 1.0
 DockedPanel {
     id: root
 
-    width: Screen.width - 2*Theme.paddingSmall
-    height: content.height + 2*Theme.paddingSmall
+    width: Screen.width
+    height: content.height
 
     dock: Dock.Top
 
     Rectangle {
         id: content
-        x: Theme.paddingSmall
-        y: Theme.paddingSmall
+        x: 0
+        y: 0
         width: parent.width
 
         height: infoLabel.height + 2*Theme.paddingSmall
-        color: 'black';
+        color: Theme.highlighColor;
         opacity: 0.65;
 
         Label {
             id: infoLabel
             text : ''
-            color: Theme.highlightColor
+            color: Theme.primaryColor
             font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSizeMedium
+            font.pixelSize: Theme.fontSizeSmall
             width: parent.width - 2*Theme.paddingSmall
             x: Theme.paddingSmall
             y: Theme.paddingSmall

@@ -25,7 +25,6 @@ import json
 import logging
 import logging.handlers
 import md5util
-import sys
 from webdav.Connection import WebdavError
 import urlparse
 import codecs
@@ -183,14 +182,16 @@ class Sync(object):
                                                nonce=info["nonce"])
                 elif authFailures >= 2:
                     self.logger.error('Wrong login or password')
-                    raise err
+                    raise IncorrectSyncParameters('Wrong login or password')
                 else:
                     self.logger.error('%s:%s'
                                       % (str(type(err)), str(err)))
-                    raise err
+                    raise IncorrectSyncParameters('Can\'t connect to server')
+
             except Exception as err2:
-                self.logger.error('%s:%s' % (str(type(err)), str(err)))
-                raise err2
+                self.logger.error('%s:%s' % (str(type(err2)), str(err2)))
+                raise IncorrectSyncParameters('Can\'t connect to server')
+
             authFailures += 1
         return (isConnected, webdavConnection, time_delta)
 
@@ -519,10 +520,12 @@ class Sync(object):
         '''Delete the remote index stored locally'''
         try:
             with codecs.open(os.path.join(
-                    self._localDataFolder, '.index.sync'), 'rb', 'utf-8') as fh:
+                    self._localDataFolder,
+                    '.index.sync'), 'rb', 'utf-8') as fh:
                 index = json.load(fh)
             with codecs.open(os.path.join(
-                    self._localDataFolder, '.index.sync'), 'wb', 'utf-8') as fh:
+                    self._localDataFolder,
+                    '.index.sync'), 'wb', 'utf-8') as fh:
                 json.dump(({}, index[1]), fh)
         except:
             self.logger.debug('No remote index stored locally')
@@ -687,7 +690,8 @@ class Sync(object):
             if self.localBasename(root) != u'.merge.sync':
                 for filename in files:
                     index[unicode(self.localBasename(os.path.join(root,
-                                                          filename)), 'utf-8')] = \
+                                                                  filename)),
+                                  'utf-8')] = \
                         round(os.path.getmtime(
                               os.path.join(root, filename)))
 

@@ -297,7 +297,7 @@ def getSetting(section, option):
 
 def getSyncStatus():
     global sync
-    return sync.isRunning
+    return sync._running
 
 
 def launchSync():

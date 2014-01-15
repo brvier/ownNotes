@@ -1,14 +1,14 @@
 Name: ownNotes
 Summary: A notes taking app with ownCloud Sync
-Version: 1.5.0
+Version: 1.5.1
 Release: 1
 Group: Qt/Qt
 URL: http://example.org/
 License: LICENSE
 Sources:
 - '%{name}-%{version}.tar.bz2'
-Description: |
-  Short description of my SailfishOS Application
+Description: |-
+  A notes taking app with ownCloud Sync and markdown support.
 Configure: none
 Builder: qtc5
 PkgConfigBR:

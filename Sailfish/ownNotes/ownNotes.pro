@@ -61,5 +61,7 @@ RESOURCES +=
 
 TRANSLATIONS = i18n/ownNotes_en.ts \
             i18n/ownNotes_ru.ts \
-            i18n/ownNotes_fr.ts
-
+            i18n/ownNotes_fr.ts \
+            i18n/ownNotes_fi.ts \
+            i18n/ownNotes_cn.ts \
+            i18n/ownNotes_nl.ts
