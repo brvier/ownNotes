@@ -43,8 +43,8 @@ DockedPanel {
         width: parent.width
 
         height: infoLabel.height + 2*Theme.paddingSmall
-        color: Theme.highlighColor;
-        opacity: 0.65;
+        color: Theme.highlightColor;
+        opacity: 0.8;
 
         Label {
             id: infoLabel
@@ -52,7 +52,7 @@ DockedPanel {
             color: Theme.primaryColor
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSizeSmall
-            width: parent.width - 2*Theme.paddingSmall
+            width: parent.width - 2 * Theme.paddingSmall
             x: Theme.paddingSmall
             y: Theme.paddingSmall
             wrapMode: Text.WrapAnywhere
