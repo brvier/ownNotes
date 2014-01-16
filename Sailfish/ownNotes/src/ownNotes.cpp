@@ -38,8 +38,9 @@
 #include <QTranslator>
 #include <QGuiApplication>
 #include <QQuickView>
-
-#include <QtCore/QString>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QString>
 #include "documenthandler.h"
 
 int main(int argc, char *argv[])
@@ -60,9 +61,10 @@ int main(int argc, char *argv[])
     app->installTranslator(&translator);
     QPython::registerQML();
     qmlRegisterType<DocumentHandler>("net.khertan.documenthandler", 1, 0, "DocumentHandler");
-    QQuickView *v = SailfishApp::createView();
-    v->setSource(SailfishApp::pathTo("qml/ownNotes.qml"));
-    v->show();
+    QQuickView *view = SailfishApp::createView();
+    view->setSource(SailfishApp::pathTo("qml/ownNotes.qml"));
+    view->engine()->rootContext()->setContextProperty("VERSION", VERSION);
+    view->show();
 
     return app->exec();
 }

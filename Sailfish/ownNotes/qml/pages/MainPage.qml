@@ -173,6 +173,7 @@ Page {
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
+            id: pullDownMenu
             busy: sync.running
 
             MenuItem {
@@ -210,7 +211,7 @@ Page {
             }
 
             MenuLabel {
-                text: qsTr("Syncing ...")
+                text: pullDownMenu.busy == true ? qsTr("Syncing ...") : ""
             }
 
         }

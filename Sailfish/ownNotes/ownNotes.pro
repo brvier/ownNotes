@@ -14,6 +14,11 @@ QMAKE_LIBS += $$system(python-config --libs)
 
 CONFIG += sailfishapp
 
+include(version.pri)
+DEFINES *= 'VERSION=\'\"$${VERSION}\"\''
+
+include(datas/datas.pri)
+
 #qtHaveModule(widgets) {
     QT += widgets
 #}

@@ -16,7 +16,7 @@ ApplicationWindow
 
     Item {
         id: aboutInfos
-        property string version:'1.5.1'
+        property string version:VERSION
         property string contentText:qsTr('A note taking application with sync for ownCloud or any WebDav.') +
                                     '<br>' + qsTr('Web Site : http://khertan.net/ownnotes') +
                                     '<br><br>' + qsTr('By') +' Benoît HERVIER (Khertan)' +
