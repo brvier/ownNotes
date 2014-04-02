@@ -82,7 +82,6 @@ void DocumentHandler::setStyle(QString primaryColor, QString secondaryColor, QSt
 
 void DocumentHandler::setText(const QString &arg)
 {
-    qDebug() << arg;
     if (m_text != arg) {
         m_text = arg;
         emit textChanged();

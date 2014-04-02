@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import "pages"
 import net.khertan.python 1.0
 import Sailfish.Silica.theme 1.0
+import net.khertan.fileio 1.0
 
 ApplicationWindow
 {
@@ -14,6 +15,13 @@ ApplicationWindow
         id: errorPanel
     }
 
+    FileIO {
+        property string text:'';
+        id: changelog
+        source: "/usr/share/ownNotes/datas/changelog.html"
+        onError: console.log(msg)
+    }
+
     Item {
         id: aboutInfos
         property string version:VERSION
@@ -22,55 +30,7 @@ ApplicationWindow
                                     '<br><br>' + qsTr('By') +' Benoît HERVIER (Khertan)' +
                                     '<br><b>' + qsTr('Licensed under GPLv3') + '</b>'+
                                     '<br><br><b>Changeslog : </b><br>' +
-                                    '<br>1.0.0 : <br>' +
-                                    '  * Initial Fork from KhtNotes<br>' +
-                                    '  * Use PyOtherSide instead of PySide<br>' +
-                                    '<br>1.0.1 : <br>' +
-                                    '  * Add auto sync at launch<br>' +
-                                    '  * Push modification of a note to server once saved<br>' +
-                                    '<br>1.0.2 : <br>' +
-                                    '  * Fix rehighlighting that can lose cursor position<br>' +
-                                    '<br>1.1.0 : <br>' +
-                                    '  * First Desktop UX release<br>' +
-                                    '  * Fix an other rehighlight bug<br>' +
-                                    '<br>1.1.1 : <br>' +
-                                    '  * Should fix the crash at startup on Jolla Device (Send me a device to be sure and i could test :p )<br>' +
-                                    '<br>1.1.2 : <br>' +
-                                    '  * Fix incorrect font size of the editor on SailfishOS.<br>' +
-                                    '<br>1.2.0 : <br>' +
-                                    '  * Fix rehighlighting bug generating utf8 decode error<br>' +
-                                    '  * Russian and French translation of Sailfish UI<br>' +
-                                    '  * Fix sync encoding error<br>' +
-                                    '<br>1.2.1 : <br>' +
-                                    '  * Fix packaging<br>' +
-                                    '<br>1.2.2 : <br>' +
-                                    '  * Fix encoding error in notes list view<br>' +
-                                    '<br>1.2.3 : <br>' +
-                                    '  * Bump release version (as previous release didn\'t display right version)<br>' +
-                                    '<br>1.2.4 : <br>' +
-                                    '  * Add translation (Sailfish)<br>' +
-                                    '  * Fix about (Sailfish)<br>' +
-                                    '  * Add a workarround for link color in About (Sailfish)<br>' +
-                                    '<br>1.2.5 : <br>' +
-                                    '  * Add french translation (Sailfish)<br>' +
-                                    '<br>1.2.6 : <br>' +
-                                    '  * Fix refreshing bug after creating a new note (Sailfish)<br>' +
-                                    '  * Add sync and new feature to cover, and sync indicator (Sailfish)<br>' +
-                                    '  * Fix a bug in unlock at end of a sync<br>' +
-                                    '  * Fix a bug in delete between list refresh and remorse item (Sailfish)<br>' +
-                                    '  * Fix loading of translations (still partial) (Sailfish)<br>' +
-                                    '<br>1.2.7 : <br>' +
-                                    '  * Replace busycircle on Cover for a label (Sailfish)<br>' +
-                                    '  * Add remorse to publish menu (Sailfish)<br>' +
-                                    '  * Use pull down busy instead of ugly progress bar (Sailfish)<br>' +
-                                    '<br>1.5.0 : <br>' +
-                                    '  * Use a real markdown parser with QSyntaxHighligher (Sailfish)<br>' +
-                                    '  * Translations : Chinese, Finnish, French, Russian, Dutch (Sailfish)<br>' +
-                                    '  * New icon (Sailfish)<br>' +
-                                    '<br>1.5.1 : <br>' +
-                                    '  * Fix error on displaying Authentification Error<br>' +
-                                    '  * Improve error message on Sync<br>' +
-                                    '  * Translation update<br>' +
+                                    + changelog.read() +
                                     '<br><br><b>Thanks to : </b>' +
                                     '<br>* Radek Novacek' +
                                     '<br>* caco3 on talk.maemo.org for debugging' +
@@ -96,6 +56,8 @@ ApplicationWindow
                                     '<br>For a complete documentation on the markdown format,' +
                                     ' see <a href="http://daringfireball.net/projects/markdown/syntax">Daringfireball Markdown Syntax</a>. Hilighting on ownNotes support only few tags' +
                                     'of markdown syntax: title, bold, italics, links'
+
+
     }
 
     Python {

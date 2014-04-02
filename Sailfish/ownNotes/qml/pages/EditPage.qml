@@ -15,7 +15,7 @@ Page {
 
             console.debug('Calling saveNote')
             var new_filepath = call('ownnotes.saveNote', [filepath, data, false]);
-            if (filepath != new_filepath) {
+            if (filepath !== new_filepath) {
                 textEditor.modified = false;
                 textEditor.load(new_filepath); }
             else {
@@ -81,18 +81,18 @@ Page {
         PullDownMenu {
             MenuItem {
                 text: qsTr("Publish to Scriptogr.am");
-                visible: pyNotes.get('Scriptogram','userid') != '' ? true : false;
+                visible: pyNotes.get('Scriptogram','userid') !== '' ? true : false;
                 onClicked: {publishToScriptogram();}
             }
             MenuItem {
                 text: qsTr("Publish as Post to KhtCms");
-                visible: pyNotes.get('KhtCms','apikey') != '' ? true : false;
+                visible: pyNotes.get('KhtCms','apikey') !== '' ? true : false;
                 onClicked: {publishAsPostToKhtCMS();}
             }
 
             MenuItem {
                 text: qsTr("Publish as Page to KhtCms");
-                visible: pyNotes.get('KhtCms','apikey') != '' ? true : false;
+                visible: pyNotes.get('KhtCms','apikey') !== '' ? true : false;
                 onClicked: {publishAsPageToKhtCMS();}
             }
 

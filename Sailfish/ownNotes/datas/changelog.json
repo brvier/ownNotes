@@ -1,166 +1,150 @@
 {
-
-"1.0.0": [
-{
-    "text": "Initial fork from KhtNotes using custom version of PyOtherSide",
-    "type": "feature"
-},
-]
-
-"1.1.2": [
-     {
+  "1.0.0": [
+    {
+      "text": "Initial fork from KhtNotes using custom version of PyOtherSide", 
+      "type": "feature"
+    }
+  ], 
+  "1.1.2": [
+    {
       "text": "Fix incorrect font size of the editor", 
       "type": "bug"
     }
-      
   ], 
-
-
-"1.2.0": [
-     {
+  "1.2.0": [
+    {
       "text": "Fix sync encoding error", 
       "type": "bug"
-    }
-      {
+    }, 
+    {
       "text": "Russian and French translation", 
       "type": "feature"
-    }
-   {
+    }, 
+    {
       "text": "Fix rehighlighting bug generating utf8 decode error", 
       "type": "bug"
     }
-
   ], 
-
-
-"1.2.1": [
-     {
+  "1.2.1": [
+    {
       "text": "Fix packaging", 
       "type": "bug"
     }
-         
   ], 
-
-                                   
-"1.2.2": [
-     {
+  "1.2.2": [
+    {
       "text": "Fix encoding error in notes list view", 
       "type": "bug"
     }
-         
   ], 
-
-
-"1.2.3": [
-     {
+  "1.2.3": [
+    {
       "text": "Release version bump as previous didn't display right version", 
       "type": "bug"
     }
   ], 
-
-
-"1.2.4": [
-     {
+  "1.2.4": [
+    {
       "text": "Add a workarround for link color in About", 
       "type": "bug"
-    }
-     {
+    }, 
+    {
       "text": "Fix about", 
       "type": "bug"
-    }
-     {
+    }, 
+    {
       "text": "Add translation", 
       "type": "feature"
     }
-    
   ], 
-
-"1.2.5": [
-          {
+  "1.2.5": [
+    {
       "text": "Add french translation", 
       "type": "feature"
     }
-      ], 
-
-
-"1.2.6": [
-     {
+  ], 
+  "1.2.6": [
+    {
       "text": "Fix loading of translations (still partial)", 
       "type": "bug"
-    }
-     {
+    }, 
+    {
       "text": "Fix a bug in delete between list refresh and remorse item", 
       "type": "bug"
-    }
-     {
+    }, 
+    {
       "text": "Add sync and new feature to cover, and sync indicator", 
       "type": "feature"
-    }
+    }, 
     {
       "text": "Fix a bug in unlock at end of a sync", 
       "type": "bug"
-    }
+    }, 
     {
       "text": "Fix refreshing bug after creating a new note", 
       "type": "bug"
     }
-
   ], 
-
-
   "1.2.7": [
-     {
+    {
       "text": "Add remorse to publish menu", 
       "type": "feature"
-    }
-     {
+    }, 
+    {
       "text": "Replace busycircle on Cover for a label", 
       "type": "feature"
-    }
-     {
+    }, 
+    {
       "text": "Use pull down busy instead of ugly progress bar", 
       "type": "feature"
     }
-  
   ], 
-
   "1.5.0": [
-     {
+    {
       "text": "Use a real markdown parser with QSyntaxHighligher", 
       "type": "feature"
-    }
-     {
+    }, 
+    {
       "text": "New icon", 
       "type": "feature"
-    }
-     {
+    }, 
+    {
       "text": "Translations : Chinese, Finnish, French, Russian, Dutch", 
       "type": "feature"
     }
-  
   ], 
-
-                                   
   "1.5.1": [
-     {
+    {
       "text": "Improve error message on Sync", 
       "type": "feature"
-    }
-     {
+    }, 
+    {
       "text": "Fix error on displaying Authentification Error", 
       "type": "bug"
-    }
-     {
+    }, 
+    {
       "text": "Translation update", 
       "type": "feature"
     }
-  
   ], 
-
   "1.5.2": [
     {
       "text": "Put git commit log in changelog via release script", 
       "type": "feature"
+    }
+  ], 
+  "1.5.3": [
+    {
+      "text": "add old changes in changelog", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Fix info banner background color", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix pulley menu always showing Syncing label", 
+      "type": "bug"
     }
   ]
 }

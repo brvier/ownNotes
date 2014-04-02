@@ -143,16 +143,31 @@ Page {
 
             Label {
                 width: parent.width
-                height: mergeSwitch.height
+                height: nosslcheckSwitch.height
                 verticalAlignment: Text.AlignVCenter
-                text: qsTr("Use auto merge feature")
+                text: qsTr("Do not verificate ssl certificate")
 
                 Switch {
-                    id: mergeSwitch
-                    checked: pyNotes.get('WebDav','merge')
+                    id: nosslcheckSwitch
+                    checked: pyNotes.get('WebDav','nosslcheck')
                     anchors.right: parent.right
                     onCheckedChanged:  {
-                        pyNotes.set('WebDav','merge',mergeSwitch.checked)
+                        pyNotes.set('WebDav','nosslcheck',nosslcheckSwitch.checked)
+                    }
+                }
+            }
+            Label {
+                width: parent.width
+                height: startupsyncSwitch.height
+                verticalAlignment: Text.AlignVCenter
+                text: qsTr("Launch sync at startup")
+
+                Switch {
+                    id: startupsyncSwitch
+                    checked: pyNotes.get('WebDav','startupsync')
+                    anchors.right: parent.right
+                    onCheckedChanged:  {
+                        pyNotes.set('WebDav','startupsync',startupsyncSwitch.checked)
                     }
                 }
             }

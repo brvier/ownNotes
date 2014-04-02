@@ -1,7 +1,7 @@
 #include "qpython.h"
 
-
 #include <QtQml>
+#include <QDebug>
 
 int
 QPython::instances = 0;
@@ -23,7 +23,6 @@ QPython::QPython(QObject *parent)
         futures = * new QList<QFuture<QVariant> > ();
 
     }
-
 
     instances++;
 
@@ -53,7 +52,7 @@ QPython::addImportPath(QString path)
 
     PyGILState_STATE state = PyGILState_Ensure();
     PyObject *sys_path = PySys_GetObject((char *)"path");
-    PyObject *cwd = PyString_FromString(utf8bytes.constData());
+    PyObject *cwd = PyUnicode_FromString(utf8bytes.constData());
     PyList_Insert(sys_path, 0, cwd);
     Py_DECREF(cwd);
     PyGILState_Release (state);
@@ -75,24 +74,23 @@ QPython::importModule(QString name)
         PyObject *ptype, *pvalue, *ptraceback, *pstring;
         PyErr_Fetch(&ptype, &pvalue, &ptraceback);
         PyErr_Clear();
-        char *excstring;
-        char *valuestring;
+        QString excstring;
+        QString valuestring;
         pstring=PyObject_Str(ptype);
         if (ptype != NULL && pstring !=NULL &&
-            (PyString_Check(pstring)))
-          excstring = PyString_AsString(pstring);
+            (PyUnicode_Check(pstring)))
+          excstring = QString::fromUtf8(PyUnicode_AsUTF8(pstring));
         else
-          excstring = (char *)"<unknown exception type> ";
+          excstring = QString("<unknown exception type> ");
         Py_XDECREF(pstring);
         pstring=PyObject_Str(pvalue);
         if (ptype != NULL && pstring !=NULL &&
-            (PyString_Check(pstring)))
-          valuestring = PyString_AsString(pstring);
+            (PyUnicode_Check(pstring)))
+          valuestring = QString::fromUtf8(PyUnicode_AsUTF8(pstring));
         else
-          valuestring = (char *)"";
+          valuestring = QString("");
         Py_XDECREF(pstring);
-        emit exception(QString::fromUtf8(excstring),
-                       QString::fromUtf8(valuestring));
+        emit exception(excstring,valuestring);
         PyGILState_Release (state);
         return false;
     }
@@ -125,24 +123,23 @@ QPython::eval(QString expr)
         PyObject *ptype, *pvalue, *ptraceback, *pstring;
         PyErr_Fetch(&ptype, &pvalue, &ptraceback);
         PyErr_Clear();
-        char *excstring;
-        char *valuestring;
+        QString excstring;
+        QString valuestring;
         pstring=PyObject_Str(ptype);
         if (ptype != NULL && pstring !=NULL &&
-            (PyString_Check(pstring)))
-          excstring = PyString_AsString(pstring);
+            (PyUnicode_Check(pstring)))
+          excstring = QString::fromUtf8(PyUnicode_AsUTF8(pstring));
         else
-          excstring = (char *)"<unknown exception type> ";
+          excstring = QString("<unknown exception type> ");
         Py_XDECREF(pstring);
         pstring=PyObject_Str(pvalue);
         if (ptype != NULL && pstring !=NULL &&
-            (PyString_Check(pstring)))
-          valuestring = PyString_AsString(pstring);
+            (PyUnicode_Check(pstring)))
+          valuestring = QString::fromUtf8(PyUnicode_AsUTF8(pstring));
         else
-          valuestring = (char *)"";
+          valuestring = QString("");
         Py_XDECREF(pstring);
-        emit exception(QString::fromUtf8(excstring),
-                       QString::fromUtf8(valuestring));
+        emit exception(excstring,valuestring);
     }
     PyGILState_Release (state);
     return result;
@@ -218,24 +215,24 @@ QPython::call(QString func, QVariant args)
             PyObject *ptype, *pvalue, *ptraceback, *pstring;
             PyErr_Fetch(&ptype, &pvalue, &ptraceback);
             PyErr_Clear();
-            char *excstring;
-            char *valuestring;
+            QString excstring;
+            QString valuestring;
             pstring=PyObject_Str(ptype);
             if (ptype != NULL && pstring !=NULL &&
-                (PyString_Check(pstring)))
-              excstring = PyString_AsString(pstring);
+                (PyUnicode_Check(pstring)))
+
+              excstring = QString::fromUtf8(PyUnicode_AsUTF8(pstring));
             else
-              excstring = (char *)"<unknown exception type> ";
+              excstring = QString("<unknown exception type> ");
             Py_XDECREF(pstring);
             pstring=PyObject_Str(pvalue);
             if (ptype != NULL && pstring !=NULL &&
-                (PyString_Check(pstring)))
-              valuestring = PyString_AsString(pstring);
+                (PyUnicode_Check(pstring)))
+              valuestring = QString::fromUtf8(PyUnicode_AsUTF8(pstring));
             else
-              valuestring = (char *)"";
+              valuestring = QString("");
             Py_XDECREF(pstring);
-            emit exception(QString::fromUtf8(excstring),
-                           QString::fromUtf8(valuestring));
+            emit exception(excstring, valuestring);
             v = QVariant();
 
         } else {
@@ -268,31 +265,29 @@ QPython::registerQML()
 QVariant
 QPython::fromPython(PyObject *o)
 {
-    if (PyInt_Check(o)) {
-        return QVariant((int)PyInt_AsLong(o));
+    if (PyLong_Check(o)) {
+        return QVariant((qlonglong)PyLong_AsLong(o));
     } else if (PyBool_Check(o)) {
         return QVariant(o == Py_True);
-    } else if (PyLong_Check(o)) {
-        return QVariant((qlonglong)PyLong_AsLong(o));
     } else if (PyFloat_Check(o)) {
         return QVariant(PyFloat_AsDouble(o));
     } else if (PyList_Check(o)) {
         QVariantList result;
-
         Py_ssize_t count = PyList_Size(o);
         for (int i=0; i<count; i++) {
             result << fromPython(PyList_GetItem(o, i));
         }
-
         return result;
+    } else if (PyBytes_Check(o)) {
+        return QString::fromUtf8((const char*)PyBytes_AsString(o));
     } else if (PyUnicode_Check(o)) {
-        PyObject *string = PyUnicode_AsUTF8String(o);
-        QVariant result = fromPython(string);
-        Py_DECREF(string);
-        return result;
-    } else if (PyString_Check(o)) {
         // We always assume UTF-8 encoding here
-        return QString::fromUtf8(PyString_AsString(o));
+        //PyObject * tmp;
+        QString result;
+        //tmp = String(o);
+        result = QString::fromUtf8(PyUnicode_AsUTF8(o));
+        //Py_XDECREF(tmp);
+        return result;
     } else if (PyDict_Check(o)) {
         QMap<QString,QVariant> result;
 
@@ -334,6 +329,7 @@ QPython::toPython(QVariant v)
         return result;
     } else if (type == QVariant::String) {
         QByteArray utf8bytes = v.toString().toUtf8();
+        qDebug() << v.toString();
         return PyUnicode_FromString(utf8bytes.constData());
     } else if (type == QVariant::Map) {
         QMap<QString,QVariant> m = v.toMap();

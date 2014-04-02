@@ -12,6 +12,9 @@ Page {
         contentHeight: contentItem.childrenRect.height
         contentWidth: flicker.width
 
+        VerticalScrollDecorator {
+        }
+
         Column {
             anchors {
                 left: parent.left

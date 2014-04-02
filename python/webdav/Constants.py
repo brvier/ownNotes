@@ -145,7 +145,7 @@ TAG_ALL = 'all'
 TAG_BIND = 'bind'
 TAG_UNBIND = 'unbind'
 # Tamino-specific privileges
-TAG_TAMINO_SECURITY = 'security' 
+TAG_TAMINO_SECURITY = 'security'
 # Limestone-specific privileges
 TAG_BIND_COLLECTION = 'bind-collection'
 TAG_UNBIND_COLLECTION = 'unbind-collection'
@@ -155,7 +155,7 @@ TAG_WRITE_PRIVATE_PROPERTIES = 'write-private-properties'
 # properties for WebDAV ACP:
 PROP_CURRENT_USER_PRIVILEGE_SET = 'current-user-privilege-set'
 PROP_SUPPORTED_PRIVILEGE_SET    = 'supported-privilege-set'
-PROP_PRINCIPAL_COLLECTION_SET = 'principal-collection-set' 
+PROP_PRINCIPAL_COLLECTION_SET = 'principal-collection-set'
 
 # reports for WebDAV ACP
 REPORT_ACL_PRINCIPAL_PROP_SET   = 'acl-principal-prop-set'

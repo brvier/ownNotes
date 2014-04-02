@@ -32,19 +32,26 @@ DockedPanel {
     id: root
 
     width: Screen.width
-    height: content.height
+    height: childrenRect.height
 
     dock: Dock.Top
 
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            autoClose.stop()
+            root.hide()
+        }
+    }
+
     Rectangle {
         id: content
-        x: 0
-        y: 0
+        anchors.top: parent.top
+        anchors.left: parent.left
         width: parent.width
-
-        height: infoLabel.height + 2*Theme.paddingSmall
-        color: Theme.highlightColor;
-        opacity: 0.8;
+        height: infoLabel.height + 2 * Theme.paddingSmall
+        color: Theme.highlightColor
+        opacity: 0.8
 
         Label {
             id: infoLabel
@@ -52,19 +59,20 @@ DockedPanel {
             color: Theme.primaryColor
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSizeSmall
-            width: parent.width - 2 * Theme.paddingSmall
-            x: Theme.paddingSmall
-            y: Theme.paddingSmall
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.topMargin: Theme.paddingSmall
+            anchors.leftMargin: Theme.paddingSmall
+             width: parent.width
+            //x: Theme.paddingSmall
+            //y: Theme.paddingSmall
             wrapMode: Text.WrapAnywhere
-            }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                root.hide()
-                autoClose.stop()
-            }
+            onHeightChanged: { content.height = infoLabel.height + 2 * Theme.paddingSmall;
+                               root.height = content.height}
         }
+
     }
+
 
 
     function displayError(errorMsg) {

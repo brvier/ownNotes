@@ -230,6 +230,9 @@ Page {
             }
         }
 
+        VerticalScrollDecorator {
+        }
+
         ViewPlaceholder {
             enabled: notesModel.count == 0
             text: qsTr("No notes.")

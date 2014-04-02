@@ -8,16 +8,15 @@
 #         - icon definition filename in desktop file must be changed
 TARGET = ownNotes
 
-INCLUDEPATH += $$system(python-config --includes)
-QMAKE_CXXFLAGS += $$system(python-config --includes)
-QMAKE_LIBS += $$system(python-config --libs)
+INCLUDEPATH += $$system(python3-config --includes)
+QMAKE_CXXFLAGS += $$system(python3-config --includes)
+QMAKE_LIBS += $$system(python3-config --libs)
 
 CONFIG += sailfishapp
 
 include(version.pri)
-DEFINES *= 'VERSION=\'\"$${VERSION}\"\''
-
 include(datas/datas.pri)
+DEFINES *= 'VERSION=\'\"$${VERSION}\"\''
 
 #qtHaveModule(widgets) {
     QT += widgets
@@ -26,7 +25,8 @@ include(datas/datas.pri)
 SOURCES += src/ownNotes.cpp \
     src/qpython.cpp \
     src/documenthandler.cpp \
-    src/highlighter.cpp
+    src/highlighter.cpp \
+    src/fileio.cpp
 
 OTHER_FILES += qml/ownNotes.qml \
     qml/cover/CoverPage.qml \
@@ -45,10 +45,11 @@ OTHER_FILES += qml/ownNotes.qml \
 HEADERS += \
     src/qpython.h \
     src/documenthandler.h \
-    src/highlighter.h
+    src/highlighter.h \
+    src/fileio.h
 
-python_files.files = ../../python/*
-python_files.path = /usr/share/$$TARGET/python
+python_files.files = python
+python_files.path = /usr/share/$$TARGET
 qm_files.files = i18n
 qm_files.path = /usr/share/$$TARGET
 icons_files.files = icons
@@ -66,7 +67,9 @@ RESOURCES +=
 
 TRANSLATIONS = i18n/ownNotes_en.ts \
             i18n/ownNotes_ru.ts \
+            i18n/ownNotes_it.ts \
             i18n/ownNotes_fr.ts \
             i18n/ownNotes_fi.ts \
             i18n/ownNotes_cn.ts \
+            i18n/ownNotes_no.ts \
             i18n/ownNotes_nl.ts

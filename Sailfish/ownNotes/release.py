@@ -24,13 +24,13 @@ def check_tag(tag):
 def generate_changelog(version):
     try:
         f = open("datas/changelog.json", 'r')
-    except:
-        print("Failed to open the changelog file")
+    except Exception as err:
+        print("Failed to open the changelog file: %s" % err)
         sys.exit(4)
     try:
         changelog = json.load(f)
-    except:
-        print("Failed to parse the changelog file")
+    except Exception as err:
+        print("Failed to parse the changelog file: %s" % err)
         sys.exit(4)
     f.close()
     changelog[version] = []
@@ -62,6 +62,16 @@ def generate_changelog(version):
     for entry in changelog[version]:
         print("%s: %s" % (entry["type"].upper(), entry["text"]))
 
+    print("Generate HTML Changelog")
+    with open("datas/changelog.html", "w") as fh:
+        for version in changelog:
+            print(version)
+            fh.write('<b>%s</b> : <br>' % version)
+            for entry in changelog[version]:
+                fh.write('%s : %s<br>' % (entry['type'].title(),
+                                          entry['text'].title()))
+            fh.write('<br><br>')
+
 
 def write_version(version, codename):
     try:
@@ -71,6 +81,17 @@ def write_version(version, codename):
     except:
         print("Failed to write the version file")
         sys.exit(5)
+    try:
+        yaml = None
+        import re
+        with open('rpm/ownNotes.yaml', 'rb') as fh:
+            yaml = fh.read()
+        if yaml is not None:
+            re.sub('^Version: \'(.*)\'$', version, yaml, flags=re.MULTILINE)
+            with open('rpm/ownNotes.yaml', 'wb') as fh:
+                fh.write(yaml)
+    except:
+        print ('Failed to write the yaml file')
 
 
 def commit_and_tag(version):
@@ -92,11 +113,14 @@ parser.add_argument('codename', metavar='codename', type=str, nargs='?',
                     help='Release codename')
 parser.add_argument('--push-only', action='store_true',
                     help='If this release is a major release')
+parser.add_argument('--changelog-only', action='store_true',
+                    help='Create html changelog only')
 
 args = parser.parse_args()
 version = args.version
 codename = args.codename
 push_only = args.push_only
+changelog_only = args.changelog_only
 
 if push_only and version is None:
     parser.print_help()
@@ -105,6 +129,10 @@ if push_only and version is None:
 if version is None:
     print("Current version: %s" % current_version())
     sys.exit(2)
+
+if changelog_only:
+    generate_changelog(version)
+    sys.exit(4)
 
 version = version.strip()
 

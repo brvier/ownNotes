@@ -214,6 +214,7 @@ class ResourceStorer(object):
         @rtype: C{string}
         """
         options = ''
+        self.logger.debug(self.options().get(option))
         try:
             options = self.options().get(option)
         except KeyError:
@@ -290,10 +291,10 @@ class ResourceStorer(object):
         @rtype: L{LockToken}
         """
         response = self.connection.lock(self.path, owner)
-        if  response.status == Constants.CODE_MULTISTATUS and response.msr.errorCount > 0:
+        if response.status == Constants.CODE_MULTISTATUS and response.msr.errorCount > 0:
             raise WebdavError(
                 "Request failed: " + response.msr.reason, response.msr.code)
-        if reponse.locktoken is None:
+        if response.locktoken is None:
             raise WebdavError(
                 "Request failed: No lock token in answer")
         return LockToken(self.url, response.locktoken)
@@ -642,7 +643,7 @@ class CollectionStorer(ResourceStorer):
         if name[-1] != '/':     # Collection URL must end with slash
             name += '/'
         self.connection.mkcol(self.path + name, header)
-        return CollectionStorer(self.url + name, self.connection, self.validateResourceNames) 
+        return CollectionStorer(self.url + name, self.connection, self.validateResourceNames)
 
     def addResource(self, name, content=None, properties=None, lockToken=None):
         """

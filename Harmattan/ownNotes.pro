@@ -1,7 +1,7 @@
 # Add more folders to ship with the application, here
 folder_01.source = qml/Harmattan
 folder_01.target = qml
-folder_02.source = ../python
+folder_02.source = python
 folder_02.target = .
 folder_03.source = icons
 folder_03.target = .
@@ -57,7 +57,6 @@ OTHER_FILES += \
     qtc_packaging/debian_harmattan/compat \
     qtc_packaging/debian_harmattan/changelog \
     README \
-    VERSION \
     LICENCE
 
 HEADERS += \

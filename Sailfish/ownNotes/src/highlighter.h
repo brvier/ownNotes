@@ -42,7 +42,6 @@
 #define HIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
-
 #include <QHash>
 #include <QTextCharFormat>
 

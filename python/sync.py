@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
@@ -30,7 +27,7 @@ import urlparse
 import codecs
 
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
-NOTESPATH = os.path.expanduser('~/.ownnotes/')
+NOTESPATH = os.path.expanduser(u'~/.ownnotes/')
 
 
 class IncorrectSyncParameters(Exception):
@@ -39,7 +36,7 @@ class IncorrectSyncParameters(Exception):
 
 def _getValidFilename(filepath):
     dirname, filename = os.path.dirname(filepath), os.path.basename(filepath)
-    return os.path.join(dirname, ''.join(car for car in filename
+    return os.path.join(dirname, u''.join(car for car in filename
                         if car not in INVALID_FILENAME_CHARS))
 
 
@@ -69,9 +66,9 @@ class Sync(object):
 
         # Logging sync
         self.logger = logging.getLogger('ownNotes')
-        self.logger.setLevel(logging.WARNING)
+        self.logger.setLevel(logging.DEBUG)
         handler = logging.handlers.RotatingFileHandler(
-            os.path.expanduser('~/.ownnotes.sync.log'),
+            os.path.expanduser(u'~/.ownnotes.sync.log'),
             maxBytes=500 * 1024,
             backupCount=1)
         formatter = \
@@ -79,14 +76,14 @@ class Sync(object):
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         streamHandler = logging.StreamHandler()
-        streamHandler.setLevel(logging.WARNING)
+        streamHandler.setLevel(logging.DEBUG)
         streamHandler.setFormatter(formatter)
         self.logger.addHandler(streamHandler)
 
         self._localDataFolder = NOTESPATH
         if not os.path.exists(self._localDataFolder):
             os.mkdir(self._localDataFolder)
-        self._remoteDataFolder = 'Notes'
+        self._remoteDataFolder = u'Notes'
 
     def localBasename(self, path):
         return os.path.relpath(path, self._localDataFolder)
@@ -251,7 +248,6 @@ class Sync(object):
 
     def _sync_files(self, webdavConnection, time_delta, useAutoMerge):
         try:
-
             # Reset webdav path
             webdavConnection.path = self.webdavBasePath
 
@@ -403,12 +399,12 @@ class Sync(object):
         self.logger.debug('conflictServer: %s' % filename)
         lpath = os.path.join(self._localDataFolder, filename)
         cpath = os.path.join(self._localDataFolder,
-                             os.path.splitext(filename)[0] + '.Conflict.txt')
-        bpath = os.path.join(self._localDataFolder, 'merge.sync',
+                             os.path.splitext(filename)[0] + u'.Conflict.txt')
+        bpath = os.path.join(self._localDataFolder, u'merge.sync',
                              filename)
         self._download(webdavConnection,
                        filename,
-                       os.path.splitext(filename)[0] + '.Conflict.txt',
+                       os.path.splitext(filename)[0] + u'.Conflict.txt',
                        time_delta)
 
         # Test if it s a real conflict
@@ -425,7 +421,7 @@ class Sync(object):
             else:
                 # Else duplicate
                 self._upload(webdavConnection, os.path.splitext(
-                             filename)[0] + '.Conflict.txt', None, time_delta)
+                             filename)[0] + u'.Conflict.txt', None, time_delta)
 
     def _mergeFiles(self, lpath, bpath, cpath):
         from merge3.merge3 import Merge3
@@ -446,8 +442,8 @@ class Sync(object):
         self.logger.debug('conflictLocal: %s', filename)
         lpath = os.path.join(self._localDataFolder, filename)
         cpath = os.path.join(self._localDataFolder,
-                             os.path.splitext(filename)[0] + '.Conflict.txt')
-        bpath = os.path.join(self._localDataFolder, '.merge.sync',
+                             os.path.splitext(filename)[0] + u'.Conflict.txt')
+        bpath = os.path.join(self._localDataFolder, u'.merge.sync',
                              filename)
 
         os.rename(lpath, cpath)
@@ -506,13 +502,14 @@ class Sync(object):
                 shutil.rmtree(merge_dir)
 
             os.makedirs(merge_dir)
-            for filename in glob.glob(os.path.join(self._localDataFolder,
-                                                   u'*.txt')):
+            for filename in glob.glob(os.path.join(
+                    self._localDataFolder, u'*.txt')):
                 try:
                     if os.path.isfile(filename):
                         shutil.copy(filename,
-                                    os.path.join(merge_dir,
-                                                 self.localBasename(filename)))
+                                    os.path.join(
+                                        merge_dir,
+                                        self.localBasename(filename)))
                 except IOError, err:
                     print err, 'filename:', filename, ' merge_dir:', merge_dir
 
@@ -521,11 +518,11 @@ class Sync(object):
         try:
             with codecs.open(os.path.join(
                     self._localDataFolder,
-                    '.index.sync'), 'rb', 'utf-8') as fh:
+                    u'.index.sync'), 'rb', 'utf-8') as fh:
                 index = json.load(fh)
             with codecs.open(os.path.join(
                     self._localDataFolder,
-                    '.index.sync'), 'wb', 'utf-8') as fh:
+                    u'.index.sync'), 'wb', 'utf-8') as fh:
                 json.dump(({}, index[1]), fh)
         except:
             self.logger.debug('No remote index stored locally')
@@ -613,7 +610,6 @@ class Sync(object):
         self.logger.debug('local_delete: %s' % filename)
 
     def _unlock(self, webdavConnection):
-        # TODO
         if (webdavConnection is not None) and (self._lock is not None):
             webdavConnection.path = self._get_notes_path()
             webdavConnection.unlock(self._lock)
@@ -621,10 +617,10 @@ class Sync(object):
 
     def _get_notes_path(self):
         khtnotesPath = urlparse.urlparse(self.webdavUrl).path
-        if not khtnotesPath.endswith('/'):
-            return khtnotesPath + '/' + self._remoteDataFolder + '/'
+        if not khtnotesPath.endswith(u'/'):
+            return khtnotesPath + u'/' + self._remoteDataFolder + u'/'
         else:
-            return khtnotesPath + self._remoteDataFolder + '/'
+            return khtnotesPath + self._remoteDataFolder + u'/'
 
     def _check_khtnotes_folder_and_lock(self, webdavConnection):
         '''Check that khtnotes folder exists on webdav'''
@@ -635,21 +631,23 @@ class Sync(object):
             if not khtnotesPath in webdavConnection.listResources().keys():
                 if self._lock:
                     webdavConnection.addCollection(
-                        self._remoteDataFolder + '/', lockToken=self._lock)
+                        self._remoteDataFolder + u'/', lockToken=self._lock)
                 else:
                     webdavConnection.addCollection(
-                        self._remoteDataFolder + '/')
+                        self._remoteDataFolder + u'/')
                 # So here it s a new share, and if have old index file
                 # locally notes will be lose
                 self._rm_remote_index()
-            # TODO : Lock
+
             if self._lock is None:
                 webdavConnection.path = self._get_notes_path()
                 self._lock = webdavConnection.lockAll(
                     'KhtNotes', timeout='Second-300')
+
         except Exception, err:
             self.logger.error(str(err))
             raise
+
         return True
 
     def __get_remote_filenames(self, webdavConnection, path):
@@ -660,7 +658,7 @@ class Sync(object):
                 index.update(self.__get_remote_filenames(webdavConnection,
                                                          resource.path))
             else:
-                index[self.remoteBasename(resource.path)] = \
+                index[unicode(self.remoteBasename(resource.path))] = \
                     time.mktime(properties.getLastModified())
         return index
 
@@ -677,7 +675,7 @@ class Sync(object):
             pass
 
         try:
-            del index['.index.sync']
+            del index[u'.index.sync']
         except KeyError:
             pass
         self.logger.debug('_get_remote_filenames: %s'
@@ -686,12 +684,11 @@ class Sync(object):
 
     def _get_local_filenames(self):
         index = {}
-        for root, folders, files in os.walk(self._localDataFolder):
+        for root, folders, files in os.walk(unicode(self._localDataFolder)):
             if self.localBasename(root) != u'.merge.sync':
                 for filename in files:
-                    index[unicode(self.localBasename(os.path.join(root,
-                                                                  filename)),
-                                  'utf-8')] = \
+                    index[self.localBasename(os.path.join(root,
+                                                          filename))] = \
                         round(os.path.getmtime(
                               os.path.join(root, filename)))
 

@@ -12,6 +12,7 @@ CoverBackground {
         source: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png')
         anchors.horizontalCenter: label.horizontalCenter
         anchors.bottom: label.top
+        opacity: 0.7
     }
 
     Label {

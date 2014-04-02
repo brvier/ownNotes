@@ -102,11 +102,12 @@ private:
 
     QQuickItem *m_target;
     QTextDocument *m_doc;
-    Highlighter *m_highlighter;
 
     int m_cursorPosition;
     int m_selectionStart;
     int m_selectionEnd;
+
+    Highlighter *m_highlighter;
 
     QString m_text;
 

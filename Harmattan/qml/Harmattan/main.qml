@@ -16,7 +16,7 @@ PageStackWindow {
 
     Item {
         id: aboutInfos
-        property string version:'1.2.4'
+        property string version:'1.3.0'
         property string text:'A note taking application with sync for ownCloud or any WebDav.' +
                            '<br>Web Site : http://khertan.net/ownnotes' +
                            '<br><br>By Benoît HERVIER (Khertan)' +
@@ -49,6 +49,10 @@ PageStackWindow {
                            '  * Add translation (Sailfish)<br>' +
                            '  * Fix about (Sailfish)<br>' +
                            '  * Add a workarround for link color in About (Sailfish)<br>' +
+                           '<br>1.3.0 : <br>' +
+                           '  * Rewrite synchronisation (works now with ownCloud 4, 5, 6)<br>' +
+                           '  * Add ssl certificate verification<br>' +
+                           '  * Add preference to launch sync at startup<br>' +
                            '<br><br><b>Thanks to : </b>' +
                            '<br>Radek Novacek' +
                            '<br>caco3 on talk.maemo.org' +
