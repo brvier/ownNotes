@@ -23,11 +23,11 @@ class Settings(object):
 
     def __init__(self,):
 
-        if not os.path.exists(os.path.expanduser('~/.ownnotes.conf')):
+        if not os.path.exists(os.path.expanduser('~/.ownnotes.conf')):  # FIXME
             self._write_defaults()
         self._settings = None
 
-    def _write_defaults(self):
+    def _get_defaults(self):
         ''' Write the default config'''
         self._settings = {
             'Display': {
@@ -40,19 +40,19 @@ class Settings(object):
                 'login': 'demo',
                 'password': 'demo',
                 'remoteFolder': 'Notes',
-                'merge': True
+                'merge': True,
+                'nosslcheck': False,
+                'startupsync': False
             },
             'KhtCms': {
                 'url': 'https://khertan.net/publish_api.php',
-                'sslcheck': False,
+                'nosslcheck': False,
                 'apikey': ''
             },
             'Scriptogram': {
                 'userid': '678909876',
             },
         }
-
-        self._write()
         return self._settings
 
     def _write(self, ):
@@ -64,12 +64,20 @@ class Settings(object):
             json.dump(self._settings, configfile)
 
     def _read(self,):
+        self._get_defaults()
         if os.path.exists(os.path.expanduser('~/.ownnotes.conf')):
             with open(os.path.expanduser('~/.ownnotes.conf'), 'rb') \
                     as configfile:
-                self._settings = json.load(configfile)
+                    jsondata = json.load(configfile)
+                    print jsondata
+                    for k, v in jsondata.items():
+                        if type(v) is dict:
+                            self._settings[k].update(v)
+                        else:
+                            self._settings[k] = v
         else:
-            self._settings = self._write_defaults()
+            self._write()
+        print self._settings
 
     def get(self, section, option):
         if not self._settings:
@@ -81,3 +89,7 @@ class Settings(object):
             self._read()
         self._settings[section][option] = value
         self._write()
+
+
+if __name__ == '__main__':
+    Settings()

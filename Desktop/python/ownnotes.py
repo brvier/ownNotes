@@ -163,14 +163,15 @@ def _uncolorize(text, strip=True):
     return text.lstrip('\n')
 
 
-def saveNote(filepath, data):
+def saveNote(filepath, data, colorized=True):
     global sync
 
     if data == '':
         if os.path.exists(filepath):
             os.remove(filepath)
 
-    data = _uncolorize(data)
+    if colorized:
+        data = _uncolorize(data)
     try:
         _title, _content = data.split('\n', 1)
     except ValueError:
@@ -213,7 +214,7 @@ def saveNote(filepath, data):
     return filepath
 
 
-def loadNote(path):
+def loadNote(path, colorize=True):
     path = os.path.join(NOTESPATH, path)
     with codecs.open(path, 'rb',
                      encoding='utf_8', errors='replace') as fh:
@@ -225,7 +226,10 @@ def loadNote(path):
                 text = text.decode('utf-16')
             title = os.path.splitext(
                 os.path.basename(path))[0]
-            return _colorize((title + '\n' + text).replace('\r\n', '\n'))
+            if colorize:
+                return _colorize((title + '\n' + text).replace('\r\n', '\n'))
+            else:
+                return (title + '\n' + text).replace('\r\n', '\n')
         except:
             return 'gurk'
     raise StandardError('Codecs package miss')
@@ -293,12 +297,12 @@ def getSetting(section, option):
 
 def getSyncStatus():
     global sync
-    return sync.isRunning
+    return sync._running
 
 
 def launchSync():
     global sync
-    return sync._wsync()
+    return sync.launch()
 
 
 def getCategoryFromPath(path):
