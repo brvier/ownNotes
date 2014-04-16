@@ -19,21 +19,23 @@ import threading
 from settings import Settings
 import time
 import json
-import logging
-import logging.handlers
-import md5util
+#import logging
+
 #from webdav.Connection import WebdavError
-import urllib.parse
-import http
+#import http
+import rfc822py3 as rfc822
 import datetime
-
-from tinydav import WebDAVClient
-
+import requests
+import tinydav
 
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
 
 
 class IncorrectSyncParameters(Exception):
+    pass
+
+
+class SSLError(Exception):
     pass
 
 
@@ -82,15 +84,20 @@ class localClient(object):
     def get_relpath(self, abspath):
         return os.path.relpath(abspath, self.basepath)
 
+    def set_mtime(self, relpath, mtime):
+        os.utime(self.get_abspath(relpath), (-1, mtime))
+
     def get_mtime(self, abspath):
         return round(os.path.getmtime(abspath))
 
     def get_md5(self, relpath):
-        pass
+        import hashlib
+        with open(self.get_abspath(relpath), 'rb') as fh:
+            return hashlib.md5(fh.read()).digest()
 
     def get_files_index(self,):
         index = {}
-        for root, folders, files in os.walk(str(self.basepath)):
+        for root, folders, files in os.walk(self.basepath):
             if self.get_relpath(root) != \
                     '.merge.sync':
                 for filename in files:
@@ -109,7 +116,11 @@ class localClient(object):
         if os.path.isdir(path):
             os.rmdir(path)
         else:
-            os.rmdir(path)
+            os.remove(path)
+
+    def get_size(self, relpath):
+        abspath = self.get_abspath(relpath)
+        return os.stat(abspath).st_size
 
 
 class WebdavClient(object):
@@ -122,30 +133,36 @@ class WebdavClient(object):
 
         self.login = settings.get('WebDav', 'login')
         self.passwd = settings.get('WebDav', 'password')
-        self.basepath = urllib.parse.urlparse(self.url).path
+        self.basepath = requests.utils.urlparse(self.url).path
         self.remotefolder = settings.get('WebDav', 'remoteFolder')
+        self.nosslcheck = settings.get('WebDav', 'nosslcheck')
         self.timedelta = None
         self.wc = None
-        self.lock = None
+        self.locktoken = None
 
     def connect(self,):
-        from urllib.parse import urlparse
-        urlparsed = urlparse(self.url)
 
-        self.wc = WebDAVClient(host=urlparsed.netloc,
-                               protocol=urlparsed.scheme)
+        urlparsed = requests.utils.urlparse(self.url)
+
+        self.wc = tinydav.WebDAVClient(host=urlparsed.netloc,
+                                       protocol=urlparsed.scheme,
+                                       nosslcheck=self.nosslcheck)
 
         self.wc.setbasicauth(self.login.encode('utf-8'),
                              self.passwd.encode('utf-8'))
         time_delta = None
 
-        local_time = datetime.datetime.utcnow().replace(
-            tzinfo=datetime.timezone.utc)
-        response = self.wc.options('/').headers.get('Date')
+        local_time = datetime.datetime.utcnow()
+
+        response = self.wc.options('/').headers.get('date')
+        if response is None:
+            response = self.wc.options('/').headers.get('Date')
 
         remote_datetime = \
-            http.client.email.utils.parsedate_to_datetime(response)
-        self.timedelta = local_time.timestamp() - remote_datetime.timestamp()
+            rfc822.parsedate(response)
+
+        self.timedelta = time.mktime(local_time.utctimetuple()) \
+            - time.mktime(remote_datetime)
 
         self._check_notes_folder()
 
@@ -155,7 +172,8 @@ class WebdavClient(object):
         response = self.wc.propfind(uri=self.basepath,
                                     names=True,
                                     depth=1)
-
+        print(type(response))
+        print(dir(response))
         ownnotes_folder_exists = False
         ownnotes_remote_folder = self.get_abspath('')
         if response.real != 207:
@@ -183,17 +201,20 @@ class WebdavClient(object):
 
         self.wc.mkcol(self.get_abspath(relpath))
 
-    def upload(self, fh, relpath):
-        self.wc.put(self.get_abspath(relpath), fh)
+    def upload(self, relpath, fh):
+        with self.locktoken(False):
+            self.wc.put(self.get_abspath(relpath), fh)
 
     def download(self, relpath, fh):
-        fh.write(self.wc.get(self.get_abspath(relpath)))
+        fh.write(self.wc.get(self.get_abspath(relpath)).content)
 
     def rm(self, relpath):
-        self.wc.delete(self.get_abspath(relpath))
+        with self.locktoken:
+            self.wc.delete(self.get_abspath(relpath))
 
     def get_abspath(self, relpath, asFolder=False):
         abspath = self.basepath
+
         if abspath.endswith('/'):
             abspath += self.remotefolder
         else:
@@ -214,6 +235,15 @@ class WebdavClient(object):
             basepath += '/' + self.remotefolder
         return os.path.relpath(abspath, basepath)
 
+    def get_mtime(self, relpath):
+        response = self.wc.propfind(uri=self.get_abspath(relpath))
+        if response.real != 207:
+            raise NetworkError('Can\'t get mtime file on webdav host')
+        else:
+            for res in response:
+                return round(time.mktime(rfc822.parsedate(
+                    res.get('getlastmodified').text)))
+
     def get_files_index(self,):
         index = {}
 
@@ -223,23 +253,42 @@ class WebdavClient(object):
                                     names=True,
                                     depth='infinity')
 
+        print(response.real)
+
         if response.real != 207:
+            print((response.real, dir(response.href)))
             raise NetworkError('Can\'t list file on webdav host')
+
         else:
             for res in response:
-                print(res.href)
-                index[self.get_relpath(res.href)] = \
-                    round(http.client.email.utils.parsedate_to_datetime(
-                        res.get('getlastmodified').text).timestamp())
+                print((requests.utils.unquote(res.href)))
+                if len(res.get('resourcetype').getchildren()) == 0:
+                    index[requests.utils.unquote(self.get_relpath(res.href))] = \
+                        round(time.mktime(rfc822.parsedate(
+                            res.get('getlastmodified').text)))
 
         return index
 
     def move(self, srcrelpath, dstrelpath):
         '''Move/Rename a note on webdav'''
-        self.wc.move(self.get_abspath(srcrelpath),
-                     self.get_abspath(dstrelpath),
-                     depth='infinity',
-                     overwrite=True)
+        with self.locktoken:
+            self.wc.move(self.get_abspath(srcrelpath),
+                         self.get_abspath(dstrelpath),
+                         depth='infinity',
+                         overwrite=True)
+
+    def lock(self, relpath=''):
+        abspath = self.get_abspath(relpath)
+        if relpath:
+            self.locktoken = self.wc.lock(uri=abspath, timeout=60)
+        else:
+            self.locktoken = self.wc.lock(uri=abspath,
+                                          depth='infinity',
+                                          timeout=300)
+
+    def unlock(self, relpath=None):
+        if self.locktoken:
+            self.wc.unlock(uri_or_lock=self.locktoken)
 
 
 class Sync(object):
@@ -250,8 +299,13 @@ class Sync(object):
         self._running = False
         self._lock = None
 
+        # TODO
+        if Settings().get('WebDav', 'startupsync') is True:
+            self.launch()
+
     def launch(self):
         ''' Sync the notes in a thread'''
+        print('Sync Launched')
         if not self._get_running():
             self._set_running(True)
             self.thread = threading.Thread(target=self.sync)
@@ -265,8 +319,8 @@ class Sync(object):
         self.thread.start()
 
     def sync(self):
+        wdc = WebdavClient()
         try:
-            wdc = WebdavClient()
             wdc.connect()
             time_delta = wdc.timedelta
 
@@ -278,13 +332,15 @@ class Sync(object):
             # Get local filenames and timestamps
             local_filenames = ldc.get_files_index()
 
-            print(remote_filenames)
-            print(local_filenames)
+            print(('Remote', remote_filenames))
+            print(('Local', local_filenames))
+
+            wdc.lock()
 
             previous_remote_index, \
                 previous_local_index = self._get_sync_index()
 
-            print(previous_remote_index, previous_local_index)
+            print((previous_remote_index, previous_local_index))
 
             # Delete remote file deleted
             for filename in set(previous_remote_index) \
@@ -293,7 +349,7 @@ class Sync(object):
                     if int(local2utc(previous_remote_index[filename] -
                                      time_delta))  \
                             - int(local_filenames[filename]) >= -1:
-                        self._local_rm(filename)
+                        self._local_rm(ldc, filename)
                         del local_filenames[filename]
                     else:
                         # Else we have a conflict local file is newer than
@@ -345,7 +401,7 @@ class Sync(object):
                 # Avoid false detect
                 if abs(local2utc(remote_filenames[filename]
                        - time_delta) - local_filenames[filename]) == 0:
-                    print('Ignored %s' % filename)
+                    print(('Ignored %s' % filename))
                 elif local2utc(remote_filenames[filename]
                                - time_delta) \
                         > local_filenames[filename]:
@@ -355,18 +411,24 @@ class Sync(object):
                         < local_filenames[filename]:
                     self._conflictServer(wdc, ldc, filename)
                 else:
-                    print('Ignored %s' % filename)
+                    print(('Ignored %s' % filename))
 
             # Build and write index
-            self._write_index(wdc)
+            self._write_index(wdc, ldc)
 
             # Unlock the collection
             wdc.unlock()
             print('Sync end')
+        except requests.exceptions.SSLError as err:
+            raise SSLError('SSL Certificate is not valid, or is self signed')
 
         except Exception as err:
+            import traceback
+            traceback.print_exc()
+            wdc.unlock()
             raise err
 
+        self._set_running(False)
         return True
 
     def note_push(self, relpath):
@@ -397,9 +459,9 @@ class Sync(object):
 
     def _conflictServer(self, wdc, ldc, path):
         '''Priority to local'''
-        print('conflictServer: %s' % path)
+        print(('conflictServer: %s' % path))
 
-        conflict_path = os.path.splitext(path)[0] + '.Conflict.txt'
+        conflict_path = os.path.splitext(path)[0] + '.Conflict.txt'  # FIXME
 
         self._download(wdc, ldc,
                        path,
@@ -409,15 +471,15 @@ class Sync(object):
         if ldc.get_size(conflict_path) == 0:  # Test size to avoid ownCloud Bug
             ldc.rm(conflict_path)
 
-        elif ldc.md5sum(path) == ldc.md5sum(conflict_path):
+        elif ldc.get_md5(path) == ldc.get_md5(conflict_path):
             ldc.rm(conflict_path)
 
         self._upload(wdc, ldc, path)
 
     def _conflictLocal(self, wdc, ldc, relpath):
         '''Priority to server'''
-        print('conflictLocal: %s', relpath)
-        conflict_path = os.path.splitext(relpath)[0] + '.Conflict.txt'
+        print(('conflictLocal: %s', relpath))
+        conflict_path = os.path.splitext(relpath)[0] + '.Conflict.txt'  # FIXME
 
         ldc.rename(relpath, conflict_path)
         self._download(wdc, ldc, relpath)
@@ -426,7 +488,7 @@ class Sync(object):
         if ldc.getsize(relpath) == 0:  # Test size to avoid ownCloud Bug
             ldc.remove(relpath)
             ldc.rename(conflict_path, relpath)
-        elif ldc.md5sum(relpath) == ldc.md5sum(conflict_path):
+        elif ldc.get_md5(relpath) == ldc.get_md5(conflict_path):
             ldc.remove(conflict_path)
         else:
             self._upload(wdc, ldc, conflict_path)
@@ -441,9 +503,9 @@ class Sync(object):
                     'r') as fh:
                 index = json.load(fh)
         except (IOError, TypeError, ValueError) as err:
-            print(
+            print((
                 'First sync detected or error: %s'
-                % str(err))
+                % str(err)))
         if type(index) == list:
             return index  # for compatibility with older release
         return (index['remote'], index['local'])
@@ -457,9 +519,8 @@ class Sync(object):
         with open(os.path.join(
                 os.path.expanduser('~/.ownnotes/'),  # Use xdg env
                 '.index.sync'), 'w') as fh:
-            json.dump(index, fh, ensure_ascii=False, encoding='utf-8')
-            merge_dir = os.path.join(
-                self._localDataFolder, '.merge.sync/')
+            json.dump(index, fh)
+            merge_dir = ldc.get_abspath('.merge.sync/')
             if os.path.exists(merge_dir):
                 shutil.rmtree(merge_dir)
 
@@ -488,56 +549,49 @@ class Sync(object):
                     '.index.sync'), 'w') as fh:
                 json.dump(({}, index[1]), fh)
         except:
-            self.logger.debug('No remote index stored locally')
+            print('No remote index stored locally')
 
-    def _upload(self, wdc, local_filename, remote_filename):
-        if not remote_filename:
-            remote_filename = local_filename
-        rdirname, rfilename = (os.path.dirname(remote_filename),
-                               os.path.basename(remote_filename))
+    def _upload(self, wdc, ldc, local_relpath, remote_relpath=None):
+        if not remote_relpath:
+            remote_relpath = local_relpath
+        rdirname, rfilename = (os.path.dirname(remote_relpath),
+                               os.path.basename(remote_relpath))
 
-        if not wdc.exists(rdirname):
-            wdc.mkcol(rdirname)
+        wdc.exists_or_create(rdirname)
 
-        lpath = os.path.join(self._localDataFolder, local_filename)
+        mtime = None
+        with open(ldc.get_abspath(local_relpath), 'rb') as fh:
+            wdc.upload(remote_relpath, fh)
+            mtime = local2utc(wdc.get_mtime(remote_relpath)) - wdc.timedelta
 
-        with open(lpath, 'r') as fh:
-            wdc.upload(fh)
-            mtime = local2utc(wdc.get_mtime()) - wdc.timedelta
-            os.utime(lpath, (-1, mtime))
+        if mtime:
+            ldc.set_mtime(local_relpath, mtime)
 
-    def _download(self, webdavConnection, remote_filename,
-                  local_filename, time_delta):
-        if not local_filename:
-            local_filename = remote_filename
-        self.logger.debug('Download %s to %s' %
-                          (remote_filename, local_filename))
-        rdirname, rfilename = (os.path.dirname(remote_filename),
-                               os.path.basename(remote_filename))
-        webdavConnection.path = webdavPathJoin(self._get_notes_path(),
-                                               rdirname, rfilename)
-        if not os.path.exists(os.path.join(self._localDataFolder,
-                                           os.path.dirname(local_filename))):
-            os.makedirs(os.path.join(self._localDataFolder,
-                                     os.path.dirname(local_filename)))
-        lpath = os.path.join(self._localDataFolder,
-                             os.path.dirname(local_filename),
-                             _getValidFilename(
-                                 os.path.basename(local_filename)))
-        webdavConnection.downloadFile(lpath)
-        mtime = local2utc(time.mktime(webdavConnection
-                                      .readStandardProperties()
-                                      .getLastModified())) - time_delta
-        os.utime(lpath, (-1, mtime))
+    def _download(self, wdc, ldc, remote_relpath, local_relpath=None):
+        if not local_relpath:
+            local_relpath = remote_relpath
+        rdirname, rfilename = (os.path.dirname(remote_relpath),
+                               os.path.basename(remote_relpath))
 
-    def _get_mtime(self, webdavConnection, remote_filename):
+        if not os.path.exists(os.path.dirname(ldc.get_abspath(local_relpath))):
+            os.makedirs(os.path.dirname(ldc.get_abspath(local_relpath)))
+
+        mtime = None
+        with open(ldc.get_abspath(local_relpath), 'wb') as fh:
+            wdc.download(remote_relpath, fh)
+            mtime = wdc.get_mtime(remote_relpath) - wdc.timedelta
+
+        if mtime:
+            ldc.set_mtime(local_relpath, mtime)
+
+    '''def _get_mtime(self, webdavConnection, remote_filename):
         rdirname, rfilename = (os.path.dirname(remote_filename),
                                os.path.basename(remote_filename))
         webdavConnection.path = webdavPathJoin(self._get_notes_path(),
                                                rdirname, rfilename)
         return time.mktime(webdavConnection
                            .readStandardProperties()
-                           .getLastModified())
+                           .getLastModified())'''
 
     def _remote_rm(self, wdc, relpath):
         wdc.rm(relpath)
@@ -552,7 +606,7 @@ class Sync(object):
             self._lock = None
 
     def _get_notes_path(self):
-        khtnotesPath = urllib.parse.urlparse(self.webdavUrl).path
+        khtnotesPath = requests.utils.urlparse(self.webdavUrl).path
         if not khtnotesPath.endswith('/'):
             return khtnotesPath + '/' + self._remoteDataFolder + '/'
         else:
@@ -566,7 +620,7 @@ class Sync(object):
                 index.update(self.__get_remote_filenames(webdavConnection,
                                                          resource.path))
             else:
-                index[str(self.remoteBasename(resource.path))] = \
+                index[self.remoteBasename(resource.path)] = \
                     time.mktime(properties.getLastModified())
         return index
 
@@ -586,13 +640,11 @@ class Sync(object):
             del index['.index.sync']
         except KeyError:
             pass
-        self.logger.debug('_get_remote_filenames: %s'
-                          % str(index))
         return index
 
     def _get_local_filenames(self):
         index = {}
-        for root, folders, files in os.walk(str(self._localDataFolder)):
+        for root, folders, files in os.walk(self._localDataFolder):
             if self.localBasename(root) != '.merge.sync':
                 for filename in files:
                     index[self.localBasename(os.path.join(root,
@@ -605,8 +657,6 @@ class Sync(object):
         except KeyError:
             pass
 
-        self.logger.debug('_get_local_filenames: %s'
-                          % str(index))
         return index
 
     def _get_running(self):
@@ -618,4 +668,4 @@ class Sync(object):
 
 if __name__ == '__main__':
     s = Sync()
-    s.launch()
+    s.sync()

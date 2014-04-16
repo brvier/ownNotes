@@ -21,6 +21,7 @@ Requires:
 - sailfishsilica-qt5 >= 0.10.9
 - python3-base
 Files:
+- 
 - /usr/share/ownNotes/i18n
 - /usr/share/ownNotes/python
 - '%{_datadir}/%{name}/python'
