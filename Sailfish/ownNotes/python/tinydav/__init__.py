@@ -27,6 +27,7 @@ PYTHON3 = (sys.version_info >= (3, 0))
 from contextlib import closing
 from email.header import Header
 from functools import wraps, partial
+import requests
 
 if PYTHON2:
     from http.client import MULTI_STATUS, OK, CONFLICT, NO_CONTENT, UNAUTHORIZED
@@ -35,7 +36,6 @@ if PYTHON2:
     from io import StringIO
     import http.client
 else:
-    import http
     from http.client import MULTI_STATUS, OK, CONFLICT, NO_CONTENT
     from http.client import UNAUTHORIZED
     from io import BytesIO
@@ -43,7 +43,7 @@ else:
     from urllib.parse import quote as urllib_quote
     from urllib.parse import urlencode as urllib_urlencode
     import base64
-    import http.client as httplib
+    import http.client #as httplib
 
 from xml.etree.ElementTree import ElementTree, Element, SubElement, tostring
 
@@ -119,7 +119,7 @@ class HTTPResponse(int):
         response -- The original httplib.HTTPResponse object.
 
         """
-        return int.__new__(cls, response.status)
+        return int.__new__(cls, response.status_code)
 
     def __init__(self, response):
         """Initialize the HTTPResponse.
@@ -128,11 +128,11 @@ class HTTPResponse(int):
 
         """
         self.response = response
-        self.headers = dict(response.getheaders())
-        self.content = response.read()
-        version = "HTTP/%s.%s" % tuple(str(response.version))
+        self.headers = dict(response.headers)
+        self.content = response.content
+        version = "HTTP/%s.%s" % tuple(str(response.raw.version))
         self.statusline = "%s %d %s"\
-                        % (version, response.status, response.reason)
+            % (version, response.status_code, response.reason)
         if self == UNAUTHORIZED:
             self._setauth()
 
@@ -665,7 +665,7 @@ class HTTPClient(object):
         return self
 
     def __init__(self, host, port=80, protocol=None, strict=False,
-                 timeout=None, source_address=None):
+                 timeout=None, source_address=None, nosslcheck=False):
         """Initialize the WebDAV client.
 
         host -- WebDAV server host.
@@ -711,6 +711,7 @@ class HTTPClient(object):
         self.headers = dict()
         self.cookie = None
         self._do_digest_auth = False
+        self.nosslcheck = nosslcheck
 
     def _getconnection(self):
         """Return HTTP(S)Connection object depending on set protocol."""
@@ -739,6 +740,7 @@ class HTTPClient(object):
         headers -- If given, a mapping with additonal headers to send.
 
         """
+
         if not uri.startswith("/"):
             uri = "/%s" % uri
 
@@ -751,8 +753,16 @@ class HTTPClient(object):
 
         con = self._getconnection()
         with closing(con):
-            con.request(method, uri, content, headers)
-            response = self.ResponseType(con.getresponse())
+            #con.request(method, uri, content, headers)
+            #response = self.ResponseType(con.getresponse())
+            response = self.ResponseType(
+                requests.request(method=method,
+                                 url=self.protocol+'://'+self.host+uri,
+                                 data=content,
+                                 headers=headers,
+                                 cookies=self.cookie,
+                                 verify=(not self.nosslcheck)))
+
             if 400 <= response < 500:
                 response = HTTPUserError(response)
             elif 500 <= response < 600:
@@ -1050,7 +1060,7 @@ class CoreWebDAVClient(HTTPClient):
 
     ResponseType = WebDAVResponse
 
-    def __init__(self, host, port=80, protocol=None):
+    def __init__(self, host, port=80, protocol=None, nosslcheck=False):
         """Initialize the WebDAV client.
 
         host -- WebDAV server host.
@@ -1065,7 +1075,8 @@ class CoreWebDAVClient(HTTPClient):
                     Default port is 'http'.
 
         """
-        super(CoreWebDAVClient, self).__init__(host, port, protocol)
+        super(CoreWebDAVClient, self).__init__(host, port, protocol,
+                                               nosslcheck=nosslcheck)
         self.locks = dict()
 
     def _preparecopymove(self, source, destination, depth, overwrite, headers):

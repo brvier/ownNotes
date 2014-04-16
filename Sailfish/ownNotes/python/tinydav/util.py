@@ -116,7 +116,7 @@ class Multipart(object):
         self._files = list()
 
     def _create_non_file_parts(self):
-        items_iterator = iter(self.data.items()) if PYTHON2 else list(self.data.items())
+        items_iterator = iter(list(self.data.items())) if PYTHON2 else list(self.data.items())
         for (key, data) in items_iterator:
             # Are there explicit encodings/content-types given?
             # Note: Cannot do a (value, encoding) = value here as fileobjects 
@@ -229,7 +229,7 @@ def make_multipart(content, default_encoding="ascii", with_filenames=False):
     # RFC 2388 Returning Values from Forms: multipart/form-data
     mime = MIMEMultipart("form-data")
     files = list()
-    items_iterator = iter(content.items()) if PYTHON2 else list(content.items())
+    items_iterator = iter(list(content.items())) if PYTHON2 else list(content.items())
     for (key, data) in items_iterator:
         # Are there explicit encodings/content-types given?
         # Note: Cannot do a (value, encoding) = value here as fileobjects then

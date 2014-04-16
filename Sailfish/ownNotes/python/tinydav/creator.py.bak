@@ -27,7 +27,7 @@ import sys
 
 PYTHON2 = ((2, 5) <= sys.version_info <= (3, 0))
 PYTHON2_6 = (sys.version_info >= (2, 6))
-STRING_TYPE = basestring if PYTHON2 else str
+STRING_TYPE = str if PYTHON2 else str
 _NS = {"xmlns": "DAV:"}
 
 
@@ -109,7 +109,7 @@ def create_proppatch(setprops, delprops, namespaces=None):
     if setprops:
         set_ = SubElement(propertyupdate, "set")
         prop = SubElement(set_, "prop")
-        items_iterator = setprops.iteritems() if PYTHON2 else setprops.items()
+        items_iterator = iter(setprops.items()) if PYTHON2 else list(setprops.items())
         for (propname, propvalue) in items_iterator:
             prop = SubElement(prop, propname)
             prop.text = propvalue
@@ -204,12 +204,12 @@ def create_report_expand_property(properties=None, elements=None,
         properties -- string, list or mapping with element-names to attach.
 
         """
-        if isinstance(properties, basestring):
+        if isinstance(properties, str):
             properties = {properties: None}
         elif not isinstance(properties, Mapping):
             properties = dict.fromkeys(properties, None)
         # recursivly attach property-elements to elem
-        for (propname, subprops) in properties.items():
+        for (propname, subprops) in list(properties.items()):
             prop = SubElement(elem, "property")
             prop.attrib["name"] = propname
             if subprops:
