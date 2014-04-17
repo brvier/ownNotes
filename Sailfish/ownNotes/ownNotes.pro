@@ -25,8 +25,7 @@ DEFINES *= 'VERSION=\'\"$${VERSION}\"\''
 SOURCES += src/ownNotes.cpp \
     src/qpython.cpp \
     src/documenthandler.cpp \
-    src/highlighter.cpp \
-    src/fileio.cpp
+    src/highlighter.cpp
 
 OTHER_FILES += qml/ownNotes.qml \
     qml/cover/CoverPage.qml \
@@ -45,8 +44,7 @@ OTHER_FILES += qml/ownNotes.qml \
 HEADERS += \
     src/qpython.h \
     src/documenthandler.h \
-    src/highlighter.h \
-    src/fileio.h
+    src/highlighter.h
 
 python_files.files = python
 python_files.path = /usr/share/$$TARGET

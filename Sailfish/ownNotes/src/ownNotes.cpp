@@ -42,7 +42,6 @@
 #include <QQmlEngine>
 #include <QString>
 #include "documenthandler.h"
-#include "fileio.h"
 
 int main(int argc, char *argv[])
 {
@@ -62,7 +61,6 @@ int main(int argc, char *argv[])
     app->installTranslator(&translator);
     QPython::registerQML();
     qmlRegisterType<DocumentHandler>("net.khertan.documenthandler", 1, 0, "DocumentHandler");
-    qmlRegisterType<FileIO, 1>("net.khertan.fileio", 1, 0, "FileIO");
     QQuickView *view = SailfishApp::createView();
     view->setSource(SailfishApp::pathTo("qml/ownNotes.qml"));
     view->engine()->rootContext()->setContextProperty("VERSION", VERSION);

@@ -21,8 +21,6 @@ import time
 import json
 #import logging
 
-#from webdav.Connection import WebdavError
-#import http
 import rfc822py3 as rfc822
 import datetime
 import requests
@@ -202,10 +200,12 @@ class WebdavClient(object):
         self.wc.mkcol(self.get_abspath(relpath))
 
     def upload(self, relpath, fh):
+        print('Wdc upload', relpath)
         with self.locktoken(False):
             self.wc.put(self.get_abspath(relpath), fh)
 
     def download(self, relpath, fh):
+        print('Wdc download', relpath)
         fh.write(self.wc.get(self.get_abspath(relpath)).content)
 
     def rm(self, relpath):
@@ -263,8 +263,8 @@ class WebdavClient(object):
             for res in response:
                 print((requests.utils.unquote(res.href)))
                 if len(res.get('resourcetype').getchildren()) == 0:
-                    index[requests.utils.unquote(self.get_relpath(res.href))] = \
-                        round(time.mktime(rfc822.parsedate(
+                    index[requests.utils.unquote(self.get_relpath(res.href))] \
+                        = round(time.mktime(rfc822.parsedate(
                             res.get('getlastmodified').text)))
 
         return index
@@ -424,7 +424,7 @@ class Sync(object):
 
         except Exception as err:
             import traceback
-            traceback.print_exc()
+            print(traceback.print_exc())
             wdc.unlock()
             raise err
 

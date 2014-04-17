@@ -181,6 +181,7 @@ def saveNote(filepath, data, colorized=True):
     old_title = os.path.splitext(
         os.path.basename(os.path.relpath(filepath, base_path)))[0]
 
+    print('Old title:', old_title, ' _title:', _title)
     if old_title and (_title != old_title):
         index = 1
         new_path = os.path.join(base_path,
@@ -207,8 +208,8 @@ def saveNote(filepath, data, colorized=True):
 
     try:
         sync.pushNote(filepath)
-    except:
-        pass
+    except Exception as err:
+        print(err)
 
     return filepath
 
@@ -268,6 +269,10 @@ def listNotes(searchFilter):
                                  note['title']),
                reverse=False)
 
+    print('Notes List', [note for note in notes
+            if searchFilter.lower()
+            in note['title'].lower()])
+    
     return [note for note in notes
             if searchFilter.lower()
             in note['title'].lower()]
@@ -300,7 +305,8 @@ def getSyncStatus():
 
 def launchSync():
     global sync
-    return sync._wsync()
+    return sync.sync()
+
 
 
 def getCategoryFromPath(path):
@@ -335,7 +341,7 @@ def getCategories():
             elif (category != '.merge.sync') and (category not in categories):
                 categories.append(category)
     categories.sort()
-    return [{'name': category} for category in categories]
+    return [{'name': acategory} for acategory in categories]
 
 
 def duplicate(path):
@@ -412,6 +418,10 @@ def publishToScriptogram(text):
                           user_id=settings.get('Scriptogram', 'userid'),
                           text=_content)
     return True
+
+def readChangeslog():
+    with open('/usr/share/ownNotes/datas/changelog.html') as fh:
+        return fh.read()
 
 if __name__ == '__init__':
     print(getCategoryFromPath(os.path.join(NOTESPATH, 'test', 'blabla.txt')))

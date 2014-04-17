@@ -138,14 +138,22 @@ Page {
             }
 
             TextSwitch {
-                text: qsTr("Use auto merge")
-                description: qsTr("When note are edited in several places, ownNotes will try to merge the changes if possible")
-                checked: pyNotes.get('WebDav','merge')
+                text: qsTr("Do not verificate ssl certificate")
+                description: qsTr("Do not verify ssl certificate, this can be usefull in case of self signed certificate, but in this case you will not be protected in case of MITM Attack.")
+                checked: pyNotes.get('WebDav','nosslcheck')
                 onCheckedChanged:  {
-                    pyNotes.set('WebDav','merge',checked)
+                    pyNotes.set('WebDav','nosslcheck',checked)
                 }
             }
 
+            TextSwitch {
+                text: qsTr("Auto Sync")
+                description: qsTr("Launch synchronisation on startup.")
+                checked: pyNotes.get('WebDav','startupsync')
+                onCheckedChanged:  {
+                    pyNotes.set('WebDav','startupsync',checked)
+                }
+            }
 
             SectionHeader {
                 text: 'Scriptogr.am'

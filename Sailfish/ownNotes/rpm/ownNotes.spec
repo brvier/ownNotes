@@ -64,18 +64,16 @@ desktop-file-install --delete-original       \
    %{buildroot}%{_datadir}/applications/*.desktop
 
 %files
-%defattr(-,root,root,-)
-/usr/share/ownNotes/i18n
-/usr/share/ownNotes/python
+%defattr(755,root,root,755)
 %{_datadir}/%{name}/python
-%{_bindir}
 %{_datadir}/%{name}/qml
+%{_datadir}/%{name}/i18n
+%{_datadir}/%{name}/datas
+%{_datadir}/%{name}/icons
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/86x86/apps/%{name}.png
-/usr/bin
-/usr/share/ownNotes
 /usr/share/applications
 /usr/share/icons/hicolor/86x86/apps
-/usr/share/ownNotes/datas
+%attr(755,root,root) %{_bindir}
 # >> files
 # << files

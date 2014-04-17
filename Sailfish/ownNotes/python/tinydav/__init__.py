@@ -664,7 +664,7 @@ class HTTPClient(object):
             self.setbasicauth(parsed.username, parsed.password)
         return self
 
-    def __init__(self, host, port=80, protocol=None, strict=False,
+    def __init__(self, host, port=80, protocol=None,
                  timeout=None, source_address=None, nosslcheck=False):
         """Initialize the WebDAV client.
 
@@ -678,9 +678,6 @@ class HTTPClient(object):
                         8080 -> http
                         8081 -> http
                     Default port is 'http'.
-        strict -- When True, raise BadStatusLine if the status line can't be
-                  parsed as a valid HTTP/1.0 or 1.1 status line (see Python
-                  doc for httplib).
         timeout -- Operations will timeout after that many seconds. Else the
                    global default timeout setting is used (see Python doc for
                    httplib). This argument is available since Python 2.6. It
@@ -700,7 +697,6 @@ class HTTPClient(object):
             self.protocol = PROTOCOL.get(port, "http")
         else:
             self.protocol = protocol
-        self.strict = strict
         self.timeout = timeout
         self.source_address = source_address
         if PYTHON2:
@@ -716,7 +712,7 @@ class HTTPClient(object):
     def _getconnection(self):
         """Return HTTP(S)Connection object depending on set protocol."""
         args = (self.host, self.port,)
-        kwargs = dict(strict=self.strict)
+        kwargs = dict()
         if PYTHON2_6:
             kwargs["timeout"] = self.timeout
         if PYTHON2_7:
