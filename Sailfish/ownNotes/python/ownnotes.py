@@ -238,30 +238,30 @@ def listNotes(searchFilter):
     path = NOTESPATH
     notes = []
     for root, folders, filenames in os.walk(path):
-            category = os.path.relpath(root, path)
-            if category == '.':
-                category = ''
-            if category != '.merge.sync':
-                notes.extend([{'title': os.path.splitext(filename)[0],
-                               'category': category,
-                               'timestp':
-                               os.stat(
-                                   os.path.join(
-                                       path,
-                                       category,
-                                       filename)).st_mtime,
-                               'timestamp':
-                               time.strftime('%x %X',
-                                             time.localtime(
-                                                 os.stat(
-                                                     os.path.join(
-                                                         path,
-                                                         category,
-                                                         filename)).st_mtime)),
-                               'favorited': False,
-                               'path': os.path.join(path, category, filename)}
-                              for filename in filenames
-                              if filename != '.index.sync'])
+        category = os.path.relpath(root, path)
+        if category == '.':
+            category = ''
+        if category != '.merge.sync':
+            notes.extend([{'title': os.path.splitext(filename)[0],
+                           'category': category,
+                           'timestp':
+                           os.stat(
+                               os.path.join(
+                                   path,
+                                   category,
+                                   filename)).st_mtime,
+                           'timestamp':
+                           time.strftime('%x %X',
+                                         time.localtime(
+                                             os.stat(
+                                                 os.path.join(
+                                                     path,
+                                                     category,
+                                                     filename)).st_mtime)),
+                           'favorited': False,
+                           'path': os.path.join(path, category, filename)}
+                          for filename in filenames
+                          if filename != '.index.sync'])
 
     notes.sort(key=lambda note: (not note['favorited'],
                                  note['category'],
@@ -270,9 +270,9 @@ def listNotes(searchFilter):
                reverse=False)
 
     print('Notes List', [note for note in notes
-            if searchFilter.lower()
-            in note['title'].lower()])
-    
+                         if searchFilter.lower()
+                         in note['title'].lower()])
+
     return [note for note in notes
             if searchFilter.lower()
             in note['title'].lower()]
@@ -308,7 +308,6 @@ def launchSync():
     return sync.sync()
 
 
-
 def getCategoryFromPath(path):
     return os.path.dirname(
         os.path.relpath(path, NOTESPATH))
@@ -333,13 +332,13 @@ def createNote():
 def getCategories():
     categories = ['']
     for root, folders, filenames in os.walk(NOTESPATH):
-            category = os.path.relpath(root, NOTESPATH)
-            if category == '.':
-                category = ''
-            elif filenames == []:
-                continue  # Remove empty category
-            elif (category != '.merge.sync') and (category not in categories):
-                categories.append(category)
+        category = os.path.relpath(root, NOTESPATH)
+        if category == '.':
+            category = ''
+        elif filenames == []:
+            continue  # Remove empty category
+        elif (category != '.merge.sync') and (category not in categories):
+            categories.append(category)
     categories.sort()
     return [{'name': acategory} for acategory in categories]
 
@@ -418,6 +417,7 @@ def publishToScriptogram(text):
                           user_id=settings.get('Scriptogram', 'userid'),
                           text=_content)
     return True
+
 
 def readChangeslog():
     with open('/usr/share/ownNotes/datas/changelog.html') as fh:
