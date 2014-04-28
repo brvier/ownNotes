@@ -757,7 +757,8 @@ class HTTPClient(object):
                                  data=content,
                                  headers=headers,
                                  cookies=self.cookie,
-                                 verify=(not self.nosslcheck)))
+                                 verify=(not self.nosslcheck),
+                                 timeout=60))
 
             if 400 <= response < 500:
                 response = HTTPUserError(response)

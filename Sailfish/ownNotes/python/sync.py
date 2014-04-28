@@ -244,28 +244,37 @@ class WebdavClient(object):
                 return round(time.mktime(rfc822.parsedate(
                     res.get('getlastmodified').text)))
 
-    def get_files_index(self,):
+    def get_files_index(self, path=''):
         index = {}
 
-        abspath = self.get_abspath('', asFolder=True)
-
+        abspath = self.get_abspath(path, asFolder=True)
+        print('DEBUG: Get files index : ', abspath)
         response = self.wc.propfind(uri=abspath,
                                     names=True,
-                                    depth='infinity')
-
-        print(response.real)
-
-        if response.real != 207:
-            print((response.real, dir(response.href)))
-            raise NetworkError('Can\'t list file on webdav host')
-
-        else:
+                                    depth='1') #We can t use infinite depth some owncloud version
+                                               #didn t support it
+        if response.real == 207:
+            with open('response', 'wb') as fh:
+                fh.write(response.content)
             for res in response:
-                print((requests.utils.unquote(res.href)))
                 if len(res.get('resourcetype').getchildren()) == 0:
                     index[requests.utils.unquote(self.get_relpath(res.href))] \
                         = round(time.mktime(rfc822.parsedate(
                             res.get('getlastmodified').text)))
+                else:
+                    #Workarround for infinite depth
+                    if res.href != abspath:
+                        index.update(self.get_files_index(path=self.get_relpath(res.href)))
+
+        elif response.real == 200:
+            with open('debug', 'wb') as fh:
+                fh.write(response.content)
+            print( dir(response.content), response._parse_xml_content(), response.parse_error )
+            raise NetworkError('Wrong answer from server')
+
+        else:
+            print((response.real, dir(response)))
+            raise NetworkError('Can\'t list file on webdav host')
 
         return index
 
