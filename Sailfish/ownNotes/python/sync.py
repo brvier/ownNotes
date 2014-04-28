@@ -19,8 +19,6 @@ import threading
 from settings import Settings
 import time
 import json
-#import logging
-
 import rfc822py3 as rfc822
 import datetime
 import requests
@@ -251,8 +249,8 @@ class WebdavClient(object):
         print('DEBUG: Get files index : ', abspath)
         response = self.wc.propfind(uri=abspath,
                                     names=True,
-                                    depth='1') #We can t use infinite depth some owncloud version
-                                               #didn t support it
+                                    depth='1')  # We can t use infinite depth some owncloud version
+                                               # didn t support it
         if response.real == 207:
             with open('response', 'wb') as fh:
                 fh.write(response.content)
@@ -262,14 +260,16 @@ class WebdavClient(object):
                         = round(time.mktime(rfc822.parsedate(
                             res.get('getlastmodified').text)))
                 else:
-                    #Workarround for infinite depth
+                    # Workarround for infinite depth
                     if res.href != abspath:
-                        index.update(self.get_files_index(path=self.get_relpath(res.href)))
+                        index.update(
+                            self.get_files_index(path=self.get_relpath(res.href)))
 
         elif response.real == 200:
             with open('debug', 'wb') as fh:
                 fh.write(response.content)
-            print( dir(response.content), response._parse_xml_content(), response.parse_error )
+            print(dir(response.content),
+                  response._parse_xml_content(), response.parse_error)
             raise NetworkError('Wrong answer from server')
 
         else:
@@ -533,19 +533,6 @@ class Sync(object):
             if os.path.exists(merge_dir):
                 shutil.rmtree(merge_dir)
 
-            # os.makedirs(merge_dir)
-            # for filename in glob.glob(os.path.join(
-            #        self._localDataFolder, '*.txt')):
-            #    try:
-            #        if os.path.isfile(filename):
-            #            shutil.copy(filename,
-            #                        os.path.join(
-            #                            merge_dir,
-            #                            self.localBasename(filename)))
-            #    except IOError as err:
-            #        print(err, 'filename:', filename, ' merge_dir:',
-            #              merge_dir)
-
     def _rm_remote_index(self,):
         '''Delete the remote index stored locally'''
         try:
@@ -592,15 +579,6 @@ class Sync(object):
 
         if mtime:
             ldc.set_mtime(local_relpath, mtime)
-
-    '''def _get_mtime(self, webdavConnection, remote_filename):
-        rdirname, rfilename = (os.path.dirname(remote_filename),
-                               os.path.basename(remote_filename))
-        webdavConnection.path = webdavPathJoin(self._get_notes_path(),
-                                               rdirname, rfilename)
-        return time.mktime(webdavConnection
-                           .readStandardProperties()
-                           .getLastModified())'''
 
     def _remote_rm(self, wdc, relpath):
         wdc.rm(relpath)

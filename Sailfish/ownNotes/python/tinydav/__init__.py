@@ -664,7 +664,11 @@ class HTTPClient(object):
             self.setbasicauth(parsed.username, parsed.password)
         return self
 
+<<<<<<< HEAD
     def __init__(self, host, port=80, protocol=None,
+=======
+    def __init__(self, host, port=80, protocol=None, strict=False,
+>>>>>>> b314d33d6193f90bf410e49ae528ccd22ed5efe5
                  timeout=None, source_address=None, nosslcheck=False):
         """Initialize the WebDAV client.
 
@@ -757,8 +761,12 @@ class HTTPClient(object):
                                  data=content,
                                  headers=headers,
                                  cookies=self.cookie,
+<<<<<<< HEAD
                                  verify=(not self.nosslcheck),
                                  timeout=60))
+=======
+                                 verify=(not self.nosslcheck)))
+>>>>>>> b314d33d6193f90bf410e49ae528ccd22ed5efe5
 
             if 400 <= response < 500:
                 response = HTTPUserError(response)
