@@ -247,8 +247,6 @@ class WebdavClient(object):
                                     depth='1')  # We can t use infinite depth some owncloud version
                                                # didn t support it
         if response.real == 207:
-            with open('response', 'wb') as fh:
-                fh.write(response.content)
             for res in response:
                 if len(res.get('resourcetype').getchildren()) == 0:
                     index[requests.utils.unquote(self.get_relpath(res.href))] \
@@ -261,8 +259,6 @@ class WebdavClient(object):
                             self.get_files_index(path=self.get_relpath(res.href)))
 
         elif response.real == 200:
-            with open('debug', 'wb') as fh:
-                fh.write(response.content)
             raise NetworkError('Wrong answer from server')
 
         else:
