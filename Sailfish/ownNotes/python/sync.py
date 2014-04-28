@@ -168,8 +168,6 @@ class WebdavClient(object):
         response = self.wc.propfind(uri=self.basepath,
                                     names=True,
                                     depth=1)
-        print(type(response))
-        print(dir(response))
         ownnotes_folder_exists = False
         ownnotes_remote_folder = self.get_abspath('')
         if response.real != 207:
@@ -198,12 +196,10 @@ class WebdavClient(object):
         self.wc.mkcol(self.get_abspath(relpath))
 
     def upload(self, relpath, fh):
-        print('Wdc upload', relpath)
         with self.locktoken(False):
             self.wc.put(self.get_abspath(relpath), fh)
 
     def download(self, relpath, fh):
-        print('Wdc download', relpath)
         fh.write(self.wc.get(self.get_abspath(relpath)).content)
 
     def rm(self, relpath):
@@ -246,7 +242,6 @@ class WebdavClient(object):
         index = {}
 
         abspath = self.get_abspath(path, asFolder=True)
-        print('DEBUG: Get files index : ', abspath)
         response = self.wc.propfind(uri=abspath,
                                     names=True,
                                     depth='1')  # We can t use infinite depth some owncloud version
@@ -268,12 +263,9 @@ class WebdavClient(object):
         elif response.real == 200:
             with open('debug', 'wb') as fh:
                 fh.write(response.content)
-            print(dir(response.content),
-                  response._parse_xml_content(), response.parse_error)
             raise NetworkError('Wrong answer from server')
 
         else:
-            print((response.real, dir(response)))
             raise NetworkError('Can\'t list file on webdav host')
 
         return index
@@ -314,7 +306,6 @@ class Sync(object):
 
     def launch(self):
         ''' Sync the notes in a thread'''
-        print('Sync Launched')
         if not self._get_running():
             self._set_running(True)
             self.thread = threading.Thread(target=self.sync)
@@ -341,15 +332,10 @@ class Sync(object):
             # Get local filenames and timestamps
             local_filenames = ldc.get_files_index()
 
-            print(('Remote', remote_filenames))
-            print(('Local', local_filenames))
-
             wdc.lock()
 
             previous_remote_index, \
                 previous_local_index = self._get_sync_index()
-
-            print((previous_remote_index, previous_local_index))
 
             # Delete remote file deleted
             for filename in set(previous_remote_index) \
@@ -410,7 +396,7 @@ class Sync(object):
                 # Avoid false detect
                 if abs(local2utc(remote_filenames[filename]
                        - time_delta) - local_filenames[filename]) == 0:
-                    print(('Ignored %s' % filename))
+                    pass
                 elif local2utc(remote_filenames[filename]
                                - time_delta) \
                         > local_filenames[filename]:
@@ -420,14 +406,14 @@ class Sync(object):
                         < local_filenames[filename]:
                     self._conflictServer(wdc, ldc, filename)
                 else:
-                    print(('Ignored %s' % filename))
+                    pass
 
             # Build and write index
             self._write_index(wdc, ldc)
 
             # Unlock the collection
             wdc.unlock()
-            print('Sync end')
+
         except requests.exceptions.SSLError as err:
             raise SSLError('SSL Certificate is not valid, or is self signed')
 
@@ -468,7 +454,6 @@ class Sync(object):
 
     def _conflictServer(self, wdc, ldc, path):
         '''Priority to local'''
-        print(('conflictServer: %s' % path))
 
         conflict_path = os.path.splitext(path)[0] + '.Conflict.txt'  # FIXME
 
@@ -487,7 +472,7 @@ class Sync(object):
 
     def _conflictLocal(self, wdc, ldc, relpath):
         '''Priority to server'''
-        print(('conflictLocal: %s', relpath))
+
         conflict_path = os.path.splitext(relpath)[0] + '.Conflict.txt'  # FIXME
 
         ldc.rename(relpath, conflict_path)
