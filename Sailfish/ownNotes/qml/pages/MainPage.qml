@@ -178,14 +178,15 @@ Page {
 
             MenuItem {
                 text: qsTr("About")
-                onClicked:
+                onClicked: {
+                    aboutInfos.changelog = pyNotes.readChangeslog();
                     pageStack.push(Qt.createComponent(Qt.resolvedUrl("AboutPage.qml")),
                                    {
                                        title : 'ownNotes ' + aboutInfos.version,
                                        icon: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png'),
                                        slogan : qsTr('Notes in your own cloud !'),
-                                       contentText : aboutInfos.contentText
-                                   })
+                                       contentText : aboutInfos.firstPart + aboutInfos.changelog + aboutInfos.secondPart
+                                   })}
 
             }
             MenuItem {
@@ -334,13 +335,13 @@ Page {
     Item {
         id: aboutInfos
         property string version:VERSION
-        property string contentText:qsTr('A note taking application with sync for ownCloud or any WebDav.') +
+        property string changelog:''
+        property string firstPart:qsTr('A note taking application with sync for ownCloud or any WebDav.') +
                                     '<br>' + qsTr('Web Site : http://khertan.net/ownnotes') +
                                     '<br><br>' + qsTr('By') +' Benoît HERVIER (Khertan)' +
                                     '<br><b>' + qsTr('Licensed under GPLv3') + '</b>'+
-                                    '<br><br><b>Changeslog : </b><br>' +
-                                    //+ pyNotes.readChangeslog() +
-                                    '<br><br><b>Thanks to : </b>' +
+                                    '<br><br><b>Changeslog : </b><br><br>'
+        property string secondPart: '<br><br><b>Thanks to : </b>' +
                                     '<br>* Radek Novacek' +
                                     '<br>* caco3 on talk.maemo.org for debugging' +
                                     '<br>* Thomas Perl for PyOtherSide' +
@@ -365,8 +366,6 @@ Page {
                                     '<br>For a complete documentation on the markdown format,' +
                                     ' see <a href="http://daringfireball.net/projects/markdown/syntax">Daringfireball Markdown Syntax</a>. Hilighting on ownNotes support only few tags' +
                                     'of markdown syntax: title, bold, italics, links'
-
-
     }
 }
 

@@ -70,7 +70,7 @@ def generate_changelog(version):
             for entry in changelog[version]:
                 fh.write('%s : %s<br>' % (entry['type'].title(),
                                           entry['text'].title()))
-            fh.write('<br><br>')
+            fh.write('<br>')
 
 
 def write_version(version, codename):

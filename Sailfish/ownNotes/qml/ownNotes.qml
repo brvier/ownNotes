@@ -58,8 +58,7 @@ ApplicationWindow
         signal noteDeleted(string path)
 
         function readChangeslog() {
-            var message = call('ownnotes.readChangeslog', []);
-            return message;
+            return call('ownnotes.readChangeslog', []);
         }
 
         function loadNote(path) {
