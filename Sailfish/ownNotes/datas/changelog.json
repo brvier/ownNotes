@@ -146,5 +146,6 @@
       "text": "Fix pulley menu always showing Syncing label", 
       "type": "bug"
     }
-  ]
+  ], 
+  "1.8.1": []
 }
