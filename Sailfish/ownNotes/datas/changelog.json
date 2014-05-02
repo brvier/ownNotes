@@ -147,5 +147,18 @@
       "type": "bug"
     }
   ], 
-  "1.8.1": []
+  "1.8.1": [
+    {
+      "text": "Rewrite in python3", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Add missing file rfc8222 lib", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Improving release scrypt", 
+      "type": "bug"
+    }
+  ]
 }
