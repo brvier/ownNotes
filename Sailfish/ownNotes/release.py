@@ -64,7 +64,7 @@ def generate_changelog(version):
 
     print("Generate HTML Changelog")
     with open("datas/changelog.html", "w") as fh:
-        for version in changelog:
+        for version in sorted(changelog):
             print(version)
             fh.write('<b>%s</b> : <br>' % version)
             for entry in changelog[version]:
