@@ -28,6 +28,7 @@ from contextlib import closing
 from email.header import Header
 from functools import wraps, partial
 import requests
+import time
 
 if PYTHON2:
     from http.client import MULTI_STATUS, OK, CONFLICT, NO_CONTENT, UNAUTHORIZED
@@ -759,6 +760,8 @@ class HTTPClient(object):
                                  cookies=self.cookie,
                                  verify=(not self.nosslcheck),
                                  timeout=60))
+            with open('/tmp/ownnotes_'+str(time.time()), 'w') as fh:
+                fh.write('uri:%s\nmethod:%s\ncontent:%s\nresult:%s' % (uri, method, content, response.content))
 
             if 400 <= response < 500:
                 response = HTTPUserError(response)

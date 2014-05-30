@@ -76,7 +76,8 @@ Page {
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.fontSizeMedium
                 //font.weight: Font.Bold
-                color:Theme.primaryColor
+                color: listItem.highlighted ? Theme.highlightColor
+                                            : Theme.primaryColor
                 //elide: Text.ElideRight
                 maximumLineCount: 1
                 anchors {

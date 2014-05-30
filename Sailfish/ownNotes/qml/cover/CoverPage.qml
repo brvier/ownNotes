@@ -16,14 +16,16 @@ CoverBackground {
     }
 
     Label {
+        id: subNoteLabel
         anchors.horizontalCenter: label.horizontalCenter
         anchors.top: label.bottom
         anchors.topMargin: 5
-        text: qsTr("Syncing ...")
+        text: {if (sync.running === true) qsTr("Syncing ..."); else sync.get_last_sync_datetime()}
         font.family: Theme.fontFamily
         font.pixelSize: Theme.fontSizeSmall
-        visible: sync.running
-        opacity: visible === true ? 1.0 : 0.0
+        //visible: sync.running
+        //opacity: visible === true ? 1.0 : 0.0
+
     }
 
     CoverActionList {

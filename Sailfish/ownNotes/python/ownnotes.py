@@ -181,7 +181,6 @@ def saveNote(filepath, data, colorized=True):
     old_title = os.path.splitext(
         os.path.basename(os.path.relpath(filepath, base_path)))[0]
 
-    print('Old title:', old_title, ' _title:', _title)
     if old_title and (_title != old_title):
         index = 1
         new_path = os.path.join(base_path,
@@ -222,15 +221,15 @@ def loadNote(path, colorize=True):
             if text.find('\0') > 0:
                 # Probably utf-16 ... decode it to utf-8
                 # as qml didn t support it well'
-                text = text.decode('utf-16')
+                text = text.decode('utf-16').encode('utf-8')
             title = os.path.splitext(
                 os.path.basename(path))[0]
             if colorize:
                 return _colorize((title + '\n' + text).replace('\r\n', '\n'))
             else:
                 return (title + '\n' + text).replace('\r\n', '\n')
-        except:
-            return 'gurk'
+        except Exception as err:
+            raise Exception('File IO Error %s' % (str(err)))
     raise Exception('File IO Error')
 
 
@@ -268,10 +267,6 @@ def listNotes(searchFilter):
                                  -int(note['timestp']),
                                  note['title']),
                reverse=False)
-
-    print('Notes List', [note for note in notes
-                         if searchFilter.lower()
-                         in note['title'].lower()])
 
     return [note for note in notes
             if searchFilter.lower()
@@ -422,6 +417,12 @@ def publishToScriptogram(text):
 def readChangeslog():
     with open('/usr/share/ownNotes/datas/changelog.html') as fh:
         return fh.read()
+
+
+def get_last_sync_datetime():
+    global sync
+    return sync.get_last_sync_datetime()
+
 
 if __name__ == '__init__':
     print(getCategoryFromPath(os.path.join(NOTESPATH, 'test', 'blabla.txt')))

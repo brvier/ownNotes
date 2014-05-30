@@ -28,21 +28,13 @@ import Sailfish.Silica 1.0
 import net.khertan.python 1.0
 import Sailfish.Silica.theme 1.0
 
-DockedPanel {
+MouseArea {
     id: root
 
     width: Screen.width
     height: childrenRect.height
-
-    dock: Dock.Top
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            autoClose.stop()
-            root.hide()
-        }
-    }
+    opacity: 0.0
+    visible: opacity === 0.0 ? false : true
 
     Rectangle {
         id: content
@@ -51,7 +43,6 @@ DockedPanel {
         width: parent.width
         height: infoLabel.height + 2 * Theme.paddingSmall
         color: Theme.highlightColor
-        opacity: 0.8
 
         Label {
             id: infoLabel
@@ -63,17 +54,31 @@ DockedPanel {
             anchors.left: parent.left
             anchors.topMargin: Theme.paddingSmall
             anchors.leftMargin: Theme.paddingSmall
-             width: parent.width
+            width: parent.width
             //x: Theme.paddingSmall
             //y: Theme.paddingSmall
             wrapMode: Text.WrapAnywhere
             onHeightChanged: { content.height = infoLabel.height + 2 * Theme.paddingSmall;
-                               root.height = content.height}
+                root.height = content.height}
         }
 
     }
 
+    function hide() {
+        root.opacity = 0.0;
+    }
 
+    function show() {
+        root.opacity = 0.8;
+    }
+
+    Behavior on opacity { FadeAnimation { } }
+
+    onClicked: {
+        console.log('MouseArea clicked')
+        autoClose.stop()
+        root.hide()
+    }
 
     function displayError(errorMsg) {
         infoLabel.text = errorMsg
@@ -83,7 +88,7 @@ DockedPanel {
 
     Timer {
         id: autoClose
-        interval: 15000
+        interval: 14000
         running: false
         onTriggered: {
             root.hide()

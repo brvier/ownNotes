@@ -26,6 +26,10 @@ ApplicationWindow
             }
         }
 
+        function get_last_sync_datetime() {
+            return call('ownnotes.get_last_sync_datetime',[])
+        }
+
         onFinished: {
             running = false;
             console.debug('Sync finished :' + sync.running)

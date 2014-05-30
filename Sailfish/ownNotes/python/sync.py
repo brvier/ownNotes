@@ -178,7 +178,8 @@ class WebdavClient(object):
                 if (res.href == ownnotes_remote_folder):
                     ownnotes_folder_exists = True
             if not ownnotes_folder_exists:
-                self.wc.mkcol(ownnotes_remote_folder)
+                with self.locktoken:
+                    self.wc.mkcol(ownnotes_remote_folder)
         return is_connected
 
     def exists_or_create(self, relpath):
@@ -190,13 +191,14 @@ class WebdavClient(object):
             return False
         else:
             for res in response:
-                if (res.href == self.get_abspath(relpath)):
+                if (res.href.rstrip('/') == self.get_abspath(relpath)):
                     return True
 
-        self.wc.mkcol(self.get_abspath(relpath))
+        with self.locktoken:
+            self.wc.mkcol(self.get_abspath(relpath))
 
     def upload(self, relpath, fh):
-        with self.locktoken(False):
+        with self.locktoken:
             self.wc.put(self.get_abspath(relpath), fh)
 
     def download(self, relpath, fh):
@@ -244,8 +246,10 @@ class WebdavClient(object):
         abspath = self.get_abspath(path, asFolder=True)
         response = self.wc.propfind(uri=abspath,
                                     names=True,
-                                    depth='1')  # We can t use infinite depth some owncloud version
-                                               # didn t support it
+                                    depth='1')
+        #We can t use infinite depth some owncloud version
+        # didn t support it
+
         if response.real == 207:
             for res in response:
                 if len(res.get('resourcetype').getchildren()) == 0:
@@ -256,7 +260,8 @@ class WebdavClient(object):
                     # Workarround for infinite depth
                     if res.href != abspath:
                         index.update(
-                            self.get_files_index(path=self.get_relpath(res.href)))
+                            self.get_files_index(
+                                path=self.get_relpath(res.href)))
 
         elif response.real == 200:
             raise NetworkError('Wrong answer from server')
@@ -275,12 +280,12 @@ class WebdavClient(object):
                          overwrite=True)
 
     def lock(self, relpath=''):
-        abspath = self.get_abspath(relpath)
+        abspath = self.get_abspath(relpath, asFolder=True)
         if relpath:
             self.locktoken = self.wc.lock(uri=abspath, timeout=60)
         else:
             self.locktoken = self.wc.lock(uri=abspath,
-                                          depth='infinity',
+                                          depth='Infinity',
                                           timeout=300)
 
     def unlock(self, relpath=None):
@@ -415,7 +420,7 @@ class Sync(object):
 
         except Exception as err:
             import traceback
-            print(traceback.print_exc())
+            print(traceback.format_exc())
             wdc.unlock()
             raise err
 
@@ -483,6 +488,19 @@ class Sync(object):
         else:
             self._upload(wdc, ldc, conflict_path)
 
+    def get_last_sync_datetime(self):
+        try:
+            #TODO Use XDG Env
+            return time.strftime('%x %X',
+                                 time.localtime(
+                                     os.path.getmtime(
+                                         os.path.join(
+                                             os.path.expanduser(
+                                                 '~/.ownnotes/'),
+                                             '.index.sync'))))
+        except:
+            return ''
+
     def _get_sync_index(self):
         index = {'remote': [], 'local': []}
         try:
@@ -513,6 +531,7 @@ class Sync(object):
             merge_dir = ldc.get_abspath('.merge.sync/')
             if os.path.exists(merge_dir):
                 shutil.rmtree(merge_dir)
+            print('index written')
 
     def _rm_remote_index(self,):
         '''Delete the remote index stored locally'''
@@ -531,8 +550,7 @@ class Sync(object):
     def _upload(self, wdc, ldc, local_relpath, remote_relpath=None):
         if not remote_relpath:
             remote_relpath = local_relpath
-        rdirname, rfilename = (os.path.dirname(remote_relpath),
-                               os.path.basename(remote_relpath))
+        rdirname = os.path.dirname(remote_relpath)
 
         wdc.exists_or_create(rdirname)
 
@@ -547,8 +565,6 @@ class Sync(object):
     def _download(self, wdc, ldc, remote_relpath, local_relpath=None):
         if not local_relpath:
             local_relpath = remote_relpath
-        rdirname, rfilename = (os.path.dirname(remote_relpath),
-                               os.path.basename(remote_relpath))
 
         if not os.path.exists(os.path.dirname(ldc.get_abspath(local_relpath))):
             os.makedirs(os.path.dirname(ldc.get_abspath(local_relpath)))
