@@ -329,7 +329,6 @@ QPython::toPython(QVariant v)
         return result;
     } else if (type == QVariant::String) {
         QByteArray utf8bytes = v.toString().toUtf8();
-        qDebug() << v.toString();
         return PyUnicode_FromString(utf8bytes.constData());
     } else if (type == QVariant::Map) {
         QMap<QString,QVariant> m = v.toMap();
