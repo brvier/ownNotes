@@ -103,7 +103,7 @@ class Settings(object):
                 aes = pyaes.AESModeOfOperationCTR(
                     hashlib.sha256(fh.read().encode('utf-8')).digest())
                 self._settings[section][option] = \
-                    aes.encrypt(option)
+                    aes.encrypt(value)
 
         else:
             self._settings[section][option] = value
