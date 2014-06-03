@@ -20,29 +20,31 @@ The logger writes C{sys.stdout}.
 """
 
 import logging
-import sys
+from logging.handlers import RotatingFileHandler
+import os
 
 
-_defaultLoggerName = "ownNotes"
-_fileLogFormat = "%(asctime)s: %(levelname)s: %(message)s"
+class Logger():
 
+    def __init__(self, debug=False):
+        self.logger = logging.getLogger('ownNotes')
+        formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 
-def getDefaultLogger(handler=None):
-    """
-    Returns a configured logger object.
+        if debug:
+            # File Log
+            file_hdlr = RotatingFileHandler(os.path.join(
+                                            os.path.expanduser('~/.ownnotes/'),
+                                            'ownnotes.log'),
+                                            100000, 1)
+            file_hdlr.setFormatter(formatter)
+            file_hdlr.setLevel(logging.DEBUG)
+            self.logger.addHandler(file_hdlr)
 
-    @return: Logger instance.
-    @rtype: C{logging.Logger}
-    """
+        # Steam Log
+        steam_hdlr = logging.StreamHandler()
+        steam_hdlr.setFormatter(formatter)
+        steam_hdlr.setLevel(logging.INFO)
+        self.logger.addHandler(steam_hdlr)
 
-    myLogger = logging.getLogger(_defaultLoggerName)
-    if len(myLogger.handlers) == 0:
-        myLogger.level = logging.DEBUG
-        formatter = logging.Formatter(_fileLogFormat)
-        if handler is None:
-            stdoutHandler = logging.StreamHandler(sys.stdout)
-            stdoutHandler.setFormatter(formatter)
-            myLogger.addHandler(stdoutHandler)
-        else:
-            myLogger.addHandler(handler)
-    return myLogger
+        if debug:
+            self.logger.setLevel(logging.DEBUG)

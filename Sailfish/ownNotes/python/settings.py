@@ -15,6 +15,9 @@
 
 import os
 import json
+#import SimpleAES
+import hashlib
+import pyaes
 
 
 class Settings(object):
@@ -38,11 +41,12 @@ class Settings(object):
             'WebDav': {
                 'url': 'https://owncloud.khertan.net/remote.php/webdav/',
                 'login': 'demo',
-                'password': 'demo',
+                'password': '',
                 'remoteFolder': 'Notes',
                 'merge': True,
                 'nosslcheck': False,
-                'startupsync': False
+                'startupsync': False,
+                'debug': False
             },
             'KhtCms': {
                 'url': 'https://khertan.net/publish_api.php',
@@ -69,7 +73,6 @@ class Settings(object):
             with open(os.path.expanduser('~/.ownnotes.conf'), 'r') \
                     as configfile:
                     jsondata = json.load(configfile)
-                    print(jsondata)
                     for k, v in list(jsondata.items()):
                         if type(v) is dict:
                             self._settings[k].update(v)
@@ -77,19 +80,37 @@ class Settings(object):
                             self._settings[k] = v
         else:
             self._write()
-        print(self._settings)
 
     def get(self, section, option):
         if not self._settings:
             self._read()
+
+        #Obscure ...
+        if (section == 'WebDav' and option == 'password'):
+            with open('/etc/machine-id', 'r') as fh:
+                aes = pyaes.AESModeOfOperationCTR(
+                    hashlib.sha256(fh.read().encode('utf-8')).digest())
+                return aes.decrypt(self._settings[section][option])
+
         return self._settings[section][option]
 
     def set(self, section, option, value):
         if not self._settings:
             self._read()
-        self._settings[section][option] = value
+
+        if (section == 'WebDav' and option == 'password'):
+            with open('/etc/machine-id', 'r') as fh:
+                aes = pyaes.AESModeOfOperationCTR(
+                    hashlib.sha256(fh.read().encode('utf-8')).digest())
+                self._settings[section][option] = \
+                    aes.decrypt(self._settings[section][option])
+
+        else:
+            self._settings[section][option] = value
         self._write()
 
 
 if __name__ == '__main__':
     Settings()
+    #Settings().set('WebDav', 'password', 'test')
+    #assert(Settings().get('WebDav', 'password') == 'test')

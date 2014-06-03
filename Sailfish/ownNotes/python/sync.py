@@ -23,6 +23,7 @@ import rfc822py3 as rfc822
 import datetime
 import requests
 import tinydav
+import logger
 
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
 
@@ -42,7 +43,7 @@ class NetworkError(Exception):
 def _getValidFilename(filepath):
     dirname, filename = os.path.dirname(filepath), os.path.basename(filepath)
     return os.path.join(dirname, ''.join(car for car in filename
-                        if car not in INVALID_FILENAME_CHARS))
+                                         if car not in INVALID_FILENAME_CHARS))
 
 
 def local2utc(secs):
@@ -121,12 +122,11 @@ class localClient(object):
 
 class WebdavClient(object):
 
-    def __init__(self,):
+    def __init__(self, logger):
 
         settings = Settings()
 
         self.url = settings.get('WebDav', 'url')
-
         self.login = settings.get('WebDav', 'login')
         self.passwd = settings.get('WebDav', 'password')
         self.basepath = requests.utils.urlparse(self.url).path
@@ -135,6 +135,7 @@ class WebdavClient(object):
         self.timedelta = None
         self.wc = None
         self.locktoken = None
+        self.logger = logger
 
     def connect(self,):
 
@@ -161,6 +162,9 @@ class WebdavClient(object):
             - time.mktime(remote_datetime)
 
         self._check_notes_folder()
+
+        self.logger.logger.info('Connected to %s : Time delta %d',
+                                (urlparsed.netloc, time_delta))
 
         return time_delta
 
@@ -247,7 +251,7 @@ class WebdavClient(object):
         response = self.wc.propfind(uri=abspath,
                                     names=True,
                                     depth='1')
-        #We can t use infinite depth some owncloud version
+        # We can t use infinite depth some owncloud version
         # didn t support it
 
         if response.real == 207:
@@ -301,8 +305,12 @@ class Sync(object):
         self._running = False
         self._lock = None
 
+        settings = Settings()
+        self.logger = logger.Logger(
+            debug=settings.get('WebDav', 'debug'))
+
         # TODO
-        if Settings().get('WebDav', 'startupsync') is True:
+        if settings.get('WebDav', 'startupsync') is True:
             self.launch()
 
     def launch(self):
@@ -320,12 +328,12 @@ class Sync(object):
         self.thread.start()
 
     def sync(self):
-        wdc = WebdavClient()
+        wdc = WebdavClient(self.logger)
         try:
             wdc.connect()
             time_delta = wdc.timedelta
 
-            ldc = localClient()
+            ldc = localClient(self.logger)
 
             # Get remote filenames and timestamps
             remote_filenames = wdc.get_files_index()
@@ -396,7 +404,8 @@ class Sync(object):
 
                 # Avoid false detect
                 if abs(local2utc(remote_filenames[filename]
-                       - time_delta) - local_filenames[filename]) == 0:
+                                 - time_delta)
+                       - local_filenames[filename]) == 0:
                     pass
                 elif local2utc(remote_filenames[filename]
                                - time_delta) \
@@ -420,7 +429,7 @@ class Sync(object):
 
         except Exception as err:
             import traceback
-            print(traceback.format_exc())
+            self.logger.logger.error(traceback.format_exc())
             wdc.unlock()
             raise err
 
@@ -490,7 +499,7 @@ class Sync(object):
 
     def get_last_sync_datetime(self):
         try:
-            #TODO Use XDG Env
+            # TODO Use XDG Env
             return time.strftime('%x %X',
                                  time.localtime(
                                      os.path.getmtime(
@@ -511,7 +520,7 @@ class Sync(object):
                     'r') as fh:
                 index = json.load(fh)
         except (IOError, TypeError, ValueError) as err:
-            print((
+            self.logger.logger.info((
                 'First sync detected or error: %s'
                 % str(err)))
         if type(index) == list:
@@ -545,7 +554,7 @@ class Sync(object):
                     '.index.sync'), 'w') as fh:
                 json.dump(({}, index[1]), fh)
         except:
-            print('No remote index stored locally')
+            self.logger.logger.info('No remote index stored locally')
 
     def _upload(self, wdc, ldc, local_relpath, remote_relpath=None):
         if not remote_relpath:

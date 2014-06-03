@@ -155,6 +155,16 @@ Page {
                 }
             }
 
+
+            TextSwitch {
+                text: qsTr("Debug")
+                description: qsTr("Store sync debug logs.")
+                checked: pyNotes.get('WebDav','debug')
+                onCheckedChanged:  {
+                    pyNotes.set('WebDav','debug',checked)
+                }
+            }
+
             SectionHeader {
                 text: 'Scriptogr.am'
             }
