@@ -34,7 +34,7 @@ class Logger():
             # File Log
             file_hdlr = RotatingFileHandler(os.path.join(
                                             os.path.expanduser('~/.ownnotes/'),
-                                            'ownnotes.log'),
+                                            'OwnNotes Log.log'),
                                             100000, 1)
             file_hdlr.setFormatter(formatter)
             file_hdlr.setLevel(logging.DEBUG)
