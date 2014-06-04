@@ -64,9 +64,10 @@ def webdavPathJoin(path, *args):
 
 class localClient(object):
 
-    def __init__(self,):
+    def __init__(self, logger):
         self.basepath = os.path.expanduser('~/.ownnotes/')  # Use xdg env
         self._check_notes_folder()
+        self.logger = logger
 
     def _check_notes_folder(self,):
         if not os.path.exists(self.basepath):
@@ -163,8 +164,8 @@ class WebdavClient(object):
 
         self._check_notes_folder()
 
-        self.logger.logger.info('Connected to %s : Time delta %d',
-                                (urlparsed.netloc, time_delta))
+        self.logger.logger.info('Connected to %s : Time delta %s',
+                                urlparsed.netloc, str(time_delta))
 
         return time_delta
 
@@ -179,6 +180,8 @@ class WebdavClient(object):
         else:
             is_connected = True
             for res in response:
+                self.logger.logger.info('%s : %s',
+                                        ownnotes_remote_folder, res.href)
                 if (res.href == ownnotes_remote_folder):
                     ownnotes_folder_exists = True
             if not ownnotes_folder_exists:
