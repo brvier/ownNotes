@@ -87,10 +87,11 @@ class Settings(object):
 
         #Obscure ...
         if (section == 'WebDav' and option == 'password'):
-            with open('/etc/machine-id', 'r') as fh:
-                aes = pyaes.AESModeOfOperationCTR(
-                    hashlib.sha256(fh.read().encode('utf-8')).digest())
-                return aes.decrypt(self._settings[section][option])
+            if os.path.exists('/etc/machine-id'):
+                with open('/etc/machine-id', 'r') as fh:
+                    aes = pyaes.AESModeOfOperationCTR(
+                        hashlib.sha256(fh.read().encode('utf-8')).digest())
+                    return aes.decrypt(self._settings[section][option])
 
         return self._settings[section][option]
 
@@ -99,14 +100,17 @@ class Settings(object):
             self._read()
 
         if (section == 'WebDav' and option == 'password'):
-            with open('/etc/machine-id', 'r') as fh:
-                aes = pyaes.AESModeOfOperationCTR(
-                    hashlib.sha256(fh.read().encode('utf-8')).digest())
-                self._settings[section][option] = \
-                    aes.encrypt(value)
-
+            if os.path.exists('/etc/machine-id'):
+                with open('/etc/machine-id', 'r') as fh:
+                    aes = pyaes.AESModeOfOperationCTR(
+                        hashlib.sha256(fh.read().encode('utf-8')).digest())
+                    self._settings[section][option] = \
+                        aes.encrypt(value)
+            else:
+                self._settings[section][option] = value
         else:
             self._settings[section][option] = value
+
         self._write()
 
 

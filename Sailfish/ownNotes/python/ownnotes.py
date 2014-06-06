@@ -25,6 +25,7 @@ import re
 import html.entities
 from settings import Settings
 from sync import Sync
+import logger
 
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
 STRIPTAGS = re.compile(r'<[^>]+>')
@@ -140,15 +141,15 @@ def _unescape(text):
                     return chr(int(text[3:-1], 16))
                 else:
                     return chr(int(text[2:-1]))
-            except ValueError as e:
-                print(e)
+            except ValueError as err:
+                logger.Logger().logger.error(str(err))
         else:
             # named entity
             try:
                 text = chr(
                     html.entities.name2codepoint[text[1:-1]])
-            except KeyError as e:
-                print(e)
+            except KeyError as err:
+                logger.Logger().logger.error(str(err))
         return text  # leave as is
     return re.sub("&#?\w+;", fixup, text)
 
@@ -198,7 +199,7 @@ def saveNote(filepath, data, colorized=True):
         try:
             os.rename(filepath, new_path)
         except OSError:
-            print('Old didn\'t exists')
+            logger.Logger().logger.error('Old didn t exists')
 
         filepath = new_path
 
@@ -206,9 +207,9 @@ def saveNote(filepath, data, colorized=True):
         fh.write(_content)
 
     try:
-        sync.pushNote(filepath)
+        sync.push_note(filepath)
     except Exception as err:
-        print(err)
+        logger.Logger().logger.error(str(err))
 
     return filepath
 
@@ -318,7 +319,6 @@ def createNote():
     while os.path.exists(path):
         inc = str(int(inc) + 1)
         path = os.path.join(NOTESPATH, 'Untitled %s.txt' % inc)
-    print('PATH:', path)
     with open(path, 'w'):
         os.utime(path, (time.time(), time.time()))
     return os.path.join(NOTESPATH, 'Untitled %s.txt' % inc)

@@ -43,7 +43,7 @@ class Logger():
         # Steam Log
         steam_hdlr = logging.StreamHandler()
         steam_hdlr.setFormatter(formatter)
-        steam_hdlr.setLevel(logging.INFO)
+        steam_hdlr.setLevel(logging.DEBUG)
         self.logger.addHandler(steam_hdlr)
 
         if debug:

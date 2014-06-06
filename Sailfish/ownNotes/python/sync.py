@@ -148,7 +148,7 @@ class WebdavClient(object):
 
         self.wc.setbasicauth(self.login.encode('utf-8'),
                              self.passwd.encode('utf-8'))
-        time_delta = None
+        self.time_delta = None
 
         local_time = datetime.datetime.utcnow()
 
@@ -164,10 +164,13 @@ class WebdavClient(object):
 
         self._check_notes_folder()
 
-        self.logger.logger.info('Connected to %s : Time delta %s',
-                                urlparsed.netloc, str(time_delta))
+        self.logger.logger.debug('Response :  %s',
+                                 response)
 
-        return time_delta
+        self.logger.logger.info('Connected to %s : Time delta %s',
+                                urlparsed.netloc, str(self.time_delta))
+
+        return self.time_delta
 
     def _check_notes_folder(self,):
         response = self.wc.propfind(uri=self.basepath,
@@ -180,17 +183,21 @@ class WebdavClient(object):
         else:
             is_connected = True
             for res in response:
-                self.logger.logger.info('%s : %s',
-                                        ownnotes_remote_folder, res.href)
+                self.logger.logger.debug('Check Notes Folder %s : %s',
+                                         ownnotes_remote_folder, res.href)
                 if (res.href == ownnotes_remote_folder):
                     ownnotes_folder_exists = True
             if not ownnotes_folder_exists:
                 with self.locktoken:
                     self.wc.mkcol(ownnotes_remote_folder)
+                    self.logger.logger.debug(
+                        'Exists or create mkcol : %s', ownnotes_remote_folder)
         return is_connected
 
     def exists_or_create(self, relpath):
-        response = self.wc.propfind(uri=self.get_abspath(''),
+        self.logger.logger.debug(
+            'Exists or create %s' % self.get_abspath(relpath))
+        response = self.wc.propfind(uri=self.get_abspath('', asFolder=True),
                                     names=True,
                                     depth=1)
 
@@ -198,21 +205,32 @@ class WebdavClient(object):
             return False
         else:
             for res in response:
-                if (res.href.rstrip('/') == self.get_abspath(relpath)):
+                self.logger.logger.debug('Exists or create %s : %s',
+                                         self.get_abspath(relpath),
+                                         res.href.rstrip('/'))
+                if ((res.href == self.get_abspath(relpath))
+                        or (res.href.rstrip('/')
+                            == self.get_abspath(relpath))):
                     return True
 
         with self.locktoken:
-            self.wc.mkcol(self.get_abspath(relpath))
+            self.logger.logger.debug(
+                'Exists or create mkcol : %s',
+                self.get_abspath(relpath, asFolder=True))
+            self.wc.mkcol(self.get_abspath(relpath, asFolder=True))
 
     def upload(self, relpath, fh):
         with self.locktoken:
+            self.logger.logger.debug('Put : %s', self.get_abspath(relpath))
             self.wc.put(self.get_abspath(relpath), fh)
 
     def download(self, relpath, fh):
+        self.logger.logger.debug('Get : %s', self.get_abspath(relpath))
         fh.write(self.wc.get(self.get_abspath(relpath)).content)
 
     def rm(self, relpath):
         with self.locktoken:
+            self.logger.logger.debug('Delete : %s', self.get_abspath(relpath))
             self.wc.delete(self.get_abspath(relpath))
 
     def get_abspath(self, relpath, asFolder=False):
@@ -281,12 +299,16 @@ class WebdavClient(object):
     def move(self, srcrelpath, dstrelpath):
         '''Move/Rename a note on webdav'''
         with self.locktoken:
+            self.logger.logger.debug('Move : %s -> %s',
+                                     self.get_abspath(srcrelpath),
+                                     self.get_abspath(srcrelpath))
             self.wc.move(self.get_abspath(srcrelpath),
                          self.get_abspath(dstrelpath),
                          depth='infinity',
                          overwrite=True)
 
     def lock(self, relpath=''):
+
         abspath = self.get_abspath(relpath, asFolder=True)
         if relpath:
             self.locktoken = self.wc.lock(uri=abspath, timeout=60)
@@ -313,8 +335,9 @@ class Sync(object):
             debug=settings.get('WebDav', 'debug'))
 
         # TODO
-        if settings.get('WebDav', 'startupsync') is True:
-            self.launch()
+        # Duplicate, launched in qml
+        #if settings.get('WebDav', 'startupsync') is True:
+        #    self.launch()
 
     def launch(self):
         ''' Sync the notes in a thread'''
@@ -326,9 +349,10 @@ class Sync(object):
         else:
             return True
 
-    def push_note(self, path):
+    def launch_push_note(self, path):
         self.thread = threading.Thread(target=self._wpushNote, args=[path, ])
         self.thread.start()
+        return True
 
     def sync(self):
         wdc = WebdavClient(self.logger)
@@ -439,7 +463,7 @@ class Sync(object):
         self._set_running(False)
         return True
 
-    def note_push(self, relpath):
+    def push_note(self, relpath):
         ''' Given full path of a textual note file, push that file to the
             remote server '''
         self._set_running(True)
