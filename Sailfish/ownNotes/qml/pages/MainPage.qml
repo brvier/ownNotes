@@ -25,7 +25,7 @@ Page {
         }
 
         function rm(path) {
-            for (var i=0; i<data.length; i++) {
+            for (var i=0; i<notesModel.count; i++) {
                 if (notesModel.get(i).path === path ) {
                     notesModel.remove(i);
                     break;

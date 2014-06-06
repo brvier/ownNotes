@@ -133,7 +133,7 @@ class WebdavClient(object):
         self.basepath = requests.utils.urlparse(self.url).path
         self.remotefolder = settings.get('WebDav', 'remoteFolder')
         self.nosslcheck = settings.get('WebDav', 'nosslcheck')
-        self.timedelta = None
+        self.time_delta = None
         self.wc = None
         self.locktoken = None
         self.logger = logger
@@ -159,7 +159,7 @@ class WebdavClient(object):
         remote_datetime = \
             rfc822.parsedate(response)
 
-        self.timedelta = time.mktime(local_time.utctimetuple()) \
+        self.time_delta = time.mktime(local_time.utctimetuple()) \
             - time.mktime(remote_datetime)
 
         self._check_notes_folder()
@@ -358,7 +358,7 @@ class Sync(object):
         wdc = WebdavClient(self.logger)
         try:
             wdc.connect()
-            time_delta = wdc.timedelta
+            time_delta = wdc.time_delta
 
             ldc = localClient(self.logger)
 
@@ -593,7 +593,7 @@ class Sync(object):
         mtime = None
         with open(ldc.get_abspath(local_relpath), 'rb') as fh:
             wdc.upload(remote_relpath, fh)
-            mtime = local2utc(wdc.get_mtime(remote_relpath)) - wdc.timedelta
+            mtime = local2utc(wdc.get_mtime(remote_relpath)) - wdc.time_delta
 
         if mtime:
             ldc.set_mtime(local_relpath, mtime)
@@ -608,7 +608,7 @@ class Sync(object):
         mtime = None
         with open(ldc.get_abspath(local_relpath), 'wb') as fh:
             wdc.download(remote_relpath, fh)
-            mtime = wdc.get_mtime(remote_relpath) - wdc.timedelta
+            mtime = wdc.get_mtime(remote_relpath) - wdc.time_delta
 
         if mtime:
             ldc.set_mtime(local_relpath, mtime)
