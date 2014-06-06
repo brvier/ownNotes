@@ -219,10 +219,6 @@ def loadNote(path, colorize=True):
     with open(path, 'r') as fh:
         try:
             text = fh.read()
-            if text.find('\0') > 0:
-                # Probably utf-16 ... decode it to utf-8
-                # as qml didn t support it well'
-                text = text.decode('utf-16').encode('utf-8')
             title = os.path.splitext(
                 os.path.basename(path))[0]
             if colorize:
