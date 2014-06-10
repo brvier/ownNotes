@@ -160,5 +160,87 @@
       "text": "Improving release scrypt", 
       "type": "bug"
     }
+  ], 
+  "1.8.2": [
+    {
+      "text": "Use encryption only when id of machine is available", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Add more debug trace", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Add optionnal log for sync", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Store password encrypted", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Add datetime of last sync in cover", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Some PEP8 cleaning", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Raise a error in case of IO Error when reading a note", 
+      "type": "feature"
+    }, 
+    {
+      "text": "Remove uselessC", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix timedelta bug", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix update of note model when note deleted", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix bug in sync", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix logger and add some informations", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix password setting one more time ... do not code in train", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Remove debug trace", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Rename ownnote sync log", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix saving of encrypted password", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix saving of encrypted password", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix use of lock tocken in sync", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Fix for utf-16 note", 
+      "type": "bug"
+    }, 
+    {
+      "text": "Remove some utf-8 debug printing that could raise exception if stdout isnt in utf-8", 
+      "type": "bug"
+    }
   ]
 }
