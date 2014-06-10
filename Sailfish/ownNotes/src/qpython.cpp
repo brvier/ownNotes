@@ -347,7 +347,7 @@ QPython::toPython(QVariant v)
         return PyUnicode_FromString(utf8bytes.constData());
     }
 
-    qDebug() << "XXWX Qt -> Python converstion not handled yet 2";
+    qDebug() << "XXWX Qt -> Python conversion not handled yet";
 
     return NULL;
 }
