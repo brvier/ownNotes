@@ -82,8 +82,8 @@ Page {
                 maximumLineCount: 1
                 anchors {
                     left: parent.left
-                    leftMargin: Theme.paddingSmall
-                    rightMargin: Theme.paddingSmall
+                    leftMargin: Theme.paddingLarge
+                    rightMargin: Theme.paddingLarge
                 }
             }
 
@@ -94,8 +94,8 @@ Page {
                 color: Theme.secondaryColor
                 anchors {
                     left: parent.left
-                    leftMargin: Theme.paddingSmall
-                    rightMargin: Theme.paddingSmall
+                    leftMargin: Theme.paddingLarge
+                    rightMargin: Theme.paddingLarge
                     bottom: parent.bottom
                     bottomMargin: Theme.paddingSmall
                 }
@@ -153,7 +153,7 @@ Page {
 
             SearchField {
                 id: searchField
-                placeholderText: qsTr("Search")
+                placeholderText: qsTr("Search Titles")
                 width: parent.width
                 onTextChanged: {
                     searchText = searchField.text;

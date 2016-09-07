@@ -49,7 +49,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Search</source>
+        <source>Search Titles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
