@@ -5,6 +5,7 @@ import net.khertan.python 1.0
 
 Page {
     id: page
+    property var fontFamilies: ["Monospace", "Serif", "Sans"];
 
     SilicaFlickable {
         id: flicker
@@ -48,7 +49,8 @@ Page {
                         return -1
                     }
                     Component.onCompleted: {
-                        var ff = Theme._fontFamilies()
+                        //var ff = Theme._fontFamilies()
+                        var ff = page.fontFamilies;
                         var s = pyNotes.get('Display', 'fontfamily');
                         for (var i = 0; i < ff.length; ++i) {
 
@@ -62,7 +64,8 @@ Page {
                 onCurrentIndexChanged: {
                     console.log('Set');
                     console.log(currentIndex);
-                    var ff = Theme._fontFamilies()
+                    //var ff = Theme._fontFamilies()
+                    var ff = page.fontFamilies;
                     console.log(ff[currentIndex]);
                     console.log(currentItem);
                     if (currentItem) {
