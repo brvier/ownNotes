@@ -184,9 +184,9 @@ Page {
                     pageStack.push(Qt.createComponent(Qt.resolvedUrl("AboutPage.qml")),
                                    {
                                        title : 'ownNotes ' + aboutInfos.version,
-                                       icon: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png'),
-                                       slogan : qsTr('Notes in your own cloud !'),
-                                       contentText : aboutInfos.firstPart + aboutInfos.changelog + aboutInfos.secondPart
+                                       icon: Qt.resolvedUrl('/usr/share/ownNotes/icons/about.png'),
+                                       slogan : qsTr('Notes in your own cloud!'),
+                                       contentText : aboutInfos.firstPart + (aboutInfos.changelog !== '' ? aboutInfos.clprefix + aboutInfos.changelog : '') + aboutInfos.secondPart
                                    })}
 
             }
@@ -195,7 +195,7 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
             MenuItem {
-                text: qsTr("Sync")
+                text: qsTr("Synchronise")
                 onClicked: {
                     if (sync.running === false)
                         sync.launch()
@@ -340,8 +340,8 @@ Page {
         property string firstPart:qsTr('A note taking application with sync for ownCloud or any WebDav.') +
                                     '<br>' + qsTr('Web Site : http://khertan.net/ownnotes') +
                                     '<br><br>' + qsTr('By') +' Benoît HERVIER (Khertan)' +
-                                    '<br><b>' + qsTr('Licensed under GPLv3') + '</b>'+
-                                    '<br><br><b>Changeslog : </b><br><br>'
+                                    '<br><b>' + qsTr('Licensed under GPLv3') + '</b>'
+        property string clprefix:   '<br><br><b>Changeslog : </b><br><br>'
         property string secondPart: '<br><br><b>Thanks to : </b>' +
                                     '<br>* Radek Novacek' +
                                     '<br>* caco3 on talk.maemo.org for debugging' +

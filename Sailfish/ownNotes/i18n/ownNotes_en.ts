@@ -65,7 +65,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sync</source>
+        <source>Synchronise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

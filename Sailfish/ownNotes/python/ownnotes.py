@@ -20,6 +20,7 @@
 """
 
 import os
+import os.path
 import time
 import re
 import html.entities
@@ -411,9 +412,12 @@ def publishToScriptogram(text):
 
 
 def readChangeslog():
-    with open('/usr/share/ownNotes/datas/changelog.html') as fh:
-        return fh.read()
-
+    text = ''
+    changeLog = '/usr/share/ownNotes/datas/changelog.html'
+    if os.path.isfile(changeLog):
+        with open(changeLog) as fh:
+            text = fh.read()
+    return text
 
 def get_last_sync_datetime():
     global sync
