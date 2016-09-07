@@ -9,10 +9,11 @@ CoverBackground {
     }
     Image {
         id: icon
-        source: Qt.resolvedUrl('/usr/share/ownNotes/icons/ownnotes.png')
+        source: Qt.resolvedUrl('/usr/share/ownNotes/icons/cover.png')
         anchors.horizontalCenter: label.horizontalCenter
-        anchors.bottom: label.top
-        opacity: 0.7
+        anchors.top: parent.top
+        opacity: 0.6
+        scale: 2.0
     }
 
     Label {
