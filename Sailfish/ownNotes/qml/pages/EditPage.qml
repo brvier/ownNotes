@@ -79,6 +79,7 @@ Page {
         contentWidth: flick.width
 
         PullDownMenu {
+            visible: pyNotes.publishable();
             MenuItem {
                 text: qsTr("Publish to Scriptogr.am");
                 visible: pyNotes.get('Scriptogram','userid') !== '' ? true : false;

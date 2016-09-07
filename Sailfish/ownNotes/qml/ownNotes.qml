@@ -112,6 +112,13 @@ ApplicationWindow
             return path;
         }
 
+        function publishable() {
+            var canPublish = (call('ownnotes.getSetting', ['Scriptogram','userid']) !== '')
+                || (call('ownnotes.getSetting', ['KhtCms','apikey']) !== '')
+                || (call('ownnotes.getSetting', ['KhtCms','apikey']) !== '');
+            return canPublish;
+        }
+
         function publishToScriptogram(text) {
             call('ownnotes.publishToScriptogram', [text]);
         }
