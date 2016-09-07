@@ -24,7 +24,7 @@ import datetime
 import requests
 import tinydav
 import logger
-from fakelock import Fakelock
+from fakelock import fakelock
 
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
 
@@ -311,7 +311,7 @@ class WebdavClient(object):
     def lock(self, relpath=''):
         '''ownCloud no longer supports WebDAV file LOCKs, so just set up an
         empty interface'''
-        self.locktoken = Fakelock()
+        self.locktoken = fakelock()
         return
         # The original code to execute, if locking were implemented, follows
         abspath = self.get_abspath(relpath, asFolder=True)
