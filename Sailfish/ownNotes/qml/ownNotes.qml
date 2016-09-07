@@ -49,7 +49,7 @@ ApplicationWindow
         Component.onCompleted: {
             addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
-            if (call('ownnotes.getSetting', ['WebDav', 'startupsync']) == true) {
+            if (call('ownnotes.getSetting', ['WebDav', 'startupsync']) === true) {
                 launch();
             }
         }
