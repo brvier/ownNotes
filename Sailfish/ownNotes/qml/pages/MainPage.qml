@@ -219,7 +219,7 @@ Page {
         }
 
         PushUpMenu {
-
+            visible: false
             MenuItem {
                 text: qsTr("New note")
                 onClicked: {
