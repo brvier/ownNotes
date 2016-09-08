@@ -70,6 +70,16 @@ ApplicationWindow
             return message;
         }
 
+        function loadPreview(path) {
+            var message = call('ownnotes.loadPreview', [path, false]);
+            return message;
+        }
+
+        function nextNoteFile(path, offset) {
+            var next = call('ownnotes.nextNoteFile', [path, offset]);
+            return next;
+        }
+
         function setColors(title, subtitle, link) {
             call('ownnotes.setColors', [title, subtitle, link]);
         }

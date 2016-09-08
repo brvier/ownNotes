@@ -476,16 +476,16 @@ class Sync(object):
             remote server '''
         self._set_running(True)
 
-        ldc = localClient()
+        ldc = localClient(self.logger)
 
         # Create Connection
-        wdc = WebdavClient()
+        wdc = WebdavClient(self.logger)
         wdc.connect()
 
         wdc.lock(relpath)
 
         # Get mtime
-        remote_mtime = self._get_mtime(relpath)
+        remote_mtime = wdc.get_mtime(relpath)
         local_mtime = ldc.get_mtime(ldc.get_abspath(relpath))
 
         if local_mtime >= local2utc(remote_mtime - wdc.time_delta):

@@ -23,7 +23,7 @@ Page {
                 textEditor.modified = false;
                 autoTimer.stop()
             }
-            //pyNotes.requireRefresh();
+            pyNotes.requireRefresh();
         }
 
         onFinished: {
