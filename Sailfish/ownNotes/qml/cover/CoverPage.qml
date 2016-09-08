@@ -7,6 +7,10 @@ CoverBackground {
     property string current: ""
     property bool preview: (current !== "")
 
+    Component.onCompleted: {
+        current = pyNotes.get('Display', 'covernote');
+    }
+
     Connections {
         target: pyNotes
         onRequireRefresh: {
@@ -143,9 +147,12 @@ CoverBackground {
     }
 
     function updateCoverText(offset) {
-        cover.current = pyNotes.nextNoteFile(cover.current, offset);
-        if (cover.current !== '') {
-            var txt = pyNotes.loadPreview(cover.current);
+        var current = cover.current;
+        current = pyNotes.nextNoteFile(current, offset);
+        cover.current = current;
+        pyNotes.set('Display', 'covernote', current);
+        if (current !== '') {
+            var txt = pyNotes.loadPreview(current);
             previewBody.text = txt;
         }
     }
