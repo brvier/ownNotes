@@ -25,6 +25,10 @@ CoverBackground {
                 cover.updateCoverText(0)
             }
         }
+        onSetCoverNote: {
+            console.log("Set cover to " + path);
+            current = path;
+        }
     }
 
     Label {

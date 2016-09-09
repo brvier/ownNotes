@@ -107,6 +107,12 @@ Page {
                 id: contextMenuComponent
                 ContextMenu {
                     MenuItem {
+                        text: qsTr("Show on cover")
+                        onClicked: {
+                            pyNotes.setCoverNote(model.relpath);
+                        }
+                    }
+                    MenuItem {
                         text: qsTr("Category")
                         onClicked: {
                             pageStack.push(categoryPage,{path:model.path})
@@ -134,6 +140,7 @@ Page {
             }
         }
     }
+
 
     // Place our content in a Column.  The PageHeader is always placed at the top
     // of the page, followed by our content.

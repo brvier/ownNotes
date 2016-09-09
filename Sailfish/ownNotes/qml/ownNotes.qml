@@ -60,6 +60,7 @@ ApplicationWindow
         id: pyNotes
         signal requireRefresh()
         signal noteDeleted(string path)
+        signal setCoverNote(string path)
 
         function readChangeslog() {
             return call('ownnotes.readChangeslog', []);
