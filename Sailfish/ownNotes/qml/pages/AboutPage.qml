@@ -48,7 +48,7 @@ Page {
 
             Label {
                 id: slogan
-                text: 'Slogan !'
+                text: 'Slogan!'
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 

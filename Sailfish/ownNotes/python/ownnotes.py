@@ -20,6 +20,7 @@
 """
 
 import os
+import os.path
 import time
 import re
 import html.entities
@@ -203,20 +204,23 @@ def saveNote(filepath, data, colorized=True):
 
         filepath = new_path
 
-    with open(filepath, 'w') as fh:
+    with open(filepath, 'w', encoding='utf-8') as fh:
         fh.write(_content)
 
-    try:
-        sync.push_note(filepath)
-    except Exception as err:
-        logger.Logger().logger.error(str(err))
+    # Note pushing removed to avoid the app locking up
+    # Perhaps this should be run in a different thread
+    #try:
+    #    relpath = os.path.join(category, _getValidFilename(_title.strip()) + '.txt')
+    #    sync.push_note(relpath)
+    #except Exception as err:
+    #    logger.Logger().logger.error(str(err))
 
     return filepath
 
 
 def loadNote(path, colorize=True):
     path = os.path.join(NOTESPATH, path)
-    with open(path, 'r') as fh:
+    with open(path, 'r', encoding='utf-8') as fh:
         try:
             text = fh.read()
             title = os.path.splitext(
@@ -229,6 +233,28 @@ def loadNote(path, colorize=True):
             raise Exception('File IO Error %s' % (str(err)))
     raise Exception('File IO Error')
 
+def loadPreview(path, colorize=False):
+    path = os.path.join(NOTESPATH, path)
+    with open(path, 'r', encoding='utf-8') as fh:
+        try:
+            text = fh.read(512)
+            if colorize:
+                return _colorize(text.replace('\r\n', '\n'))
+            else:
+                return text.replace('\r\n', '\n')
+        except Exception as err:
+            raise Exception('File IO Error %s' % (str(err)))
+    raise Exception('File IO Error')
+
+
+def nextNoteFile(current, offset=1):
+    next = ''
+    notesDetails = listNotes('')
+    notes = [note['relpath'] for note in notesDetails]
+    notes.append('')
+    if current in notes:
+        next = notes[(notes.index(current) + int(offset)) % len(notes)]
+    return next
 
 def listNotes(searchFilter):
     path = NOTESPATH
@@ -255,7 +281,8 @@ def listNotes(searchFilter):
                                                      category,
                                                      filename)).st_mtime)),
                            'favorited': False,
-                           'path': os.path.join(path, category, filename)}
+                           'path': os.path.join(path, category, filename),
+                           'relpath': os.path.join(category, filename)}
                           for filename in filenames
                           if filename != '.index.sync'])
 
@@ -411,9 +438,12 @@ def publishToScriptogram(text):
 
 
 def readChangeslog():
-    with open('/usr/share/ownNotes/datas/changelog.html') as fh:
-        return fh.read()
-
+    text = ''
+    changeLog = '/usr/share/ownNotes/datas/changelog.html'
+    if os.path.isfile(changeLog):
+        with open(changeLog) as fh:
+            text = fh.read()
+    return text
 
 def get_last_sync_datetime():
     global sync

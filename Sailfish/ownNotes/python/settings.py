@@ -37,6 +37,7 @@ class Settings(object):
                 'fontsize': 18,
                 'fontfamily': 'Nokia Pure',
                 'header': True,
+                'covernote' : '',
             },
             'WebDav': {
                 'url': 'https://owncloud.khertan.net/remote.php/webdav/',

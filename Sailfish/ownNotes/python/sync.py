@@ -24,6 +24,7 @@ import datetime
 import requests
 import tinydav
 import logger
+from fakelock import fakelock
 
 INVALID_FILENAME_CHARS = '\/:*?"<>|'
 
@@ -308,7 +309,11 @@ class WebdavClient(object):
                          overwrite=True)
 
     def lock(self, relpath=''):
-
+        '''ownCloud no longer supports WebDAV file LOCKs, so just set up an
+        empty interface'''
+        self.locktoken = fakelock()
+        return
+        # The original code to execute, if locking were implemented, follows
         abspath = self.get_abspath(relpath, asFolder=True)
         if relpath:
             self.locktoken = self.wc.lock(uri=abspath, timeout=60)
@@ -318,6 +323,9 @@ class WebdavClient(object):
                                           timeout=300)
 
     def unlock(self, relpath=None):
+        '''ownCloud no longer supports WebDAV file LOCKs, so we do nothing'''
+        return
+        # The original code to execute, if locking were implemented, follows
         if self.locktoken:
             self.wc.unlock(uri_or_lock=self.locktoken)
 
@@ -468,16 +476,16 @@ class Sync(object):
             remote server '''
         self._set_running(True)
 
-        ldc = localClient()
+        ldc = localClient(self.logger)
 
         # Create Connection
-        wdc = WebdavClient()
+        wdc = WebdavClient(self.logger)
         wdc.connect()
 
         wdc.lock(relpath)
 
         # Get mtime
-        remote_mtime = self._get_mtime(relpath)
+        remote_mtime = wdc.get_mtime(relpath)
         local_mtime = ldc.get_mtime(ldc.get_abspath(relpath))
 
         if local_mtime >= local2utc(remote_mtime - wdc.time_delta):

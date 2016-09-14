@@ -49,7 +49,7 @@ ApplicationWindow
         Component.onCompleted: {
             addImportPath('/usr/share/ownNotes/python');
             importModule('ownnotes');
-            if (call('ownnotes.getSetting', ['WebDav', 'startupsync']) == true) {
+            if (call('ownnotes.getSetting', ['WebDav', 'startupsync']) === true) {
                 launch();
             }
         }
@@ -60,6 +60,7 @@ ApplicationWindow
         id: pyNotes
         signal requireRefresh()
         signal noteDeleted(string path)
+        signal setCoverNote(string path)
 
         function readChangeslog() {
             return call('ownnotes.readChangeslog', []);
@@ -68,6 +69,16 @@ ApplicationWindow
         function loadNote(path) {
             var message = call('ownnotes.loadNote', [path, false]);
             return message;
+        }
+
+        function loadPreview(path) {
+            var message = call('ownnotes.loadPreview', [path, false]);
+            return message;
+        }
+
+        function nextNoteFile(path, offset) {
+            var next = call('ownnotes.nextNoteFile', [path, offset]);
+            return next;
         }
 
         function setColors(title, subtitle, link) {
@@ -110,6 +121,13 @@ ApplicationWindow
         function createNote() {
             var path = call('ownnotes.createNote', []);
             return path;
+        }
+
+        function publishable() {
+            var canPublish = (call('ownnotes.getSetting', ['Scriptogram','userid']) !== '')
+                || (call('ownnotes.getSetting', ['KhtCms','apikey']) !== '')
+                || (call('ownnotes.getSetting', ['KhtCms','apikey']) !== '');
+            return canPublish;
         }
 
         function publishToScriptogram(text) {

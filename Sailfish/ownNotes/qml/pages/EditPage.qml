@@ -6,6 +6,7 @@ import net.khertan.documenthandler 1.0
 
 Page {
     id: page
+    allowedOrientations: Orientation.All;
     property alias path: textEditor.path;
 
     Python {
@@ -22,7 +23,7 @@ Page {
                 textEditor.modified = false;
                 autoTimer.stop()
             }
-            //pyNotes.requireRefresh();
+            pyNotes.requireRefresh();
         }
 
         onFinished: {
@@ -79,6 +80,7 @@ Page {
         contentWidth: flick.width
 
         PullDownMenu {
+            visible: pyNotes.publishable();
             MenuItem {
                 text: qsTr("Publish to Scriptogr.am");
                 visible: pyNotes.get('Scriptogram','userid') !== '' ? true : false;
